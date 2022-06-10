@@ -17,24 +17,6 @@
         "up_speed": 0,
         "uploaded": 0
     },
-    "114.24.23.113:11107": {
-        "client": "μTorrent 3.5.5",
-        "connection": "BT",
-        "country": "台湾",
-        "country_code": "tw",
-        "dl_speed": 112,
-        "downloaded": 213508624,
-        "files": "[Nekomoe kissaten&VCB-Studio] Slime 300 [Ma10p_1080p]/[Nekomoe kissaten&VCB-Studio] Slime 300 [01][Ma10p_1080p][x265_flac].mkv",
-        "flags": "D H X E",
-        "flags_desc": "D = 您：期待下载╱他：同意上传\nH = 来自 DHT 的下载者\nX = 来自 PEX 的下载者\nE = 加密的流量",
-        "ip": "114.24.23.113",
-        "peer_id": "-UT355W-",
-        "port": 11107,
-        "progress": 1,
-        "relevance": 1,
-        "up_speed": 0,
-        "uploaded": 0
-    },
     "114.89.62.199:16888": {
         "client": "qBittorrent/4.4.2",
         "connection": "μTP",
