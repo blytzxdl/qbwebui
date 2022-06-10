@@ -1,18 +1,18 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<div>
+<router-view></router-view>
+
+</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+
+
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+
 }
 </script>
 
@@ -23,6 +23,24 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.clearfix::before,
+.clearfix::after{
+  content: '';
+  display: table;
+  clear: both;
+}
+*{
+  margin: 0;
+  padding: 0;
+}
+::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar-thumb{
+  background-color: #eaecf1;
+  border-radius: 3px;
 }
 </style>
