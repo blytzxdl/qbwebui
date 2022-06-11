@@ -2,6 +2,7 @@
 
 //遍历文件列表
 const trimPath = (path) => {
+    
 
 
     let res = [{}]

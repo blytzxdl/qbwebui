@@ -32,7 +32,11 @@ import {
   Descriptions,
   DescriptionsItem,
   Tag,
-  Tree
+  Tree,
+  Form,
+  FormItem,
+  Input,
+  Alert
 } from 'element-ui';
 Vue.use(Container)
 Vue.use(Header)
@@ -60,6 +64,14 @@ Vue.use(DescriptionsItem);
 Vue.use(Descriptions);
 Vue.use(Tag);
 Vue.use(Tree);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Input);
+Vue.use(Alert);
+
+
+
+
 
 
 

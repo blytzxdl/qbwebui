@@ -58,3 +58,9 @@ export const reqPause = (hash) => requests({
     url: '/v2/torrents/pause',
     data:`hashes=${hash}`,
 })
+
+export const reqLogin = (userName,password) => requests({
+    method: 'post',
+    url: '/v2/auth/login',
+    data:`username=${userName}&password=${password}`,
+})

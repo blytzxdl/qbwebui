@@ -185,7 +185,7 @@ export default {
       this.checkedId = tar.id;
     },
     handleNodeClick(data) {
-      console.log(data);
+      // console.log(data);
     },
   },
   mounted() {
@@ -195,6 +195,7 @@ export default {
       this.$store.dispatch("getPeers", this.itemInfo.hash);
       this.$store.dispatch("getFiles", this.itemInfo.hash);
     });
+    
   },
 };
 </script>

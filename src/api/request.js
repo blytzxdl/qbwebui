@@ -11,7 +11,7 @@ const requests = axios.create({
 requests.interceptors.request.use((config)=>{
     return config
 })
-
+//响应拦截器
 requests.interceptors.response.use((res)=>{
     return res.data
 },(error)=>{

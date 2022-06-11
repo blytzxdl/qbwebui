@@ -142,7 +142,7 @@ const actions = {
             }
         }
         state.query[parName] = parVal
-        console.log(state.query);
+        // console.log(state.query);
         this.dispatch('getItem')
     },
     setSelection({ commit }, sel) {

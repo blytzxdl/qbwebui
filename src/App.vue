@@ -1,19 +1,15 @@
 <template>
-<div>
-<router-view></router-view>
-
-</div>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-
-
-
-
 export default {
-  name: 'App',
-
-}
+  name: "App",
+  mounted() {
+  },
+};
 </script>
 
 <style>
@@ -25,21 +21,21 @@ export default {
   color: #2c3e50;
 }
 .clearfix::before,
-.clearfix::after{
-  content: '';
+.clearfix::after {
+  content: "";
   display: table;
   clear: both;
 }
-*{
+* {
   margin: 0;
   padding: 0;
 }
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
   overflow-x: hidden;
 }
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   background-color: #eaecf1;
   border-radius: 3px;
 }

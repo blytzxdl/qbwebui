@@ -142,7 +142,7 @@ export default {
       this.$store.dispatch("clearQuery");
     },
     setQuery(eve, parVal) {
-      console.log(parVal);
+      // console.log(parVal);
       let par = { parName: eve.$parent.$attrs.name, parVal };
       this.$store.dispatch("setQuery", par);
     },

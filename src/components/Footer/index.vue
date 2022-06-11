@@ -27,9 +27,9 @@ export default {
     },
   },
   mounted() {
-    setInterval(() => {
+    // setInterval(() => {
       this.getTransferInfo();
-    }, 2000);
+    // }, 2000);
   },
 };
 </script>

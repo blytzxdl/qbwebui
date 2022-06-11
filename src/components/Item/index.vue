@@ -97,7 +97,7 @@ export default {
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {
-      console.log(row);
+      // console.log(row);
       this.$store.dispatch("setSelection", selection);
     },
   },
@@ -105,9 +105,9 @@ export default {
   mounted() {
       this.getItem();
 
-    setInterval(() => {
+    // setInterval(() => {
       this.getItem();
-    }, 2000);
+    // }, 2000);
   },
   beforeUpdate() {},
 };
