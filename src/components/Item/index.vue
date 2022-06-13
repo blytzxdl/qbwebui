@@ -14,12 +14,11 @@
     </el-table-column>
     <el-table-column
       v-for="(row, index) in tableRow"
-      :key="index"
+      :key="row.hash"
       :prop="row.prop"
       :label="row.label"
       :width="row.width"
       :show-overflow-tooltip="true"
-      row-key="hash"
     ></el-table-column>
   </el-table>
 </template>
@@ -90,26 +89,29 @@ export default {
       }
       return "";
     },
-    getItem() {
-      this.$store.dispatch("getItem");
-    },
+    // getItem() {
+    //   this.$store.dispatch("getItem");
+    // },
     handleCurrentChange(currentRow, oldCurrentRow) {
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {
       // console.log(row);
       this.$store.dispatch("setSelection", selection);
+      // this.$store.dispatch("getMaindata");
+    // this.$store.dispatch("fixItemInfo");
     },
   },
 
   mounted() {
-      this.getItem();
+    // this.getItem();
+    // this.$store.dispatch("getItem");
+    setInterval(() => {
+    this.$store.dispatch("getMaindata");
 
-    // setInterval(() => {
-      this.getItem();
-    // }, 2000);
+    }, 2000);
   },
-  beforeUpdate() {},
+  updated() {},
 };
 </script>
 

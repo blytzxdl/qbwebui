@@ -64,3 +64,8 @@ export const reqLogin = (userName,password) => requests({
     url: '/v2/auth/login',
     data:`username=${userName}&password=${password}`,
 })
+
+export const reqMaindata = (rid) => requests({
+    method: 'get',
+    url: `/v2/sync/maindata?rid=${rid}`,
+})

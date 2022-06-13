@@ -1,10 +1,11 @@
-import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause } from '../api/index';
+import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata } from '../api/index';
 import dayjs from 'dayjs';
 import renderSize from '../utils/renderSize';
 import trimPath from '../utils/trimPath';
-
-
+import merger from '../utils/merger';
+import _ from 'lodash';
 const state = {
+    maindata: {},
     itemInfo: [],
     query: {
         filter: "all",
@@ -22,7 +23,13 @@ const state = {
         'dlspeed',
         'upspeed',
         'dl_limit',
-        'up_limit'
+        'up_limit',
+        'up_info_speed',
+        'dl_info_speed',
+        'up_rate_limit',
+        'dl_rate_limit',
+        'dl_info_data',
+        'up_info_data'
     ],
     timeFilter: [
         'completion_on'
@@ -31,11 +38,19 @@ const state = {
     trackerStatus: ['已禁用', '未联系', '工作中', '更新中', '未工作'],
     peers: [],
     files: [],
-    selection: []
+    selection: [],
+    rid: 0,
 }
 const mutations = {
     GETITEM(state, itemInfo) {
         state.itemInfo = itemInfo
+    },
+    GETMAINDATA(state, maindata) {
+        state.maindata = merger(state.maindata, maindata)
+        state.itemInfo =null
+        state.itemInfo = Object.values(merger(state.itemInfo, state.maindata.torrents))
+        // state.itemInfo = Object.values(_.defaultsDeep)
+        state.rid += 1
     },
     CLEARQUERY(state) {
         state.query = {
@@ -64,13 +79,19 @@ const mutations = {
 }
 const actions = {
     //请求/筛选种子数据
-    async getItem() {
-        let { filter, category, tag, sort, reverse } = state.query
-        let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
-        this.dispatch('fixItemInfo', result)
+    // async getItem() {
+    //     let { filter, category, tag, sort, reverse } = state.query
+    //     let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
+    //     
+    // },
+    //同步数据
+    async getMaindata({ commit }) {
+        let result = await reqMaindata(state.rid)
+        commit('GETMAINDATA', result)
+        this.dispatch('fixItemInfo',state.itemInfo)
     },
     //种子单位换算
-    fixItemInfo({ commit }, res) {
+    fixItemInfo({ commit },res) {
         res.forEach((value, index, arr) => {
             //日期
             state.timeFilter.forEach(fil => {
@@ -86,7 +107,7 @@ const actions = {
                 }
             });
             //舍入
-            value.progress = value.progress.toFixed(4)
+            value.progress = parseFloat(value.progress).toFixed(4)
         }, this)
 
         commit('GETITEM', res)
@@ -165,7 +186,17 @@ const actions = {
     }
 }
 const getters = {
-
+    transferInfo(state){
+        let result = merger({},state.maindata.server_state)
+        console.log(result);
+        for (let key in result) {
+                    if (state.byteFilter.includes(key)) {
+                        result[key] = renderSize(result[key])
+                    } 
+                }
+        console.log(result);
+        return result
+    }
 }
 
 export default {

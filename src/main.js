@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router';
-// import {reqVersion} from './api';
-// reqVersion()
 import store from './store';
 
 
@@ -68,18 +66,6 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Alert);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

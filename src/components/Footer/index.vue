@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapGetters} from 'vuex';
 export default {
   name: "Footer",
   data(){
@@ -17,19 +17,19 @@ export default {
       }
   },
   computed:{
-    ...mapState({
-        transferInfo:state=>state.footer.transferInfo
-        })
+    ...mapGetters([
+      'transferInfo'
+    ])
     },
   methods: {
-    getTransferInfo() {
-      this.$store.dispatch("getTransferInfo");
-    },
+    // getTransferInfo() {
+    //   this.$store.dispatch("getTransferInfo");
+    // },
   },
   mounted() {
-    // setInterval(() => {
-      this.getTransferInfo();
-    // }, 2000);
+    // // setInterval(() => {
+    //   this.getTransferInfo();
+    // // }, 2000);
   },
 };
 </script>
