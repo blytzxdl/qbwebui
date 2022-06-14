@@ -4,6 +4,7 @@ import renderSize from '../utils/renderSize';
 import trimPath from '../utils/trimPath';
 import merger from '../utils/merger';
 import _ from 'lodash';
+import store from '.';
 const state = {
     maindata: {},
     itemInfo: [],
@@ -75,21 +76,21 @@ const mutations = {
     }
 }
 const actions = {
-    //请求/筛选种子数据
-    // async getItem() {
-    //     let { filter, category, tag, sort, reverse } = state.query
-    //     let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
-    //     
-    // },
+    //筛选种子数据
+    async getFil({ commit }) {
+        let { filter, category, tag, sort, reverse } = state.query
+        let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
+        commit('GETITEM', result)
+    },
     //同步数据
-    async getMaindata({ commit}) {
+    async getMaindata({ commit }) {
         let result = await reqMaindata(state.rid)
         await commit('GETMAINDATA', result)
-        this.dispatch('fixItemInfo',state.maindata.torrents)
+        this.dispatch('fixItemInfo', state.maindata.torrents)
     },
     //种子单位换算
-    fixItemInfo({ commit },res) {
-        res = merger({},res)
+    fixItemInfo({ commit }, res) {
+        res = merger({}, res)
         for (const hash in res) {
             let ite = res[hash]
             ite.hash = hash
@@ -148,7 +149,6 @@ const actions = {
     //清理筛选
     clearQuery({ commit }) {
         commit('CLEARQUERY')
-        this.dispatch('getItem')
     },
     //设置筛选
     setQuery({ commit }, par) {
@@ -164,7 +164,6 @@ const actions = {
         }
         state.query[parName] = parVal
         // console.log(state.query);
-        this.dispatch('getItem')
     },
     setSelection({ commit }, sel) {
         let result = ''
@@ -186,13 +185,13 @@ const actions = {
     }
 }
 const getters = {
-    transferInfo(state){
-        let result = merger({},state.maindata.server_state)
+    transferInfo(state) {
+        let result = merger({}, state.maindata.server_state)
         for (let key in result) {
-                    if (state.byteFilter.includes(key)) {
-                        result[key] = renderSize(result[key])
-                    } 
-                }
+            if (state.byteFilter.includes(key)) {
+                result[key] = renderSize(result[key])
+            }
+        }
         return result
     },
 }

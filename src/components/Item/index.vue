@@ -7,12 +7,12 @@
     :border="true"
     :stripe="true"
     :highlight-current-row="true"
-    :row-key="row=>row.hash"
+    :row-key="(row) => row.hash"
     @current-change="handleCurrentChange"
     @select="selectItem"
     ref="itemTable"
   >
-    <el-table-column type="selection" width="55" :reserve-selection='true'>
+    <el-table-column type="selection" width="35" :reserve-selection="true">
     </el-table-column>
     <el-table-column
       v-for="(row, index) in tableRow"
@@ -99,18 +99,27 @@ export default {
       this.$store.dispatch("setSelection", selection);
       // this.$store.dispatch("getMaindata");
     },
-    getRowKey(row){
-      return row.hash
-    }
+    getRowKey(row) {
+      return row.hash;
+    },
+    getData() {},
+    mainActive(){
+      this.mainTimer = setInterval(() => {
+      this.$store.dispatch("getMaindata");
+    }, 2000);
+    },
+    clearMain() {
+      clearInterval(this.mainTimer);
+    },
   },
   mounted() {
     this.$store.dispatch("getMaindata");
-    setInterval(() => {
-    this.$store.dispatch("getMaindata");
-    }, 2000);
-    this.$bus.$on('clearSelection',()=>{
-      this.$refs.itemTable.clearSelection()
-    })
+    this.mainActive()
+    this.$bus.$on('clearMain',()=>{this.clearMain()})
+    this.$bus.$on('reMain',()=>{this.mainActive()})
+    this.$bus.$on("clearSelection", () => {
+      this.$refs.itemTable.clearSelection();
+    });
   },
 };
 </script>
