@@ -27,8 +27,10 @@ export default {
       // console.log(key, keyPath);
       if (key == 1) {
         this.$store.dispatch("setResume");
+        this.$bus.$emit('clearSelection')
       } else if (key == 2) {
         this.$store.dispatch("setPause");
+        this.$bus.$emit('clearSelection')
       }
     },
   },

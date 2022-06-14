@@ -7,10 +7,12 @@
     :border="true"
     :stripe="true"
     :highlight-current-row="true"
+    :row-key="row=>row.hash"
     @current-change="handleCurrentChange"
     @select="selectItem"
+    ref="itemTable"
   >
-    <el-table-column type="selection" width="55" row-key="hash">
+    <el-table-column type="selection" width="55" :reserve-selection='true'>
     </el-table-column>
     <el-table-column
       v-for="(row, index) in tableRow"
@@ -89,28 +91,27 @@ export default {
       }
       return "";
     },
-    // getItem() {
-    //   this.$store.dispatch("getItem");
-    // },
     handleCurrentChange(currentRow, oldCurrentRow) {
+      console.log(currentRow);
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {
-      // console.log(row);
       this.$store.dispatch("setSelection", selection);
       // this.$store.dispatch("getMaindata");
-    // this.$store.dispatch("fixItemInfo");
     },
+    getRowKey(row){
+      return row.hash
+    }
   },
-
   mounted() {
     this.$store.dispatch("getMaindata");
     setInterval(() => {
     this.$store.dispatch("getMaindata");
-
     }, 2000);
+    this.$bus.$on('clearSelection',()=>{
+      this.$refs.itemTable.clearSelection()
+    })
   },
-  updated() {},
 };
 </script>
 

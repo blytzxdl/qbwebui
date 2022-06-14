@@ -47,9 +47,6 @@ const mutations = {
     },
     GETMAINDATA(state, maindata) {
         state.maindata = merger(state.maindata, maindata)
-        state.itemInfo =null
-        state.itemInfo = Object.values(merger(state.itemInfo, state.maindata.torrents))
-        // state.itemInfo = Object.values(_.defaultsDeep)
         state.rid += 1
     },
     CLEARQUERY(state) {
@@ -85,32 +82,35 @@ const actions = {
     //     
     // },
     //同步数据
-    async getMaindata({ commit }) {
+    async getMaindata({ commit}) {
         let result = await reqMaindata(state.rid)
-        commit('GETMAINDATA', result)
-        this.dispatch('fixItemInfo',state.itemInfo)
+        await commit('GETMAINDATA', result)
+        this.dispatch('fixItemInfo',state.maindata.torrents)
     },
     //种子单位换算
     fixItemInfo({ commit },res) {
-        res.forEach((value, index, arr) => {
-            //日期
-            state.timeFilter.forEach(fil => {
-                value[fil] = dayjs.unix(value[fil]).format('YYYY/MM/DD')
-            });
-            //字节
-            state.byteFilter.forEach(fil => {
-                if (value[fil] == -1) {
-                    value[fil] = '无限制'
-                } else {
-
-                    value[fil] = renderSize(value[fil])
+        res = merger({},res)
+        for (const hash in res) {
+            let ite = res[hash]
+            ite.hash = hash
+            for (const key in ite) {
+                //日期
+                if (state.timeFilter.includes(key)) {
+                    ite[key] = dayjs.unix(ite[key]).format('YYYY/MM/DD')
                 }
-            });
+                //字节
+                if (state.byteFilter.includes(key)) {
+                    if (ite[key] == -1) {
+                        ite[key] = '无限制'
+                    } else {
+                        ite[key] = renderSize(ite[key])
+                    }
+                }
+            }
             //舍入
-            value.progress = parseFloat(value.progress).toFixed(4)
-        }, this)
-
-        commit('GETITEM', res)
+            ite.progress = parseFloat(ite.progress).toFixed(4)
+        }
+        commit('GETITEM', Object.values(res))
     },
     //获取trackers
     async getTrackers(context, hash) {
@@ -194,7 +194,7 @@ const getters = {
                     } 
                 }
         return result
-    }
+    },
 }
 
 export default {

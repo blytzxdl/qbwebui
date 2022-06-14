@@ -30,7 +30,6 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     let login = await checkCookie()
-    console.log(login);
     if (login) {
         if (to.path != '/Home') {
             next('/Home')
