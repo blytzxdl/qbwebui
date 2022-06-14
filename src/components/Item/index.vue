@@ -104,8 +104,7 @@ export default {
   },
 
   mounted() {
-    // this.getItem();
-    // this.$store.dispatch("getItem");
+    this.$store.dispatch("getMaindata");
     setInterval(() => {
     this.$store.dispatch("getMaindata");
 

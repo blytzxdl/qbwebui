@@ -8,6 +8,10 @@ Vue.use(VueRouter)
 
 const routes = [
     {
+        path: '/'
+        , redirect: '/login'
+    },
+    {
         path: '/Home',
         name: 'Home',
         component: () => import('../views/Home')
@@ -24,17 +28,18 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach((to,from,next)=>{
-let login = checkCookie()
-if (login) {
-    if (to.path!='/Home') {
-        next('/Home')
-    }else{next()}
-} else {
-    if (to.path!='/Login') {
-        next('/Login')
-    }else{next()}
-}
+router.beforeEach(async (to, from, next) => {
+    let login = await checkCookie()
+    console.log(login);
+    if (login) {
+        if (to.path != '/Home') {
+            next('/Home')
+        } else { next() }
+    } else {
+        if (to.path != '/Login') {
+            next('/Login')
+        } else { next() }
+    }
 })
 
 export default router

@@ -188,13 +188,11 @@ const actions = {
 const getters = {
     transferInfo(state){
         let result = merger({},state.maindata.server_state)
-        console.log(result);
         for (let key in result) {
                     if (state.byteFilter.includes(key)) {
                         result[key] = renderSize(result[key])
                     } 
                 }
-        console.log(result);
         return result
     }
 }
