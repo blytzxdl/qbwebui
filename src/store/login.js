@@ -16,7 +16,7 @@ const actions = {
     async login({commit},userInfo){
         let {userName,password} = userInfo
         let result = await reqLogin(userName,password)
-        console.log(result);
+        // console.log(result);
         if (result == 'Fails.') {
             commit('SHOWERROR')
         }else if (result== 'Ok.') {

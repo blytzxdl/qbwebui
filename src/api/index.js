@@ -69,3 +69,9 @@ export const reqMaindata = (rid) => requests({
     method: 'get',
     url: `/v2/sync/maindata?rid=${rid}`,
 })
+
+export const reqAddTorrents = (link) => requests({
+    method: 'post',
+    url: `/v2/torrents/add`,
+    data:link,
+})

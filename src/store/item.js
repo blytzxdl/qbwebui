@@ -1,4 +1,4 @@
-import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata } from '../api/index';
+import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents } from '../api/index';
 import dayjs from 'dayjs';
 import renderSize from '../utils/renderSize';
 import trimPath from '../utils/trimPath';
@@ -165,6 +165,7 @@ const actions = {
         state.query[parName] = parVal
         // console.log(state.query);
     },
+    //储存选中项
     setSelection({ commit }, sel) {
         let result = ''
         sel.forEach((val, ind) => {
@@ -175,13 +176,29 @@ const actions = {
         })
         commit('SETSELECTION', result)
     },
+    //恢复下载
     async setResume({ commit }) {
         let result = await reqResume(state.selection)
         commit('CLEARSELECTION')
     },
+    //暂停下载
     async setPause({ commit }) {
         let result = await reqPause(state.selection)
         commit('CLEARSELECTION')
+    },
+    //添加种子
+    async addTorrents({ commit }, link) {
+        console.log(link);
+        let par = Object.keys(link)
+        var forms = new FormData()
+        par.forEach((key) => {
+            forms.append(key, link[key])
+        })
+        let result = await reqAddTorrents(forms)
+        console.log(result);
+        if (result == 'Fails.') {
+            return false
+        } else { return true }
     }
 }
 const getters = {

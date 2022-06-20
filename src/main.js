@@ -34,7 +34,10 @@ import {
   Form,
   FormItem,
   Input,
-  Alert
+  Alert,
+  Dialog,
+  Option,
+  Switch,
 } from 'element-ui';
 Vue.use(Container)
 Vue.use(Header)
@@ -66,6 +69,11 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Alert);
+Vue.use(Dialog);
+Vue.use(Option);
+Vue.use(Switch);
+
+
 
 
 

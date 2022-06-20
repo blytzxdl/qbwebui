@@ -92,7 +92,7 @@ export default {
       return "";
     },
     handleCurrentChange(currentRow, oldCurrentRow) {
-      console.log(currentRow);
+      // console.log(currentRow);
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {

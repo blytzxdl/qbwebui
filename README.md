@@ -1,24 +1,11 @@
 # qbwebui
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
+## 开发调试
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+### 上线示例
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [qBittorrent](https://qb.xiezi08.ink:8080/).
+Axios
