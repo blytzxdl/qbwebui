@@ -1,10 +1,9 @@
-import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents } from '../api/index';
+import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete } from '../api/index';
 import dayjs from 'dayjs';
 import renderSize from '../utils/renderSize';
 import trimPath from '../utils/trimPath';
 import merger from '../utils/merger';
 import _ from 'lodash';
-import store from '.';
 const state = {
     maindata: {},
     itemInfo: [],
@@ -47,7 +46,14 @@ const mutations = {
         state.itemInfo = itemInfo
     },
     GETMAINDATA(state, maindata) {
-        state.maindata = merger(state.maindata, maindata)
+        let remove = maindata.torrents_removed
+        if (remove) {
+            remove.forEach((hash) => {
+                delete state.maindata.torrents[hash]
+            })
+        } else {
+            state.maindata = merger(state.maindata, maindata)
+        }
         state.rid += 1
     },
     CLEARQUERY(state) {
@@ -184,6 +190,11 @@ const actions = {
     //暂停下载
     async setPause({ commit }) {
         let result = await reqPause(state.selection)
+        commit('CLEARSELECTION')
+    },
+    //删除种子
+    async setDelete({ commit }) {
+        let result = await reqDelete(state.selection)
         commit('CLEARSELECTION')
     },
     //添加种子

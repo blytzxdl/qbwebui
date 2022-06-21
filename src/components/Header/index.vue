@@ -12,6 +12,7 @@
       <el-menu-item index="1">开始</el-menu-item>
       <el-menu-item index="2">暂停</el-menu-item>
       <el-menu-item index="3">添加</el-menu-item>
+      <el-menu-item index="4">删除</el-menu-item>
     </el-menu>
     <el-dialog
       title="添加种子"
@@ -25,7 +26,7 @@
             v-model="form.urls"
             type="textarea"
             autosize
-            placeholder="请输入内容"
+            placeholder="支持http://, https://,magnet:和bc://bt/"
           ></el-input>
         </el-form-item>
 
@@ -34,7 +35,28 @@
         </el-form-item>
 
         <el-form-item label="分类">
-          <el-select v-model="form.category" filterable allow-create>
+          <el-select
+            v-model="form.category"
+            filterable
+            allow-create
+            placeholder="输入以新建"
+          >
+            <el-option
+              v-for="(cate, index) in allCategory"
+              :key="index"
+              :label="cate.name"
+              :value="cate.name"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="标签">
+          <el-select
+            v-model="form.tags"
+            filterable
+            allow-create
+            placeholder="输入以新建"
+          >
             <el-option
               v-for="(cate, index) in allCategory"
               :key="index"
@@ -50,6 +72,7 @@
             v-model="form.savepath"
             filterable
             allow-create
+            placeholder="C:\xxx"
           >
             <el-option
               v-for="(path, index) in allPath"
@@ -76,6 +99,7 @@
 <script>
 import { mapState } from "vuex";
 import { Notification } from "element-ui";
+import { MessageBox } from 'element-ui';
 export default {
   name: "Header",
   data() {
@@ -85,7 +109,8 @@ export default {
       form: {
         urls: "",
         autoTMM: true,
-        category: '',
+        category: "",
+        tags: "",
         savepath: "",
         paused: true,
       },
@@ -109,17 +134,32 @@ export default {
         this.$bus.$emit("clearSelection");
       } else if (key == 3) {
         this.dialogFormVisible = true;
+      } else if (key == 4) {
+        this.deleteWarn()
       }
     },
+    deleteWarn() {
+      MessageBox.confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$store.dispatch("setDelete");
+          this.$bus.$emit("clearSelection");
+        })
+        .catch(() => {
+        });
+    },
     submitForm() {
-      this.form.savepath = 'C:/caches/tor'
+      this.form.savepath = "C:\green\qb\profile\qBittorrent\downloads";
       let result = this.$store.dispatch("addTorrents", this.form);
       result.then((result) => {
         if (result) {
           this.dialogFormVisible = false;
-          this.form.urls=''
-          this.form.category=''
-          this.form.path=''
+          this.form.urls = "";
+          this.form.category = "";
+          this.form.path = "";
         } else {
           Notification.error({
             title: "添加失败",

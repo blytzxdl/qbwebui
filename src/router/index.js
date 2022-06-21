@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/'
-        , redirect: '/login'
+        , redirect: '/Login'
     },
     {
         path: '/Home',
@@ -24,20 +24,24 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    mode: 'history',
+    mode:'hash',
     routes
 })
 
 router.beforeEach(async (to, from, next) => {
     let login = await checkCookie()
     if (login) {
-        if (to.path != '/Home') {
-            next('/Home')
-        } else { next() }
+        if (to.path == '/Home') {
+            next()
+        } else {
+            return next('/Home')
+        }
     } else {
-        if (to.path != '/Login') {
+        if (to.path == '/Login') {
+            next()
+        } else {
             next('/Login')
-        } else { next() }
+        }
     }
 })
 

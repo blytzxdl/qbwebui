@@ -7,5 +7,5 @@ yarn serve
 
 ### 上线示例
 
-See [qBittorrent](https://qb.xiezi08.ink:8080/).
+See [qBittorrent](https://qb.xiezi08.ink/).
 Axios
