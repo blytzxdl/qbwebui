@@ -10,6 +10,7 @@
     :row-key="(row) => row.hash"
     @current-change="handleCurrentChange"
     @select="selectItem"
+    @select-all='selectItem'
     ref="itemTable"
   >
     <el-table-column type="selection" width="35" :reserve-selection="true">
@@ -44,7 +45,7 @@ export default {
         },
         {
           prop: "completion_on",
-          label: "日期",
+          label: "完成日期",
           width: "100",
         },
         {
@@ -92,12 +93,11 @@ export default {
       return "";
     },
     handleCurrentChange(currentRow, oldCurrentRow) {
-      // console.log(currentRow);
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {
+      console.log(selection);
       this.$store.dispatch("setSelection", selection);
-      // this.$store.dispatch("getMaindata");
     },
     getRowKey(row) {
       return row.hash;

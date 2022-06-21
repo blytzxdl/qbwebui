@@ -7,6 +7,7 @@ import _ from 'lodash';
 const state = {
     maindata: {},
     itemInfo: [],
+
     query: {
         filter: "all",
         category: "",
