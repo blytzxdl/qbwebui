@@ -47,11 +47,14 @@ const mutations = {
         state.itemInfo = itemInfo
     },
     GETMAINDATA(state, maindata) {
+        console.log(maindata);
         let remove = maindata.torrents_removed
         if (remove) {
             remove.forEach((hash) => {
                 delete state.maindata.torrents[hash]
             })
+        } else if (maindata.full_update) {
+            state.maindata = maindata
         } else {
             state.maindata = merger(state.maindata, maindata)
         }
@@ -92,7 +95,7 @@ const actions = {
     //同步数据
     async getMaindata({ commit }) {
         let result = await reqMaindata(state.rid)
-        await commit('GETMAINDATA', result)
+        commit('GETMAINDATA', result)
         this.dispatch('fixItemInfo', state.maindata.torrents)
     },
     //种子单位换算
@@ -116,7 +119,7 @@ const actions = {
                 }
             }
             //舍入
-            ite.progress = parseFloat(ite.progress*100).toFixed(2)
+            ite.progress = parseFloat(ite.progress * 100).toFixed(2)
         }
         commit('GETITEM', Object.values(res))
     },

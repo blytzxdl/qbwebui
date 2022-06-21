@@ -3,7 +3,7 @@ import axios from 'axios';
 //配置项
 const requests = axios.create({
     baseURL:'/api',
-    timeout:5000,
+    timeout:20000,
 
 })
 
