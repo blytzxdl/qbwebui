@@ -116,7 +116,7 @@ const actions = {
                 }
             }
             //舍入
-            ite.progress = parseFloat(ite.progress).toFixed(4)
+            ite.progress = parseFloat(ite.progress*100).toFixed(2)
         }
         commit('GETITEM', Object.values(res))
     },

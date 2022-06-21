@@ -37,6 +37,8 @@ export default {
 <style lang="less" scoped>
   .el-row {
     padding: 0;
+    background-color: #b3c0d1;
+    line-height: 28px;
     &:last-child {
       margin-bottom: 0;
     }
@@ -48,14 +50,14 @@ export default {
   //   background: #99a9bf;
   // }
   // .bg-purple {
-  //   background: #d3dce6;
+    //   background: #d3dce6;
   // }
   // .bg-purple-light {
-  //   background: #e5e9f2;
+    //   background: #e5e9f2;
   // }
   .grid-content {
-    min-height: 36px;
-    height: 100%;
+    text-align: center;
+    height: 28px;
   }
 
 </style>

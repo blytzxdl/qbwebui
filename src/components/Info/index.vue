@@ -8,7 +8,7 @@
             class="line"
             :text-inside="true"
             :stroke-width="18"
-            :percentage="itemInfo.progress * 100 || 0"
+            :percentage="percentage"
           ></el-progress>
         </div>
         <div class="transmission">
@@ -106,7 +106,7 @@ export default {
   data() {
     return {
       infoList: [
-        { name: "普通", isChecked: 1, id: "1" },
+        { name: "普通", isChecked: 0, id: "1" },
         { name: "Tracker", isChecked: 0, id: "2" },
         { name: "用户", isChecked: 0, id: "3" },
         { name: "HTTP源", isChecked: 0, id: "4" },
@@ -170,6 +170,9 @@ export default {
       peerData: (state) =>state.item.peers,
       files: (state) => state.item.files,
     }),
+    percentage(){
+      return Number(this.itemInfo.progress) || 0
+    }
   },
   methods: {
     selectInfo(eve, tar) {
@@ -271,7 +274,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
+    // background-color: #fff;
     .infoName {
       width: 100%;
       margin: 0;
@@ -287,6 +290,7 @@ export default {
         background-color: #b3c0d1;
       }
       &.focus {
+        background-color: #fff;
         border-bottom-style: solid;
         border-radius: 3px;
       }
