@@ -96,7 +96,6 @@ export default {
       this.$bus.$emit("getItemInfo", currentRow || oldCurrentRow);
     },
     selectItem(selection, row) {
-      console.log(selection);
       this.$store.dispatch("setSelection", selection);
     },
     getRowKey(row) {

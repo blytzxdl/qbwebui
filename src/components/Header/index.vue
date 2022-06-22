@@ -72,7 +72,7 @@
             v-model="form.savepath"
             filterable
             allow-create
-            placeholder="C:\xxx"
+            placeholder="C:/xxx"
           >
             <el-option
               v-for="(path, index) in allPath"
@@ -152,7 +152,7 @@ export default {
         });
     },
     submitForm() {
-      this.form.savepath = "C:\green\qb\profile\qBittorrent\downloads";
+      this.form.savepath = "C:/caches/bit";
       let result = this.$store.dispatch("addTorrents", this.form);
       result.then((result) => {
         if (result) {
@@ -160,6 +160,8 @@ export default {
           this.form.urls = "";
           this.form.category = "";
           this.form.path = "";
+          this.$store.dispatch("getCategories");
+          this.$store.dispatch("getTags");
         } else {
           Notification.error({
             title: "添加失败",

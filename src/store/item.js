@@ -47,7 +47,6 @@ const mutations = {
         state.itemInfo = itemInfo
     },
     GETMAINDATA(state, maindata) {
-        console.log(maindata);
         let remove = maindata.torrents_removed
         if (remove) {
             remove.forEach((hash) => {
@@ -203,14 +202,13 @@ const actions = {
     },
     //添加种子
     async addTorrents({ commit }, link) {
-        console.log(link);
         let par = Object.keys(link)
         var forms = new FormData()
         par.forEach((key) => {
             forms.append(key, link[key])
         })
+        // forms.append('path','C:\caches\bit')
         let result = await reqAddTorrents(forms)
-        console.log(result);
         if (result == 'Fails.') {
             return false
         } else { return true }
