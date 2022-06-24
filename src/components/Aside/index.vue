@@ -1,11 +1,11 @@
 <template>
   <el-menu
     class="el-menu-vertical-demo"
-    @open="handleOpen"
-    @close="handleClose"
     background-color="#545c64"
     active-text-color="#ffd04b"
     text-color="#fff"
+    @open="handleOpen"
+    @close="handleClose"
     :collapse="isCollapse"
   >
     <el-submenu index="1">
@@ -122,10 +122,10 @@ export default {
   },
   methods: {
     handleOpen(key, keyPath) {
-      // console.log(key, keyPath);
+      console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      // console.log(key, keyPath);
+      console.log(key, keyPath);
     },
     foldNav(val) {
       this.fold = val;
@@ -137,27 +137,27 @@ export default {
     },
     clearQuery() {
       this.$store.dispatch("clearQuery");
-      this.clearFil()
-      this.$store.dispatch("getMaindata")
-      this.$bus.$emit('reMain')
+      this.clearFil();
+      this.$store.dispatch("getMaindata");
+      this.$bus.$emit("reMain");
     },
     setQuery(eve, parVal) {
       // console.log(parVal);
-      this.clearFil()
+      this.clearFil();
       let par = { parName: eve.$parent.$attrs.name, parVal };
       this.$store.dispatch("setQuery", par);
-      this.filActive()
+      this.filActive();
     },
     filActive() {
-      this.$bus.$emit('clearMain')
+      this.$bus.$emit("clearMain");
       this.$store.dispatch("getFil");
       this.filTimer = setInterval(() => {
         this.$store.dispatch("getFil");
       }, 2000);
     },
-    clearFil(){
-      clearInterval(this.filTimer)
-    }
+    clearFil() {
+      clearInterval(this.filTimer);
+    },
   },
   mounted() {
     this.getAside();
@@ -169,6 +169,11 @@ export default {
 .el-menu {
   height: 100vh;
   border: none;
+  .el-submenu,
+  .is-active,
+  .is-opened{
+    color: #fff !important;
+  }
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;

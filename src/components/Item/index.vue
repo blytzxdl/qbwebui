@@ -35,7 +35,7 @@ export default {
       tableRow: [
         {
           prop: "name",
-          label: "姓名",
+          label: "名称",
           width: "360",
         },
         {
@@ -50,7 +50,7 @@ export default {
         },
         {
           prop: "content_path",
-          label: "地址",
+          label: "内容地址",
           width: "180",
         },
         {
@@ -60,7 +60,7 @@ export default {
         },
         {
           prop: "save_path",
-          label: "存储",
+          label: "存储路径",
           width: "280",
         },
       ],
