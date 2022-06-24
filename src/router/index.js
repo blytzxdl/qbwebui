@@ -1,25 +1,25 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import checkCookie from "../utils/checkCookie";
+import checkCookie from "@/utils/checkCookie";
 
-// import Home from '../views/Home.vue';
+// import home from '../views/home.vue';
 
 Vue.use(VueRouter)
 
 const routes = [
     {
         path: '/'
-        , redirect: '/Login'
+        , redirect: '/login'
     },
     {
-        path: '/Home',
-        name: 'Home',
-        component: () => import('../views/Home')
+        path: '/home',
+        name: 'home',
+        component: () => import('../views/home')
     },
     {
-        path: '/Login',
-        name: 'Login',
-        component: () => import('../views/Login')
+        path: '/login',
+        name: 'login',
+        component: () => import('../views/login')
     }
 ]
 
@@ -31,16 +31,16 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
     let login = await checkCookie()
     if (login) {
-        if (to.path == '/Home') {
+        if (to.path == '/home') {
             next()
         } else {
-            return next('/Home')
+            return next('/home')
         }
     } else {
-        if (to.path == '/Login') {
+        if (to.path == '/login') {
             next()
         } else {
-            next('/Login')
+            next('/login')
         }
     }
 })

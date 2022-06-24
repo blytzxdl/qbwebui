@@ -1,10 +1,12 @@
 <template>
-
+<torrents-list></torrents-list>
 </template>
 
 <script>
+import torrentsList from '@/components/torrentsList.vue';
 export default {
-  name: "Home",
+  components: { torrentsList },
+  name: "home",
 };
 </script>
 

@@ -5,8 +5,6 @@
 <script>
 export default {
   name: "App",
-  mounted() {
-  },
 };
 </script>
 
@@ -16,7 +14,10 @@ export default {
   margin: 0;
   padding: 0;
 }
-::-webkit-scrollbar {
+html{
+  font-size: 5.3333vw;
+}
+/* ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
   overflow-x: hidden;
@@ -24,5 +25,5 @@ export default {
 ::-webkit-scrollbar-thumb {
   background-color: #eaecf1;
   border-radius: 3px;
-}
+} */
 </style>

@@ -1,5 +1,5 @@
-import {reqLogin} from '../api';
-import router from '../router';
+import {reqLogin} from '@/api';
+import router from '@/router';
 
 
 const state = {
