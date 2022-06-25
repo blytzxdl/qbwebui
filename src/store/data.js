@@ -240,6 +240,9 @@ const getters = {
         }
         return result
     },
+    downloading(state){
+        return state.itemInfo.filter(i=>i.state == 'downloading')
+    }
 }
 
 export default {

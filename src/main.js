@@ -31,13 +31,15 @@ import {
   // DescriptionsItem,
   // Tag,
   // Tree,
-  // Form,
-  // FormItem,
-  // Input,
-  // Alert,
+  Form,
+  FormItem,
+  Input,
+  Alert,
   // Dialog,
   // Option,
   // Switch,
+  Carousel,
+  CarouselItem,
 } from 'element-ui';
 // Vue.use(Container)
 // Vue.use(Header)
@@ -65,18 +67,23 @@ import {
 // Vue.use(Descriptions);
 // Vue.use(Tag);
 // Vue.use(Tree);
-// Vue.use(Form);
-// Vue.use(FormItem);
-// Vue.use(Input);
-// Vue.use(Alert);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Input);
+Vue.use(Alert);
 // Vue.use(Dialog);
 // Vue.use(Option);
 // Vue.use(Switch);
+// Vue.use(Carousel);
+// Vue.use(CarouselItem);
 
 
 
-
-
+import { Button,Swipe, SwipeItem } from 'vant';
+Vue.use(Button)
+Vue.use(Swipe);
+Vue.use(SwipeItem);
+import '@vant/touch-emulator';
 
 
 
@@ -86,7 +93,7 @@ new Vue({
   router,
   store,
   render: h => h(App),
-  beforeCreate(){
+  beforeCreate() {
     Vue.prototype.$bus = this
   }
 }).$mount('#app')

@@ -71,8 +71,6 @@ export default {
   justify-content: center;
   align-items: center;
   .logo {
-    font-size: 1.25rem;
-    line-height: 2rem;
     text-align: center;
     font-family: Roboto, sans-serif;
     color: rgba(0, 0, 0, 0.87);
@@ -80,8 +78,8 @@ export default {
     display: flex;
   }
   .form {
-    width: 500px;
-    height: 300px;
+    width: 700px;
+    height: 400px;
     text-align: center;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     display: flex;
