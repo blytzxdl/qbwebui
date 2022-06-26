@@ -1,22 +1,60 @@
 <template>
-  <div class="card">
-    <div class="base">
-      <div class="control"></div>
-      <div class="info">
+  <van-swipe-cell class="card col">
+    <!-- 基础卡片 -->
+    <div class="base row">
+      <!-- 开始/暂停按钮 -->
+      <div class="control col">
+        <van-icon name="pause-circle-o" v-if="swipe" />
+        <van-icon name="play-circle-o" v-if="!swipe" />
+      </div>
+      <!-- 信息区域 -->
+      <div class="info col">
+        <!-- 名称 -->
         <div class="name">
           {{ torrentInfo.name }}
         </div>
-        <div class="baseInfo">
-            <span>{{torrentInfo.state}}</span>
-            <span>{{torrentInfo.category}}</span>
+        <!-- 基本信息，状态与分类 -->
+        <div class="baseInfo col">
+          <div class="row" id="text">
+            <div v-if="!swipe">{{ torrentInfo.state }}</div>
+            <div v-if="!swipe"><van-icon name="cluster-o" />{{ ratio }}</div>
+            <div><van-icon name="apps-o" />{{ torrentInfo.category }}</div>
+            <div v-if="swipe"><van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}</div>
+            <div v-if="swipe"><van-icon name="arrow-up" />{{ torrentInfo.upspeed }}</div>
+          </div>
+          <van-progress
+            v-if="swipe"
+            style="
+              flex-grow: 0;
+              padding: 0 2px;
+              position: relative;
+              bottom: 1px;
+            "
+            :percentage="torrentInfo.progress"
+            :show-pivot="false"
+            stroke-width="6"
+          />
         </div>
-        <div class="expandInfo" v-if="swipe"></div>
-        <van-button class="foldButton" @click="changeFold" v-if="!swipe"></van-button>
+        <!-- 折叠按钮，切换完整信息 -->
+        <van-button class="foldButton" @click="changeFold" v-if="!swipe">
+          <van-icon name="arrow-down" v-if="fold" />
+          <van-icon name="arrow-up" v-if="!fold" />
+        </van-button>
       </div>
-      <div class="delete"></div>
     </div>
-    <div class="allInfo" v-if="!fold"></div>
-  </div>
+
+    <!-- 完整信息区域 -->
+    <van-swipe class="infoPage col" v-if="!fold">
+      <van-swipe-item v-for="(page, index) in infoPage" :key="index">
+        <!-- 页名 -->
+        <div class="pageName">{{ page.pageName }}</div>
+      </van-swipe-item>
+    </van-swipe>
+    <!-- 左划删除 -->
+    <template #right v-if="!swipe">
+      <div class="delete">删除</div>
+    </template>
+  </van-swipe-cell>
 </template>
 
 <script>
@@ -28,7 +66,33 @@ export default {
       fold: true,
     };
   },
+  computed: {
+    infoPage() {
+      return {
+        trans: {
+          pageName: "传输信息",
+        },
+        tor: {
+          pageName: "种子信息",
+          added_on: this.added_on,
+        },
+        tracker: {
+          pageName: "Tracker",
+        },
+        user: {
+          pageName: "用户",
+        },
+        content: {
+          pageName: "内容",
+        },
+      };
+    },
+    ratio() {
+      return this.torrentInfo.ratio.toFixed(2);
+    },
+  },
   methods: {
+    //切换完整信息
     changeFold() {
       this.fold = !this.fold;
     },
@@ -41,54 +105,66 @@ export default {
   min-height: 180px;
   background-color: #fff;
   margin: 20px 10px;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid black;
   .base {
-    display: flex;
     .info {
-      display: flex;
-      flex-direction: column;
       flex-grow: 1;
       .name {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 30px;
-        width: 360px;
+        padding: 8px 0;
+        font-size: 32px;
+        width: 560px;
+        border-bottom: 1px solid black;
       }
       .baseInfo {
         flex-grow: 1;
-        background-color: #bfa;
-        display: flex;
         justify-content: space-between;
-        align-items: center;
         font-size: 26px;
-
-      }
-      .expandInfo{
-        flex-grow: 1;
-        background-color: rgb(151, 248, 175);
+        #text {
+          justify-content: space-between;
+          flex-grow: 1;
+          display: flex;
+          padding: 15px 0;
+          div {
+            width: 160px;
+            text-align: center;
+          }
+        }
       }
       .foldButton {
         height: 20px;
-        background-color: red;
-        border: none;
+        border-top: 1px solid black;
       }
     }
     .control {
       min-width: 30px;
       height: 180px;
-      background-color: red;
-    }
-    .delete {
-      min-width: 10px;
-      height: 180px;
-      background-color: red;
+      border-right: 1px solid black;
+      justify-content: center;
     }
   }
-  .allInfo {
-    height: 200px;
-    background-color: #bfa;
+  .delete {
+    width: 60px;
+    height: 100%;
+    border-left: 1px solid red;
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .infoPage {
+    height: 500px;
+    border-top: 1px solid black;
+    flex-grow: 1;
+    text-align: center;
+    .pageName{
+      line-height: 50px;
+      border-bottom:1px solid black;
+    }
   }
 }
 </style>

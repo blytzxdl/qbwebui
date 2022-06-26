@@ -79,10 +79,14 @@ Vue.use(Alert);
 
 
 
-import { Button,Swipe, SwipeItem } from 'vant';
+import { Button,Swipe, SwipeItem,Progress,Icon,SwipeCell,Search } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
 Vue.use(SwipeItem);
+Vue.use(Progress);
+Vue.use(Icon);
+Vue.use(SwipeCell);
+Vue.use(Search);
 import '@vant/touch-emulator';
 
 

@@ -29,7 +29,7 @@
         </el-form-item>
       </div>
       <div class="box2">
-        <el-button type="primary" @click="login()">提交</el-button>
+        <van-button @click="login()">提交</van-button>
       </div>
     </el-form>
     <el-alert title="登录失败" type="error" class="err" v-show="showError">

@@ -42,7 +42,7 @@ const state = {
     // peers: [],
     // files: [],
     // selection: [],
-    // transferInfo:{}
+    transferInfo:{}
 }
 const mutations = {
     GETITEM(state, itemInfo) {

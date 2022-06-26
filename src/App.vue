@@ -17,6 +17,13 @@ export default {
 html{
   font-size: 5.3333vw;
 }
+.row{
+  display: flex;
+}
+.col{
+  display: flex;
+  flex-direction: column;
+}
 /* ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
