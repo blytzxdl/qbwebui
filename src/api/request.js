@@ -3,8 +3,8 @@ import axios from 'axios';
 //配置项
 const requests = axios.create({
     baseURL:'/api',
+    //延长超时时间，改善低速网络环境的使用体验
     timeout:20000,
-
 })
 
 //请求拦截器

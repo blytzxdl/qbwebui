@@ -5,17 +5,17 @@
         <!-- 全局信息按钮 -->
         <van-icon name="bar-chart-o" class="globalBtn" @click="showGlobal" />
         <div class="globalDownload row">
-          <van-icon name="arrow-down" />{{ transferInfo.dl_info_speed }}/s
+          <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
           <!-- 下载速度限制，不为0时显示 -->
-          <div v-show="transferInfo.dl_rate_limit != '0 Bytes'">
-            [{{ transferInfo.dl_rate_limit }}/s]
+          <div v-show="globalInfo.dl_rate_limit != '0 Bytes'">
+            [{{ globalInfo.dl_rate_limit }}/s]
           </div>
         </div>
         <div class="globalUpload row">
-          <van-icon name="arrow-up" />{{ transferInfo.up_info_speed }}
+          <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}
           <!-- 上传速度限制，不为0时显示 -->
-          <div v-show="transferInfo.up_rate_limit != '0 Bytes'">
-            [{{ transferInfo.up_rate_limit }}/s]
+          <div v-show="globalInfo.up_rate_limit != '0 Bytes'">
+            [{{ globalInfo.up_rate_limit }}/s]
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
         class="my-swipe"
         :autoplay="0"
       >
-        <van-swipe-item v-for="(item, index) in downloading" :key="item.hash">
+        <van-swipe-item v-for="item in downloading" :key="item.hash">
           <Card :torrentInfo="item" :swipe="true" />
         </van-swipe-item>
       </van-swipe>
@@ -41,15 +41,16 @@
     <!-- 所有种子 -->
     <ul class="list" v-show="!global">
       <Card
-        v-show="index < showLength"
         v-for="(item, index) in itemInfo"
+        v-show="index < showNum"
         :key="item.hash"
         :torrentInfo="item"
+        :files='files'
       />
     </ul>
     <!-- 底部导航 -->
     <div class="bottom row" size="100%" v-show="!global">
-      <van-icon name="setting-o" class="setting" />
+      <van-icon name="add-o" class="setting" @click="sync" />
       <van-search
         v-model="search"
         show-action
@@ -74,15 +75,27 @@ export default {
   data() {
     return {
       global: false,
-      showLength: 40,
+      showFilter:'all',
+      showNum: 40,//卡片显示数量
       search: "",
     };
   },
   computed: {
     ...mapState({
       itemInfo: (state) => state.item.itemInfo,
+      globalInfo: (state) => state.item.globalInfo,
+      files: (state) => state.item.files,
+
     }),
-    ...mapGetters(["downloading", "transferInfo"]),
+    ...mapGetters(["downloading",'categories','tags','trackers']),
+    //筛选设置
+    showList(){
+      if (this.showFilter=='all') {
+        return this.itemInfo
+      }else if (this.showFilter!='all') {
+        // return this.itemInfo.filter(i=>i)
+      }
+    }
   },
   methods: {
     showGlobal() {
@@ -90,6 +103,9 @@ export default {
     },
     onSearch() {},
     onCancel() {},
+    sync(){
+      this.$store.dispatch("getMaindata");
+    }
   },
 };
 </script>

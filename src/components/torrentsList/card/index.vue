@@ -17,22 +17,21 @@
         <div class="baseInfo col">
           <div class="row" id="text">
             <div v-if="!swipe">{{ torrentInfo.state }}</div>
-            <div v-if="!swipe"><van-icon name="cluster-o" />{{ ratio }}</div>
+            <div v-if="!swipe"><van-icon name="cluster-o" />{{ torrentInfo.ratio }}</div>
             <div><van-icon name="apps-o" />{{ torrentInfo.category }}</div>
-            <div v-if="swipe"><van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}</div>
-            <div v-if="swipe"><van-icon name="arrow-up" />{{ torrentInfo.upspeed }}</div>
+            <div v-if="swipe">
+              <van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}
+            </div>
+            <div v-if="swipe">
+              <van-icon name="arrow-up" />{{ torrentInfo.upspeed }}
+            </div>
           </div>
           <van-progress
             v-if="swipe"
-            style="
-              flex-grow: 0;
-              padding: 0 2px;
-              position: relative;
-              bottom: 1px;
-            "
+            style="position: relative; bottom: 3px"
             :percentage="torrentInfo.progress"
             :show-pivot="false"
-            stroke-width="6"
+            stroke-width="2"
           />
         </div>
         <!-- 折叠按钮，切换完整信息 -->
@@ -48,6 +47,7 @@
       <van-swipe-item v-for="(page, index) in infoPage" :key="index">
         <!-- 页名 -->
         <div class="pageName">{{ page.pageName }}</div>
+        <!-- <el-tree :data="files"></el-tree> -->
       </van-swipe-item>
     </van-swipe>
     <!-- 左划删除 -->
@@ -60,7 +60,7 @@
 <script>
 export default {
   name: "Card",
-  props: ["torrentInfo", "swipe"],
+  props: ["torrentInfo", "swipe", "files"],
   data() {
     return {
       fold: true,
@@ -87,14 +87,12 @@ export default {
         },
       };
     },
-    ratio() {
-      return this.torrentInfo.ratio.toFixed(2);
-    },
   },
   methods: {
     //切换完整信息
     changeFold() {
       this.fold = !this.fold;
+      this.$store.dispatch("getFiles", this.torrentInfo.hash);
     },
   },
 };
@@ -161,9 +159,9 @@ export default {
     border-top: 1px solid black;
     flex-grow: 1;
     text-align: center;
-    .pageName{
+    .pageName {
       line-height: 50px;
-      border-bottom:1px solid black;
+      border-bottom: 1px solid black;
     }
   }
 }

@@ -3,8 +3,6 @@
 //遍历文件列表
 const trimPath = (path) => {
     
-
-
     let res = [{}]
     path.forEach((val, index, arr) => {
         let place = res

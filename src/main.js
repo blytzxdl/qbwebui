@@ -30,7 +30,7 @@ import {
   // Descriptions,
   // DescriptionsItem,
   // Tag,
-  // Tree,
+  Tree,
   Form,
   FormItem,
   Input,
@@ -38,8 +38,8 @@ import {
   // Dialog,
   // Option,
   // Switch,
-  Carousel,
-  CarouselItem,
+  // Carousel,
+  // CarouselItem,
 } from 'element-ui';
 // Vue.use(Container)
 // Vue.use(Header)
@@ -66,7 +66,7 @@ import {
 // Vue.use(DescriptionsItem);
 // Vue.use(Descriptions);
 // Vue.use(Tag);
-// Vue.use(Tree);
+Vue.use(Tree);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);

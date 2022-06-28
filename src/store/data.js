@@ -1,15 +1,15 @@
-import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete,reqCategories,reqTags} from '@/api/index';
-import dayjs from 'dayjs';
-import renderSize from '@/utils/renderSize';
-import trimPath from '@/utils/trimPath';
+import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqCategories, reqTags } from '@/api/index';
+import renderVal from '@/utils/renderVal';
+// import renderSize from '@/utils/renderSize';
+// import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
 import _ from 'lodash';
 const state = {
+    rid: 0,
     originalData: {},
     itemInfo: [],
-    rid: 0,
-    // categories:{},
-    // tags:[],
+    globalInfo: {},
+    files: [],
     // query: {
     //     filter: "all",
     //     category: "",
@@ -17,231 +17,95 @@ const state = {
     //     sort: "name",
     //     reverse: false,
     // },
-    byteFilter: [
-        'completed',
-        'downloaded',
-        'size',
-        "total_size",
-        "uploaded",
-        'dlspeed',
-        'upspeed',
-        'dl_limit',
-        'up_limit',
-        'up_info_speed',
-        'dl_info_speed',
-        'up_rate_limit',
-        'dl_rate_limit',
-        'dl_info_data',
-        'up_info_data'
-    ],
-    timeFilter: [
-        'completion_on'
-    ],
-    // trackers: [],
+
     // trackerStatus: ['已禁用', '未联系', '工作中', '更新中', '未工作'],
     // peers: [],
-    // files: [],
     // selection: [],
-    transferInfo:{}
 }
 const mutations = {
-    GETITEM(state, itemInfo) {
-        state.itemInfo = itemInfo
-    },
-    GETMAINDATA(state, originalData) {
-        let remove = originalData.torrents_removed
-        if (remove) {
-            remove.forEach((hash) => {
+    //处理主体数据
+    GETMAINDATA(state, newData) {
+        //处理删减
+        if (newData.torrents_removed) {
+            newData.torrents_removed.forEach((hash) => {
                 delete state.originalData.torrents[hash]
             })
-        } else if (originalData.full_update) {
-            state.originalData = originalData
+        } else if (newData.full_update) {//处理完全更新
+            state.originalData = {}
+            merger(state.originalData, newData)
         } else {
-            state.originalData = merger(state.originalData, originalData)
+            merger(state.originalData, newData)
         }
         state.rid += 1
     },
-    // CLEARQUERY(state) {
-    //     state.query = {
-    //         filter: "all",
-    //         category: "",
-    //         tag: "",
-    //         sort: "name",
-    //         reverse: false,
-    //     }
-    // },
-    // GETTRACKERS(state, tra) {
-    //     state.trackers = tra
-    // },
-    // GETPEERS(state, peers) {
-    //     state.peers = peers
-    // },
-    // GETFILES(state, files) {
-    //     state.files = files
-    // },
-    // SETSELECTION(state, sel) {
-    //     state.selection = sel
-    // },
-    // CLEARSELECTION(state, sel) {
-    //     state.selection = []
-    // },
-    // GETCATEGORIES(state,result){
-    //     state.categories=result
-    // },
-    // GETTAGS(state,result){
-    //     state.tags=result
-    // },
+    //存入种子列表
+    GETITEMINFO(state, itemInfo) {
+        state.itemInfo = Object.values(itemInfo)
+    },
+    //存入全局信息
+    GETGLOBALINFO(state, globalInfo) {
+        state.globalInfo = globalInfo
+    },
+    //存入当前种子内容
+    GETFILES(state, files) {
+        state.files=files
+    },
 }
 const actions = {
     //筛选种子数据
-    async getFil({ commit }) {
-        let { filter, category, tag, sort, reverse } = state.query
-        let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
-        commit('GETITEM', result)
-    },
+    // async getFil({ commit }) {
+    //     let { filter, category, tag, sort, reverse } = state.query
+    //     let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
+    //     commit('GETITEM', result)
+    // },
     //同步数据
     async getMaindata({ commit }) {
-        let result = await reqMaindata(state.rid)
-        commit('GETMAINDATA', result)
-        this.dispatch('fixItemInfo', state.originalData.torrents)
+        let res = await reqMaindata(state.rid)
+        commit('GETMAINDATA', res)
+        this.dispatch('getItemInfo')
     },
     //种子单位换算
-    fixItemInfo({ commit }, res) {
-        res = merger({}, res)
-        for (const hash in res) {
+    getItemInfo({ commit }) {
+        let res = JSON.parse(JSON.stringify(state.originalData.torrents))
+        for (let hash in res) {
             let ite = res[hash]
             ite.hash = hash
             for (const key in ite) {
-                //日期
-                if (state.timeFilter.includes(key)) {
-                    ite[key] = dayjs.unix(ite[key]).format('YYYY/MM/DD')
-                }
-                //字节
-                if (state.byteFilter.includes(key)) {
-                    if (ite[key] == -1) {
-                        ite[key] = '无限制'
-                    } else {
-                        ite[key] = renderSize(ite[key])
-                    }
-                }
+                ite[key] = renderVal(key, ite[key])
             }
-            //舍入
-            ite.progress = parseFloat(ite.progress * 100).toFixed(2)
         }
-        commit('GETITEM', Object.values(res))
+        commit('GETITEMINFO', res)
+        this.dispatch('getGlobalInfo')
     },
-    // //获取trackers
-    // async getTrackers(context, hash) {
-    //     let result = await reqTrackers(hash)
-    //     this.dispatch('fixTrackerStatus', result)
-    // },
-    // //trackers状态翻译
-    // fixTrackerStatus({ commit }, res) {
-    //     res.forEach((val) => {
-    //         val.status = state.trackerStatus[val.status]
-    //     })
-    //     commit('GETTRACKERS', res)
-    // },
-    // //获取用户
-    // async getPeers({ commit }, hash) {
-    //     let result = await reqPeers(hash)
-    //     result = result.peers
-    //     let res = []
-    //     for (let i in result) {
-    //         res.push(result[i])
-    //     }
-    //     res.forEach((val, ind) => {
-    //         val.progress = val.progress * 100 + '%'
-    //         val.relevance = val.relevance * 100 + '%'
-
-    //     })
-    //     commit('GETPEERS', res)
-    // },
-    // //获取种子内容
-    // async getFiles({ commit }, hash) {
-    //     let result = await reqFiles(hash)
-    //     let res = trimPath(result)
-    //     commit('GETFILES', res)
-    // },
-    // //清理筛选
-    // clearQuery({ commit }) {
-    //     commit('CLEARQUERY')
-    // },
-    // //设置筛选
-    // setQuery({ commit }, par) {
-    //     let { parName, parVal } = par
-    //     if (parName == 'category') {
-    //         if (parVal != '') {
-    //             parVal = '&category=' + parVal
-    //         }
-    //     } else if (parName == 'tag') {
-    //         if (parVal != '') {
-    //             parVal = '&tag=' + parVal
-    //         }
-    //     }
-    //     state.query[parName] = parVal
-    //     // console.log(state.query);
-    // },
-    // //储存选中项
-    // setSelection({ commit }, sel) {
-    //     let result = ''
-    //     sel.forEach((val, ind) => {
-    //         if (ind > 0) {
-    //             result += '|'
-    //         }
-    //         result += val.hash
-    //     })
-    //     commit('SETSELECTION', result)
-    // },
-    // //恢复下载
-    // async setResume({ commit }) {
-    //     let result = await reqResume(state.selection)
-    //     commit('CLEARSELECTION')
-    // },
-    // //暂停下载
-    // async setPause({ commit }) {
-    //     let result = await reqPause(state.selection)
-    //     commit('CLEARSELECTION')
-    // },
-    // //删除种子
-    // async setDelete({ commit }) {
-    //     let result = await reqDelete(state.selection)
-    //     commit('CLEARSELECTION')
-    // },
-    // //添加种子
-    // async addTorrents({ commit }, link) {
-    //     let par = Object.keys(link)
-    //     var forms = new FormData()
-    //     par.forEach((key) => {
-    //         forms.append(key, link[key])
-    //     })
-    //     // forms.append('path','C:\caches\bit')
-    //     let result = await reqAddTorrents(forms)
-    //     if (result == 'Fails.') {
-    //         return false
-    //     } else { return true }
-    // },
-    // async getCategories({commit}){
-    //     let result = await reqCategories()
-    //     commit('GETCATEGORIES',result)
-    // },
-    // async getTags({commit}){
-    //     let result = await reqTags()
-    //     commit('GETTAGS',result)
-    // },
+    //获取全局信息
+    getGlobalInfo({ commit }) {
+        let res = JSON.parse(JSON.stringify(state.originalData.server_state))
+        for (let key in res) {
+            res[key] = renderVal(key, res[key])
+        }
+        commit('GETGLOBALINFO', res)
+    },
+    //获取种子内容
+    async getFiles({ commit }, hash) {
+        // let res = trimPath(await reqFiles(hash))
+        // let res = await reqFiles(hash)
+        // commit('GETFILES', res)
+    },
 }
+
+
 const getters = {
-    transferInfo(state) {
-        let result = merger({}, state.originalData.server_state)
-        for (let key in result) {
-            if (state.byteFilter.includes(key)) {
-                result[key] = renderSize(result[key])
-            }
-        }
-        return result
+    downloading(state) {
+        return state.itemInfo.filter(i => i.state == 'downloading')
     },
-    downloading(state){
-        return state.itemInfo.filter(i=>i.state == 'downloading')
+    categories(state) {
+        return state.originalData.categories
+    },
+    tags(state) {
+        return state.originalData.tags
+    },
+    trackers(state) {
+        return state.originalData.trackers
     }
 }
 
