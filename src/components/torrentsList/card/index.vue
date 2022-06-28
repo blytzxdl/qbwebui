@@ -9,15 +9,24 @@
       </div>
       <!-- 信息区域 -->
       <div class="info col">
-        <!-- 名称 -->
-        <div class="name">
-          {{ torrentInfo.name }}
-        </div>
+        <!-- 滚动显示名称 -->
+        <van-notice-bar
+          :scrollable="scroll"
+          delay="3"
+          :text="torrentInfo.name"
+          color="#000"
+          background="transparent"
+          class="name"
+        >
+        </van-notice-bar>
+
         <!-- 基本信息，状态与分类 -->
         <div class="baseInfo col">
           <div class="row" id="text">
-            <div v-if="!swipe">{{ torrentInfo.state }}</div>
-            <div v-if="!swipe"><van-icon name="cluster-o" />{{ torrentInfo.ratio }}</div>
+            <div v-if="!swipe">{{ stateTrans[torrentInfo.state] }}</div>
+            <div v-if="!swipe">
+              <van-icon name="cluster-o" />{{ torrentInfo.ratio }}
+            </div>
             <div><van-icon name="apps-o" />{{ torrentInfo.category }}</div>
             <div v-if="swipe">
               <van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}
@@ -44,10 +53,21 @@
 
     <!-- 完整信息区域 -->
     <van-swipe class="infoPage col" v-if="!fold">
-      <van-swipe-item v-for="(page, index) in infoPage" :key="index">
-        <!-- 页名 -->
-        <div class="pageName">{{ page.pageName }}</div>
-        <!-- <el-tree :data="files"></el-tree> -->
+      <van-swipe-item class="col"
+        ><div class="pageName">传输信息</div>
+      </van-swipe-item>
+      <van-swipe-item class="col"
+        ><div class="pageName">种子信息</div></van-swipe-item
+      >
+      <van-swipe-item class="col"
+        ><div class="pageName">Tracker</div></van-swipe-item
+      >
+      <van-swipe-item class="col"
+        ><div class="pageName">用户</div></van-swipe-item
+      >
+      <van-swipe-item class="col"
+        ><div class="pageName">内容</div>
+        <el-tree :data="files"></el-tree>
       </van-swipe-item>
     </van-swipe>
     <!-- 左划删除 -->
@@ -60,33 +80,36 @@
 <script>
 export default {
   name: "Card",
-  props: ["torrentInfo", "swipe", "files"],
+  props: ["torrentInfo", "swipe", "files", "stateTrans",'infoTrans'],
   data() {
     return {
       fold: true,
     };
   },
   computed: {
-    infoPage() {
-      return {
-        trans: {
-          pageName: "传输信息",
-        },
-        tor: {
-          pageName: "种子信息",
-          added_on: this.added_on,
-        },
-        tracker: {
-          pageName: "Tracker",
-        },
-        user: {
-          pageName: "用户",
-        },
-        content: {
-          pageName: "内容",
-        },
-      };
+    scroll() {
+      return this.torrentInfo.name.length > 40 && this.fold;
     },
+    // infoPage() {
+    //   return {
+    //     trans: {
+    //       pageName: "传输信息",
+    //     },
+    //     tor: {
+    //       pageName: "种子信息",
+    //       added_on: this.added_on,
+    //     },
+    //     tracker: {
+    //       pageName: "Tracker",
+    //     },
+    //     user: {
+    //       pageName: "用户",
+    //     },
+    //     content: {
+    //       pageName: "内容",
+    //     },
+    //   };
+    // },
   },
   methods: {
     //切换完整信息
@@ -107,14 +130,14 @@ export default {
   .base {
     .info {
       flex-grow: 1;
-      .name {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 8px 0;
-        font-size: 32px;
+      /deep/.name {
+        padding: 4px 8px 2px 8px;
+        font-size: 80%;
         width: 560px;
         border-bottom: 1px solid black;
+        .van-ellipsis {
+          overflow: visible;
+        }
       }
       .baseInfo {
         flex-grow: 1;

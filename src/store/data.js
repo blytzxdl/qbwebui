@@ -1,7 +1,7 @@
 import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqCategories, reqTags } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 // import renderSize from '@/utils/renderSize';
-// import trimPath from '@/utils/trimPath';
+import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
 import _ from 'lodash';
 const state = {
@@ -87,9 +87,9 @@ const actions = {
     },
     //获取种子内容
     async getFiles({ commit }, hash) {
-        // let res = trimPath(await reqFiles(hash))
+        let res = trimPath(await reqFiles(hash))
         // let res = await reqFiles(hash)
-        // commit('GETFILES', res)
+        commit('GETFILES', res)
     },
 }
 

@@ -45,7 +45,9 @@
         v-show="index < showNum"
         :key="item.hash"
         :torrentInfo="item"
-        :files='files'
+        :files="files"
+        :stateTrans='translation.torrentState'
+        :infoTrans='translation.info'
       />
     </ul>
     <!-- 底部导航 -->
@@ -65,6 +67,7 @@
 </template>
 
 <script>
+import tra from "../../utils/translation.json";
 import Card from "./card/index.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
@@ -75,9 +78,11 @@ export default {
   data() {
     return {
       global: false,
-      showFilter:'all',
-      showNum: 40,//卡片显示数量
+      showFilter: "all",
+      showNum: 40, //卡片显示数量
       search: "",
+      language: "chs",
+      tra,
     };
   },
   computed: {
@@ -85,17 +90,17 @@ export default {
       itemInfo: (state) => state.item.itemInfo,
       globalInfo: (state) => state.item.globalInfo,
       files: (state) => state.item.files,
-
     }),
-    ...mapGetters(["downloading",'categories','tags','trackers']),
+    ...mapGetters(["downloading", "categories", "tags", "trackers"]),
     //筛选设置
-    showList(){
-      if (this.showFilter=='all') {
-        return this.itemInfo
-      }else if (this.showFilter!='all') {
+    showList() {
+      if (this.showFilter == "all") {
+        return this.itemInfo;
+      } else if (this.showFilter != "all") {
         // return this.itemInfo.filter(i=>i)
       }
-    }
+    },
+      translation(){return this.tra[this.language]},
   },
   methods: {
     showGlobal() {
@@ -103,9 +108,9 @@ export default {
     },
     onSearch() {},
     onCancel() {},
-    sync(){
+    sync() {
       this.$store.dispatch("getMaindata");
-    }
+    },
   },
 };
 </script>

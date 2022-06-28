@@ -31,7 +31,7 @@ import {
   // DescriptionsItem,
   // Tag,
   Tree,
-  Form,
+  // Form,
   FormItem,
   Input,
   Alert,
@@ -67,7 +67,7 @@ import {
 // Vue.use(Descriptions);
 // Vue.use(Tag);
 Vue.use(Tree);
-Vue.use(Form);
+// Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Alert);
@@ -79,7 +79,7 @@ Vue.use(Alert);
 
 
 
-import { Button,Swipe, SwipeItem,Progress,Icon,SwipeCell,Search } from 'vant';
+import { Button, Swipe, SwipeItem, Progress, Icon, SwipeCell, Search, Tab, Tabs, NoticeBar, Form, Field } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
 Vue.use(SwipeItem);
@@ -87,6 +87,11 @@ Vue.use(Progress);
 Vue.use(Icon);
 Vue.use(SwipeCell);
 Vue.use(Search);
+Vue.use(Tab);
+Vue.use(Tabs);
+Vue.use(NoticeBar);
+Vue.use(Form);
+Vue.use(Field);
 import '@vant/touch-emulator';
 
 

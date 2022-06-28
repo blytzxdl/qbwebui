@@ -1,39 +1,33 @@
 <template>
   <div class="login">
-    <el-form
-      :model="userInfo"
-      status-icon
-      ref="userInfo"
-      label-width="60px"
-      class="form"
-    >
-      <div class="logo">
-        <img src="../assets/favicon-32x32.png" />
-        <div>qBittorrent</div>
-      </div>
-      <div class="box1">
-        <el-form-item label="用户名" prop="userName">
-          <el-input
-            v-model="userInfo.userName"
-            autocomplete="off"
-            class="input"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input
-            v-model="userInfo.password"
-            autocomplete="off"
-            type="password"
-            class="input"
-          ></el-input>
-        </el-form-item>
-      </div>
-      <div class="box2">
-        <van-button @click="login()">提交</van-button>
-      </div>
-    </el-form>
-    <el-alert title="登录失败" type="error" class="err" v-show="showError">
-    </el-alert>
+    <div class="logo">
+      <img src="../assets/favicon-32x32.png" />
+      <div>qBittorrent</div>
+    </div>
+    <div class="box1">
+      <van-form @submit="onSubmit">
+        <van-field
+          v-model="userName"
+          name="userName"
+          label="用户名"
+          placeholder="用户名"
+          :rules="[{ required: true, message: '请填写用户名' }]"
+        />
+        <van-field
+          v-model="password"
+          type="password"
+          name="password"
+          label="密码"
+          placeholder="密码"
+          :rules="[{ required: true, message: '请填写密码' }]"
+        />
+        <div style="margin: 16px">
+          <van-button round block type="info" native-type="submit"
+            >提交</van-button
+          >
+        </div>
+      </van-form>
+    </div>
   </div>
 </template>
 
@@ -43,15 +37,15 @@ export default {
   name: "login",
   data() {
     return {
-      userInfo: {
+
         userName: "",
         password: "",
-      },
+
     };
   },
   methods: {
-    login() {
-      this.$store.dispatch("login", this.userInfo);
+    onSubmit(values) {
+      this.$store.dispatch("login", values);
     },
   },
   mounted() {},
