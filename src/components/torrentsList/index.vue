@@ -46,8 +46,9 @@
         :key="item.hash"
         :torrentInfo="item"
         :files="files"
-        :stateTrans='translation.torrentState'
-        :infoTrans='translation.info'
+        :stateTrans="translation.torrentState"
+        :infoTrans="translation.info"
+        :infoCell='infoCell'
       />
     </ul>
     <!-- 底部导航 -->
@@ -83,6 +84,56 @@ export default {
       search: "",
       language: "chs",
       tra,
+      infoCell: [
+        "added_on",
+        "amount_left",
+        "auto_tmm",
+        "availability",
+        "category",
+        "completed",
+        "completion_on",
+        "content_path",
+        "dl_limit",
+        "dlspeed",
+        "download_path",
+        "downloaded",
+        "downloaded_session",
+        "eta",
+        "f_l_piece_prio",
+        "force_start",
+        "infohash_v1",
+        "infohash_v2",
+        "last_activity",
+        "magnet_uri",
+        "max_ratio",
+        "max_seeding_time",
+        "name",
+        "num_complete",
+        "num_incomplete",
+        "num_leechs",
+        "num_seeds",
+        "priority",
+        "progress",
+        "ratio",
+        "ratio_limit",
+        "save_path",
+        "seeding_time",
+        "seeding_time_limit",
+        "seen_complete",
+        "seq_dl",
+        "size",
+        "state",
+        "super_seeding",
+        "tags",
+        "time_active",
+        "total_size",
+        "tracker",
+        "trackers_count",
+        "up_limit",
+        "uploaded",
+        "uploaded_session",
+        "upspeed",
+      ],
     };
   },
   computed: {
@@ -100,7 +151,9 @@ export default {
         // return this.itemInfo.filter(i=>i)
       }
     },
-      translation(){return this.tra[this.language]},
+    translation() {
+      return this.tra[this.language];
+    },
   },
   methods: {
     showGlobal() {

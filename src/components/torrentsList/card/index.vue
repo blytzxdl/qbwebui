@@ -54,11 +54,29 @@
     <!-- 完整信息区域 -->
     <van-swipe class="infoPage col" v-if="!fold">
       <van-swipe-item class="col"
-        ><div class="pageName">传输信息</div>
+        ><div class="pageName">信息</div>
+        <van-cell-group class="cellList col" :border="false">
+          <van-cell
+            class="infoCell"
+            v-for="(cell, index) in infoCell"
+            :key="index"
+            :title="infoTrans[cell]"
+            :border="true"
+          >
+            {{ filterLink(cell) }}
+            <!-- <template  #right-icon > -->
+            <van-icon
+              v-if="isLink(cell)"
+              name="eye-o"
+              @click="copyLink(torrentInfo[cell])"
+            />
+            <!-- </template> -->
+          </van-cell>
+        </van-cell-group>
       </van-swipe-item>
-      <van-swipe-item class="col"
+      <!-- <van-swipe-item class="col"
         ><div class="pageName">种子信息</div></van-swipe-item
-      >
+      > -->
       <van-swipe-item class="col"
         ><div class="pageName">Tracker</div></van-swipe-item
       >
@@ -71,8 +89,8 @@
       </van-swipe-item>
     </van-swipe>
     <!-- 左划删除 -->
-    <template #right v-if="!swipe">
-      <div class="delete">删除</div>
+    <template #right>
+      <div class="delete" v-if="!swipe">删除</div>
     </template>
   </van-swipe-cell>
 </template>
@@ -80,7 +98,14 @@
 <script>
 export default {
   name: "Card",
-  props: ["torrentInfo", "swipe", "files", "stateTrans",'infoTrans'],
+  props: [
+    "torrentInfo",
+    "swipe",
+    "files",
+    "stateTrans",
+    "infoTrans",
+    "infoCell",
+  ],
   data() {
     return {
       fold: true,
@@ -116,6 +141,22 @@ export default {
     changeFold() {
       this.fold = !this.fold;
       this.$store.dispatch("getFiles", this.torrentInfo.hash);
+    },
+    filterLink(val) {
+      if (this.isLink(val)) {
+        return null;
+      } else {
+        return this.torrentInfo[val].toString();
+      }
+    },
+    isLink(val) {
+      if (val == "infohash_v1" || val == "infohash_v2" || val == "magnet_uri") {
+        return true;
+      }
+      return null;
+    },
+    copyLink(val) {
+      console.log(val);
     },
   },
 };
@@ -183,8 +224,24 @@ export default {
     flex-grow: 1;
     text-align: center;
     .pageName {
-      line-height: 50px;
+      line-height: 1.5;
       border-bottom: 1px solid black;
+    }
+    .cellList {
+      overflow: scroll;
+      margin: 0 10px;
+      .infoCell {
+        font-size: 32px;
+      }
+      /deep/ .van-cell {
+        overflow: visible;
+        line-height: 1.5;
+        justify-content: space-between;
+        // border-bottom: 1px solid black;
+        .van-cell__title {
+          max-width: 200px;
+        }
+      }
     }
   }
 }
