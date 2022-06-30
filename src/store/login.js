@@ -20,7 +20,7 @@ const actions = {
         if (result == 'Fails.') {
             commit('SHOWERROR')
         }else if (result== 'Ok.') {
-            router.push('/Home')         
+            router.push('/home')         
         }      
     }
 

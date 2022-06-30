@@ -65,6 +65,7 @@
             "errored": "错误"
         },
         "torrentState": {
+            "downloading":"下载",
             "error": "错误",
             "missingFiles": "文件丢失",
             "uploading": "做种",

@@ -76,8 +76,8 @@ export const reqAddTorrents = (link) => requests({
     data:link,
 })
 
-export const reqDelete = (hash) => requests({
+export const reqDelete = (hash,all) => requests({
     method: 'post',
     url: '/v2/torrents/delete',
-    data:`hashes=${hash}&deleteFiles=true`,
+    data:`hashes=${hash}&deleteFiles=${all}`,
 })

@@ -10,6 +10,8 @@ const state = {
     itemInfo: [],
     globalInfo: {},
     files: [],
+    deleteName: "",
+    checkedHash:'',
     // query: {
     //     filter: "all",
     //     category: "",
@@ -48,8 +50,19 @@ const mutations = {
     },
     //存入当前种子内容
     GETFILES(state, files) {
-        state.files=files
+        state.files = files
     },
+    //弹窗确认删除
+    QUERYDELETE(state,val){
+        let {name,hash} = val
+        state.deleteName=name
+        state.checkedHash=hash
+    },
+    //取消删除
+    CANCELDELETE(){
+        state.deleteName=''
+        state.checkedHash=''
+    }
 }
 const actions = {
     //筛选种子数据
@@ -90,6 +103,18 @@ const actions = {
         let res = trimPath(await reqFiles(hash))
         // let res = await reqFiles(hash)
         commit('GETFILES', res)
+    },
+    //删除种子
+    async deleteTorrent({ state }, all) {
+        let result = await reqDelete(state.checkedHash,all)
+    },
+        //恢复下载
+    async setResume({ commit },hash) {
+        await reqResume(hash)
+    },
+    //暂停下载
+    async setPause({ commit },hash) {
+        await reqPause(hash)
     },
 }
 

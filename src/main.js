@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router';
 import store from './store';
+import VueClipboard from 'vue-clipboard2';
 
+Vue.use(VueClipboard)
 
 import {
   // Button,
@@ -18,8 +20,8 @@ import {
   // Row,
   // MenuItemGroup,
   // Col,
-  // Table,
-  // TableColumn,
+  Table,
+  TableColumn,
   // Radio,
   // RadioGroup,
   // RadioButton,
@@ -54,8 +56,8 @@ import {
 // Vue.use(Row)
 // Vue.use(MenuItemGroup)
 // Vue.use(Col)
-// Vue.use(Table)
-// Vue.use(TableColumn)
+Vue.use(Table)
+Vue.use(TableColumn)
 // Vue.use(Radio)
 // Vue.use(RadioGroup)
 // Vue.use(RadioButton)
@@ -93,7 +95,11 @@ import {
   Form, 
   Field, 
   Cell, 
-  CellGroup
+  CellGroup,
+  Toast,
+  List,
+  Dialog,
+  Checkbox
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -109,6 +115,12 @@ Vue.use(Form);
 Vue.use(Field);
 Vue.use(Cell);
 Vue.use(CellGroup);
+Vue.use(Toast);
+Vue.use(List);
+Vue.use(Dialog);
+Vue.use(Checkbox);
+
+
 import '@vant/touch-emulator';
 
 

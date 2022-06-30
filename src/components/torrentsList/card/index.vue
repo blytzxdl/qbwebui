@@ -4,8 +4,16 @@
     <div class="base row">
       <!-- 开始/暂停按钮 -->
       <div class="control col">
-        <van-icon name="pause-circle-o" v-if="swipe" />
-        <van-icon name="play-circle-o" v-if="!swipe" />
+        <van-icon
+          name="pause-circle-o"
+          v-if="torrentInfo.state == 'downloading'"
+          @click="pauseTorrent"
+        />
+        <van-icon
+          name="play-circle-o"
+          v-if="torrentInfo.state != 'downloading'"
+          @click="startTorrent"
+        />
       </div>
       <!-- 信息区域 -->
       <div class="info col">
@@ -35,6 +43,7 @@
               <van-icon name="arrow-up" />{{ torrentInfo.upspeed }}
             </div>
           </div>
+          <!-- 进度条 -->
           <van-progress
             v-if="swipe"
             style="position: relative; bottom: 3px"
@@ -56,6 +65,7 @@
       <van-swipe-item class="col"
         ><div class="pageName">信息</div>
         <van-cell-group class="cellList col" :border="false">
+          <!-- 将基本信息以单元格显示，hash与磁力链接以图标显示，点击复制 -->
           <van-cell
             class="infoCell"
             v-for="(cell, index) in infoCell"
@@ -64,7 +74,6 @@
             :border="true"
           >
             {{ filterLink(cell) }}
-            <!-- <template  #right-icon > -->
             <van-icon
               v-if="isLink(cell)"
               name="eye-o"
@@ -76,13 +85,24 @@
       </van-swipe-item>
       <!-- <van-swipe-item class="col"
         ><div class="pageName">种子信息</div></van-swipe-item
-      > -->
-      <van-swipe-item class="col"
-        ><div class="pageName">Tracker</div></van-swipe-item
       >
+      <van-swipe-item class="col"
+        ><div class="pageName">Tracker</div>
+        <el-table :data="trackerData">
+          <el-table-column prop="tier" label="层级" width="50">
+          </el-table-column>
+          <el-table-column prop="url" label="URL"> </el-table-column>
+          <el-table-column prop="status" label="状态"> </el-table-column>
+          <el-table-column prop="num_peers" label="用户"> </el-table-column>
+          <el-table-column prop="num_peers" label="做种"> </el-table-column>
+          <el-table-column prop="num_leeches" label="下载"> </el-table-column>
+          <el-table-column prop="num_downloaded" label="完成"></el-table-column>
+          <el-table-column prop="msg" label="消息">
+          </el-table-column> </el-table
+      ></van-swipe-item>
       <van-swipe-item class="col"
         ><div class="pageName">用户</div></van-swipe-item
-      >
+      > -->
       <van-swipe-item class="col"
         ><div class="pageName">内容</div>
         <el-tree :data="files"></el-tree>
@@ -90,12 +110,14 @@
     </van-swipe>
     <!-- 左划删除 -->
     <template #right>
-      <div class="delete" v-if="!swipe">删除</div>
+      <div class="delete" v-if="!swipe" @click="deleteTorrent">删除</div>
     </template>
   </van-swipe-cell>
 </template>
 
 <script>
+import { Toast } from "vant";
+import { Dialog } from "vant";
 export default {
   name: "Card",
   props: [
@@ -109,6 +131,7 @@ export default {
   data() {
     return {
       fold: true,
+      trackerData: [],
     };
   },
   computed: {
@@ -156,7 +179,22 @@ export default {
       return null;
     },
     copyLink(val) {
-      console.log(val);
+      this.$copyText(val);
+      Toast(`已复制到剪贴板`);
+    },
+    deleteTorrent() {
+      this.$bus.$emit("queryDelete");
+      this.$store.commit("QUERYDELETE", {
+        name: this.torrentInfo.name,
+        hash: this.torrentInfo.hash,
+      });
+      // this.$store.dispatch('deleteTorrent',this.torrentInfo.hash)
+    },
+    startTorrent() {
+      this.$store.dispatch("setResume", this.torrentInfo.hash);
+    },
+    pauseTorrent() {
+      this.$store.dispatch("setPause", this.torrentInfo.hash);
     },
   },
 };
@@ -190,7 +228,7 @@ export default {
           display: flex;
           padding: 15px 0;
           div {
-            width: 160px;
+            width: 200px;
             text-align: center;
           }
         }
@@ -223,6 +261,9 @@ export default {
     border-top: 1px solid black;
     flex-grow: 1;
     text-align: center;
+    div {
+      overflow: scroll;
+    }
     .pageName {
       line-height: 1.5;
       border-bottom: 1px solid black;

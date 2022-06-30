@@ -38,8 +38,16 @@
         </van-swipe-item>
       </van-swipe>
     </div>
-    <!-- 所有种子 -->
-    <ul class="list" v-show="!global">
+    <!-- 所有种子,无限滚动 -->
+    <van-list
+      class="list"
+      v-show="!global"
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+      :immediate-check='false'
+    >
       <Card
         v-for="(item, index) in itemInfo"
         v-show="index < showNum"
@@ -48,9 +56,10 @@
         :files="files"
         :stateTrans="translation.torrentState"
         :infoTrans="translation.info"
-        :infoCell='infoCell'
+        :infoCell="infoCell"
+
       />
-    </ul>
+    </van-list>
     <!-- 底部导航 -->
     <div class="bottom row" size="100%" v-show="!global">
       <van-icon name="add-o" class="setting" @click="sync" />
@@ -78,6 +87,8 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      finished: false,
       global: false,
       showFilter: "all",
       showNum: 40, //卡片显示数量
@@ -163,6 +174,17 @@ export default {
     onCancel() {},
     sync() {
       this.$store.dispatch("getMaindata");
+    },
+    onLoad() {
+        setTimeout(() => {
+        this.showNum+=20
+        // 加载状态结束
+        this.loading = false;
+        // 数据全部加载完成
+        if (this.showNum >= this.itemInfo.length) {
+          this.finished = true;
+        }
+              }, 300);
     },
   },
 };
