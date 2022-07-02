@@ -116,6 +116,19 @@ const actions = {
     async setPause({ commit },hash) {
         await reqPause(hash)
     },
+        //添加种子
+    async addTorrents({ commit }, link) {
+        let par = Object.keys(link)
+        var forms = new FormData()
+        par.forEach((key) => {
+            forms.append(key, link[key])
+        })
+        console.log(forms);
+        let result = await reqAddTorrents(forms)
+        if (result == 'Fails.') {
+            return false
+        } else { return true }
+    },
 }
 
 

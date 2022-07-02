@@ -46,6 +46,7 @@ export default {
     }
   }
   .van-dialog__footer {
+    height: 30px;
     flex-grow: 1;
     align-items: center;
     border-top: 1px solid black;
@@ -60,5 +61,52 @@ export default {
 }
 .overlay {
   background-color: rgba(255, 255, 255, 0.5);
+}
+.addDialog {
+  height: auto;
+  min-height: 800px;
+  max-height: 1400px;
+  .van-dialog__content {
+    text-align: left;
+    display: flex;
+    .cell {
+      margin: 10px 0;
+      width: 600px;
+      font-size: 36px;
+      display: flex;
+      justify-content: space-between;
+      flex-grow: 1;
+      align-items: center;
+      padding: 0 20px;
+      .option {
+        margin-left: 20px;
+      }
+      .content {
+        width: 400px;
+        margin-right: 10px;
+        display: flex;
+        justify-content: flex-end;
+        .van-cell,
+        .van-field {
+          border: 1px solid black;
+          min-height: 64px;
+          max-height: 600px;
+          overflow: scroll;
+        }
+        .el-select {
+          width: 100%;
+          .el-input {
+            .el-input__inner {
+              height: 60px;
+              font-size: 30px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.el-select-dropdown__item {
+  font-size: 30px;
 }
 </style>

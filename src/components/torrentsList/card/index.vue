@@ -73,7 +73,6 @@
               name="eye-o"
               @click="copyLink(torrentInfo[cell])"
             />
-            <!-- </template> -->
           </van-cell>
         </van-cell-group>
       </van-swipe-item>
@@ -129,9 +128,11 @@ export default {
     };
   },
   computed: {
+    //是否滚动显示名称
     scroll() {
       return this.torrentInfo.name.length > 40 && this.fold;
     },
+    //图标及对应操作
     icon() {
       let dispatch = this.$store.dispatch;
       let hash = this.torrentInfo.hash;
@@ -167,26 +168,6 @@ export default {
         unknown: { show: "more-o", click: null },
       };
     },
-    // infoPage() {
-    //   return {
-    //     trans: {
-    //       pageName: "传输信息",
-    //     },
-    //     tor: {
-    //       pageName: "种子信息",
-    //       added_on: this.added_on,
-    //     },
-    //     tracker: {
-    //       pageName: "Tracker",
-    //     },
-    //     user: {
-    //       pageName: "用户",
-    //     },
-    //     content: {
-    //       pageName: "内容",
-    //     },
-    //   };
-    // },
   },
   methods: {
     //切换完整信息
@@ -194,6 +175,7 @@ export default {
       this.fold = !this.fold;
       this.$store.dispatch("getFiles", this.torrentInfo.hash);
     },
+    //过滤hash及磁链
     filterLink(val) {
       if (this.isLink(val)) {
         return null;
@@ -201,16 +183,19 @@ export default {
         return this.torrentInfo[val].toString();
       }
     },
+    //判断hash及磁链
     isLink(val) {
       if (val == "infohash_v1" || val == "infohash_v2" || val == "magnet_uri") {
         return true;
       }
       return null;
     },
+    //复制hash及磁链
     copyLink(val) {
       this.$copyText(val);
       Toast(`已复制到剪贴板`);
     },
+    //删除种子
     deleteTorrent() {
       this.$bus.$emit("queryDelete");
       this.$store.commit("QUERYDELETE", {
@@ -219,14 +204,13 @@ export default {
       });
       // this.$store.dispatch('deleteTorrent',this.torrentInfo.hash)
     },
+    //开始种子
     startTorrent() {
       this.$store.dispatch("setResume", this.torrentInfo.hash);
     },
+    //暂停种子
     pauseTorrent() {
       this.$store.dispatch("setPause", this.torrentInfo.hash);
-    },
-    dispatchClick(name) {
-      this.$store.dispatch(name, this.torrentInfo.hash);
     },
   },
 };

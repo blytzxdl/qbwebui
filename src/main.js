@@ -8,7 +8,7 @@ Vue.use(VueClipboard)
 
 import {
   // Button,
-  // Select,
+  Select,
   // Container,
   // Header,
   // Aside,
@@ -38,7 +38,7 @@ import {
   Input,
   Alert,
   // Dialog,
-  // Option,
+  Option,
   // Switch,
   // Carousel,
   // CarouselItem,
@@ -49,7 +49,7 @@ import {
 // Vue.use(Main)
 // Vue.use(Footer)
 // Vue.use(Button)
-// Vue.use(Select)
+Vue.use(Select)
 // Vue.use(Menu)
 // Vue.use(Submenu)
 // Vue.use(MenuItem)
@@ -74,7 +74,7 @@ Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Alert);
 // Vue.use(Dialog);
-// Vue.use(Option);
+Vue.use(Option);
 // Vue.use(Switch);
 // Vue.use(Carousel);
 // Vue.use(CarouselItem);
@@ -96,10 +96,11 @@ import {
   Field, 
   Cell, 
   CellGroup,
-  Toast,
+  // Toast,
   List,
   Dialog,
-  Checkbox
+  Checkbox,
+  Switch 
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -115,10 +116,12 @@ Vue.use(Form);
 Vue.use(Field);
 Vue.use(Cell);
 Vue.use(CellGroup);
-Vue.use(Toast);
+// Vue.use(Toast);
 Vue.use(List);
 Vue.use(Dialog);
 Vue.use(Checkbox);
+Vue.use(Switch);
+
 
 
 import '@vant/touch-emulator';

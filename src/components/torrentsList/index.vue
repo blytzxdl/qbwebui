@@ -70,7 +70,7 @@
     </van-list>
     <!-- 底部导航 -->
     <div class="bottom row" size="100%" v-show="!global">
-      <van-icon name="add-o" class="setting" @click="sync" />
+      <van-icon name="add-o" class="setting" @click="queryAdd" />
       <van-search
         v-model="search"
         show-action
@@ -94,6 +94,96 @@
         >同时删除文件</van-checkbox
       >
     </van-dialog>
+    <!-- 添加种子弹窗 -->
+    <van-dialog
+      v-model="addTorrents"
+      :showCancelButton="true"
+      class="addDialog"
+      overlay-class="overlay"
+      get-container="body"
+      @confirm="confirmAdd"
+      @cancel="cancelAdd"
+    >
+      <div class="cell">
+        <div class="option">种子链接</div>
+        <div class="content">
+          <van-field
+            v-model="newTorrents.urls"
+            rows="1"
+            autosize
+            type="textarea"
+            placeholder="请输入链接，换行分隔"
+          />
+        </div>
+      </div>
+      <div class="cell">
+        <div class="option">自动管理</div>
+        <div class="content">
+          <van-switch v-model="newTorrents.autoTMM" size="20" />
+        </div>
+      </div>
+      <div class="cell">
+        <div class="option">分类</div>
+        <div class="content">
+          <el-select
+            v-model="newTorrents.category"
+            filterable
+            allow-create
+            placeholder="输入以新建"
+          >
+            <el-option
+              v-for="cate in categories"
+              :key="cate.name"
+              :label="cate.name"
+              :value="cate.name"
+            ></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="option">标签</div>
+        <div class="content">
+          <el-select
+            v-model="newTorrents.tags"
+            filterable
+            allow-create
+            placeholder="输入以新建"
+          >
+            <el-option
+              v-for="cate in tags"
+              :key="cate"
+              :label="cate"
+              :value="cate"
+            ></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="option">保存路径</div>
+        <div class="content">
+          <el-select
+            v-model="newTorrents.savepath"
+            filterable
+            allow-create
+            :disabled="newTorrents.autoTMM"
+            placeholder="C:/xxx"
+          >
+            <el-option
+              v-for="cate in tags"
+              :key="cate"
+              :label="tags[cate]"
+              :value="tags[cate]"
+            ></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="option">延迟下载</div>
+        <div class="content">
+          <van-switch v-model="newTorrents.paused" size="20" />
+        </div>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -101,6 +191,7 @@
 import tra from "../../utils/translation.json";
 import Card from "./card/index.vue";
 import { mapState, mapGetters } from "vuex";
+import { Toast } from 'vant'
 export default {
   name: "torrentsList",
   components: {
@@ -168,6 +259,15 @@ export default {
       ],
       deleteFiles: false,
       confirmDelete: false,
+      addTorrents: false,
+      newTorrents: {
+        urls: "",
+        autoTMM: true,
+        category: "",
+        tags: "",
+        savepath: "",
+        paused: true,
+      },
     };
   },
   computed: {
@@ -196,6 +296,12 @@ export default {
         return "green";
       } else {
         return "red";
+      }
+    },
+    selectPath() {
+      if (this.newTorrents.category && this.newTorrents.autoTMM) {
+        this.newTorrents.savepath =
+          this.categories[this.newTorrents.category].savePath;
       }
     },
   },
@@ -227,6 +333,31 @@ export default {
     },
     cancelDelete() {
       this.confirmDelete = false;
+    },
+    queryAdd() {
+      this.addTorrents = true;
+    },
+    confirmAdd() {
+      let result = this.$store.dispatch("addTorrents", this.newTorrents);
+      result.then((result) => {
+        if (result) {
+          this.newTorrents.urls = "";
+          this.newTorrents.category = "";
+          this.newTorrents.savepath = "";
+        } else {
+          Toast.fail('添加失败')
+          // Notification.error({
+          //   title: "添加失败",
+          //   message: "请检查输入项",
+          //   duration: 3000,
+          // });
+        }
+      });
+    },
+    cancelAdd() {
+      this.newTorrents.urls = "";
+      this.newTorrents.category = "";
+      this.newTorrents.savepath = "";
     },
   },
   mounted() {
@@ -291,7 +422,6 @@ export default {
     align-items: center;
     .setting {
       font-size: 62px;
-      // border: 1px solid black;
     }
     .search {
       width: 650px;
