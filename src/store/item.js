@@ -207,7 +207,7 @@ const actions = {
         par.forEach((key) => {
             forms.append(key, link[key])
         })
-        // forms.append('path','C:\caches\bit')
+
         let result = await reqAddTorrents(forms)
         if (result == 'Fails.') {
             return false

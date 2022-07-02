@@ -152,7 +152,6 @@ export default {
         });
     },
     submitForm() {
-      this.form.savepath = "C:/caches/bit";
       let result = this.$store.dispatch("addTorrents", this.form);
       result.then((result) => {
         if (result) {
