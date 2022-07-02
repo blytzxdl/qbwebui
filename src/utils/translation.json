@@ -78,7 +78,7 @@
             "metaDL": "下载元数据",
             "pausedDL": "暂停",
             "queuedDL": "排队",
-            "stalledDL": "暂停",
+            "stalledDL": "等待",
             "checkingDL": "检查",
             "forcedDL": "强制下载",
             "checkingResumeData": "校验数据",

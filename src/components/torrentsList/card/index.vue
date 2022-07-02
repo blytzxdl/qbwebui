@@ -5,14 +5,8 @@
       <!-- 开始/暂停按钮 -->
       <div class="control col">
         <van-icon
-          name="pause-circle-o"
-          v-if="torrentInfo.state == 'downloading'"
-          @click="pauseTorrent"
-        />
-        <van-icon
-          name="play-circle-o"
-          v-if="torrentInfo.state != 'downloading'"
-          @click="startTorrent"
+          :name="icon[torrentInfo.state].show"
+          @click="icon[torrentInfo.state].click()"
         />
       </div>
       <!-- 信息区域 -->
@@ -117,7 +111,6 @@
 
 <script>
 import { Toast } from "vant";
-import { Dialog } from "vant";
 export default {
   name: "Card",
   props: [
@@ -137,6 +130,41 @@ export default {
   computed: {
     scroll() {
       return this.torrentInfo.name.length > 40 && this.fold;
+    },
+    icon() {
+      let dispatch = this.$store.dispatch;
+      let hash = this.torrentInfo.hash;
+      return {
+        downloading: {
+          show: "pause-circle-o",
+          click: () => {
+            dispatch("setPause", hash);
+          },
+        },
+        pausedDL: {
+          show: "play-circle-o",
+          click() {
+            dispatch("setResume", hash);
+          },
+        },
+        error: { show: "warning-o", click: null },
+        missingFiles: { show: "warning-o", click: null },
+        uploading: { show: "upgrade", click: null },
+        pausedUP: { show: "more-o", click: null },
+        queuedUP: { show: "more-o", click: null },
+        stalledUP: { show: "upgrade", click: null },
+        checkingUP: { show: "more-o", click: null },
+        forcedUP: { show: "upgrade", click: null },
+        allocating: { show: "more-o", click: null },
+        metaDL: { show: "more-o", click: null },
+        queuedDL: { show: "more-o", click: null },
+        stalledDL: { show: "more-o", click: null },
+        checkingDL: { show: "more-o", click: null },
+        forcedDL: { show: "more-o", click: null },
+        checkingResumeData: { show: "more-o", click: null },
+        moving: { show: "more-o", click: null },
+        unknown: { show: "more-o", click: null },
+      };
     },
     // infoPage() {
     //   return {
@@ -195,6 +223,9 @@ export default {
     },
     pauseTorrent() {
       this.$store.dispatch("setPause", this.torrentInfo.hash);
+    },
+    dispatchClick(name) {
+      this.$store.dispatch(name, this.torrentInfo.hash);
     },
   },
 };
