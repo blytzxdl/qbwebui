@@ -84,6 +84,9 @@
             "checkingResumeData": "校验数据",
             "moving": "移动中",
             "unknown": "未知"
+        },
+        "connectState":{
+            "connected":"已连接"
         }
     }
 }

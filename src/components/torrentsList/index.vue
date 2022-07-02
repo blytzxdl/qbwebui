@@ -1,21 +1,30 @@
 <template>
   <div class="main">
+    <!-- 全局信息栏 -->
     <div class="top col">
       <div class="topBar row">
         <!-- 全局信息按钮 -->
         <van-icon name="bar-chart-o" class="globalBtn" @click="showGlobal" />
-        <div class="globalDownload row">
-          <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
-          <!-- 下载速度限制，不为0时显示 -->
-          <div v-show="globalInfo.dl_rate_limit != '0 Bytes'">
-            [{{ globalInfo.dl_rate_limit }}/s]
-          </div>
+
+        <div class="globalState">
+          <van-icon name="circle" :color="connectState" />DHT:{{
+            globalInfo.dht_nodes
+          }}
         </div>
-        <div class="globalUpload row">
-          <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}
-          <!-- 上传速度限制，不为0时显示 -->
-          <div v-show="globalInfo.up_rate_limit != '0 Bytes'">
-            [{{ globalInfo.up_rate_limit }}/s]
+        <div class="col">
+          <div class="globalUpload row">
+            <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}/s
+            <!-- 上传速度限制，不为0时显示 -->
+            <div class="limit" v-show="globalInfo.up_rate_limit != '0 Bytes'">
+              [{{ globalInfo.up_rate_limit }}/s]
+            </div>
+          </div>
+          <div class="globalDownload row">
+            <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
+            <!-- 下载速度限制，不为0时显示 -->
+            <div class="limit" v-show="globalInfo.dl_rate_limit != '0 Bytes'">
+              [{{ globalInfo.dl_rate_limit }}/s]
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +55,7 @@
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoad"
-      :immediate-check='false'
+      :immediate-check="false"
     >
       <Card
         v-for="(item, index) in itemInfo"
@@ -57,7 +66,6 @@
         :stateTrans="translation.torrentState"
         :infoTrans="translation.info"
         :infoCell="infoCell"
-
       />
     </van-list>
     <!-- 底部导航 -->
@@ -73,6 +81,19 @@
         class="search"
       />
     </div>
+    <!-- 删除弹窗 -->
+    <van-dialog
+      v-model="confirmDelete"
+      :showCancelButton="true"
+      overlay-class="overlay"
+      get-container="body"
+      @confirm="deleteTorrent"
+      @cancel="cancelDelete"
+      ><div>确定删除{{ deleteName }}?</div>
+      <van-checkbox v-model="deleteFiles" shape="square" class="checkDelete"
+        >同时删除文件</van-checkbox
+      >
+    </van-dialog>
   </div>
 </template>
 
@@ -145,6 +166,8 @@ export default {
         "uploaded_session",
         "upspeed",
       ],
+      deleteFiles: false,
+      confirmDelete: false,
     };
   },
   computed: {
@@ -152,6 +175,7 @@ export default {
       itemInfo: (state) => state.item.itemInfo,
       globalInfo: (state) => state.item.globalInfo,
       files: (state) => state.item.files,
+      deleteName: (state) => state.item.deleteName,
     }),
     ...mapGetters(["downloading", "categories", "tags", "trackers"]),
     //筛选设置
@@ -162,30 +186,53 @@ export default {
         // return this.itemInfo.filter(i=>i)
       }
     },
+    //提取翻译
     translation() {
       return this.tra[this.language];
     },
+    //连接状态图标
+    connectState() {
+      if (this.globalInfo.connection_status == "connected") {
+        return "green";
+      } else {
+        return "red";
+      }
+    },
   },
   methods: {
+    //展开全局信息界面
     showGlobal() {
       this.global = !this.global;
     },
     onSearch() {},
     onCancel() {},
+    //同步数据
     sync() {
       this.$store.dispatch("getMaindata");
     },
+    //无限滚动判定
     onLoad() {
-        setTimeout(() => {
-        this.showNum+=20
+      setTimeout(() => {
+        this.showNum += 20;
         // 加载状态结束
         this.loading = false;
         // 数据全部加载完成
         if (this.showNum >= this.itemInfo.length) {
           this.finished = true;
         }
-              }, 300);
+      }, 300);
     },
+    deleteTorrent() {
+      this.$store.dispatch("deleteTorrent", this.deleteFiles);
+    },
+    cancelDelete() {
+      this.confirmDelete = false;
+    },
+  },
+  mounted() {
+    this.$bus.$on("queryDelete", () => {
+      this.confirmDelete = true;
+    });
   },
 };
 </script>
@@ -218,13 +265,21 @@ export default {
       flex-grow: 1;
       justify-content: center;
       align-items: center;
+      display: flex;
+      text-align: center;
       .globalBtn {
-        font-size: 60px;
+        font-size: 62px;
         border: 1px solid black;
+      }
+      .globalState {
+        font-size: 32px;
       }
       div {
         flex-grow: 1;
-        font-size: 29px;
+        font-size: 28px;
+        .limit {
+          text-align: right;
+        }
       }
     }
   }
@@ -235,8 +290,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     .setting {
-      font-size: 60px;
-      border: 1px solid black;
+      font-size: 62px;
+      // border: 1px solid black;
     }
     .search {
       width: 650px;

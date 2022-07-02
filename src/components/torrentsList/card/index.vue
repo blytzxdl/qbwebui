@@ -106,6 +106,7 @@
     <template #right>
       <div class="delete" v-if="!swipe" @click="deleteTorrent">删除</div>
     </template>
+
   </van-swipe-cell>
 </template>
 
