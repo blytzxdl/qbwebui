@@ -19,7 +19,7 @@ yarn serve
 
 密码:testqbwebui
 
-## 旧版桌面端
+## [旧版桌面端](https://github.com/blytzxdl/qbwebui/tree/desktop)
 
 
 ## 更新计划
