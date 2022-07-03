@@ -46,8 +46,8 @@ export default {
     }
   }
   .van-dialog__footer {
-    height: 30px;
-    flex-grow: 1;
+    height: 100px;
+    // flex-grow: 1;
     align-items: center;
     border-top: 1px solid black;
     button {
@@ -92,12 +92,16 @@ export default {
           min-height: 64px;
           max-height: 600px;
           overflow: scroll;
+          .van-field__body{
+            min-height: 60px;
+            font-size: 24px;
+          }
         }
         .el-select {
           width: 100%;
           .el-input {
             .el-input__inner {
-              height: 60px;
+              height: 60px !important;
               font-size: 30px;
             }
           }

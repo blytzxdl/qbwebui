@@ -18,7 +18,8 @@ const actions = {
         let result = await reqLogin(userName,password)
         // console.log(result);
         if (result == 'Fails.') {
-            commit('SHOWERROR')
+            return false
+            // commit('SHOWERROR')
         }else if (result== 'Ok.') {
             router.push('/home')         
         }      

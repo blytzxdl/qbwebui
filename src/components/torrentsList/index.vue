@@ -162,7 +162,7 @@
         <div class="option">保存路径</div>
         <div class="content">
           <el-select
-            v-model="newTorrents.savepath"
+            v-model="selectPath"
             filterable
             allow-create
             :disabled="newTorrents.autoTMM"
@@ -191,7 +191,7 @@
 import tra from "../../utils/translation.json";
 import Card from "./card/index.vue";
 import { mapState, mapGetters } from "vuex";
-import { Toast } from 'vant'
+import { Toast } from "vant";
 export default {
   name: "torrentsList",
   components: {
@@ -263,7 +263,7 @@ export default {
       newTorrents: {
         urls: "",
         autoTMM: true,
-        category: "",
+        category: null,
         tags: "",
         savepath: "",
         paused: true,
@@ -298,11 +298,21 @@ export default {
         return "red";
       }
     },
-    selectPath() {
-      if (this.newTorrents.category && this.newTorrents.autoTMM) {
-        this.newTorrents.savepath =
-          this.categories[this.newTorrents.category].savePath;
-      }
+    selectPath: {
+      get: function () {
+        if (
+          this.newTorrents.category &&
+          this.categories[this.newTorrents.category] &&
+          this.newTorrents.autoTMM
+        ) {
+          return this.categories[this.newTorrents.category].savePath;
+        } else {
+          return "";
+        }
+      },
+      set: function (newVal) {
+        this.newTorrents.savepath = newVal;
+      },
     },
   },
   methods: {
@@ -344,8 +354,9 @@ export default {
           this.newTorrents.urls = "";
           this.newTorrents.category = "";
           this.newTorrents.savepath = "";
+          this.newTorrents.tags = "";
         } else {
-          Toast.fail('添加失败')
+          Toast.fail("添加失败");
           // Notification.error({
           //   title: "添加失败",
           //   message: "请检查输入项",
@@ -357,6 +368,7 @@ export default {
     cancelAdd() {
       this.newTorrents.urls = "";
       this.newTorrents.category = "";
+      this.newTorrents.tags = "";
       this.newTorrents.savepath = "";
     },
   },

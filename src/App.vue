@@ -23,7 +23,13 @@ html {
   display: flex;
   flex-direction: column;
 }
-
+.van-toast{
+  min-width:200px !important;
+  height: 200px;
+  .van-toast__text{
+    font-size: 30px;
+  }
+}
 /* ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

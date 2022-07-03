@@ -1,10 +1,10 @@
 <template>
-  <van-swipe-cell class="card col">
+  <van-swipe-cell :class="showState">
     <!-- 基础卡片 -->
     <div class="base row">
       <!-- 开始/暂停按钮 -->
       <div class="control col">
-        <van-icon
+        <van-icon class="stateIcon"
           :name="icon[torrentInfo.state].show"
           @click="icon[torrentInfo.state].click()"
         />
@@ -25,7 +25,7 @@
         <!-- 基本信息，状态与分类 -->
         <div class="baseInfo col">
           <div class="row" id="text">
-            <div v-if="!swipe">{{ stateTrans[torrentInfo.state] }}</div>
+            <div v-if="!swipe" class="state">{{ stateTrans[torrentInfo.state] }}</div>
             <div v-if="!swipe">
               <van-icon name="cluster-o" />{{ torrentInfo.ratio }}
             </div>
@@ -168,6 +168,14 @@ export default {
         unknown: { show: "more-o", click: null },
       };
     },
+    showState(){
+      if (this.torrentInfo.state == 'pausedDL') {
+        return 'card col paused'
+      }else if (this.torrentInfo.state == 'downloading') {
+        return 'card col downloading'
+      }
+      else {return 'card col'}
+    }
   },
   methods: {
     //切换完整信息
@@ -301,5 +309,18 @@ export default {
       }
     }
   }
+}
+.paused{
+  border: 1px solid #fa8072;
+  .state,.stateIcon{
+      color: #fa8072;
+    }
+  
+}
+.downloading{
+  border: 1px solid #427337;
+  .state,.stateIcon{
+      color: #427337;
+    }
 }
 </style>

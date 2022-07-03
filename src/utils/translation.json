@@ -3,9 +3,9 @@
         "info": {
             "added_on": "添加于",
             "amount_left": "amount_left",
-            "auto_tmm": "auto_tmm",
+            "auto_tmm": "自动管理",
             "availability": "可用性",
-            "category": "anime",
+            "category": "分类",
             "completed": "完成",
             "completion_on": "完成于",
             "content_path": "内容路径",
