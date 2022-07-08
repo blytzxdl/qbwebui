@@ -1,9 +1,9 @@
 import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqCategories, reqTags } from '@/api/index';
 import renderVal from '@/utils/renderVal';
-// import renderSize from '@/utils/renderSize';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
 import _ from 'lodash';
+import dayjs from 'dayjs';
 const state = {
     rid: 0,
     originalData: {},
@@ -11,7 +11,8 @@ const state = {
     globalInfo: {},
     files: [],
     deleteName: "",
-    checkedHash:'',
+    checkedHash: '',
+    globalHistory:[]
     // query: {
     //     filter: "all",
     //     category: "",
@@ -53,15 +54,26 @@ const mutations = {
         state.files = files
     },
     //弹窗确认删除
-    QUERYDELETE(state,val){
-        let {name,hash} = val
-        state.deleteName=name
-        state.checkedHash=hash
+    QUERYDELETE(state, val) {
+        let { name, hash } = val
+        state.deleteName = name
+        state.checkedHash = hash
     },
     //取消删除
-    CANCELDELETE(){
-        state.deleteName=''
-        state.checkedHash=''
+    CANCELDELETE() {
+        state.deleteName = ''
+        state.checkedHash = ''
+    },
+    //保存全局信息历史
+    SAVEGLOBALHISTORY(state) {
+        let obj = {}
+        obj.dl_info_speed = state.originalData.server_state.dl_info_speed/1024
+        obj.up_info_speed = state.originalData.server_state.up_info_speed/1024
+        obj.now = dayjs().format()
+        let num = state.globalHistory.push(obj)
+        if (num>=901) {
+            state.globalHistory.shift()
+        }
     }
 }
 const actions = {
@@ -75,6 +87,7 @@ const actions = {
     async getMaindata({ commit }) {
         let res = await reqMaindata(state.rid)
         commit('GETMAINDATA', res)
+        commit('SAVEGLOBALHISTORY')
         this.dispatch('getItemInfo')
     },
     //种子单位换算
@@ -106,17 +119,17 @@ const actions = {
     },
     //删除种子
     async deleteTorrent({ state }, all) {
-        let result = await reqDelete(state.checkedHash,all)
+        let result = await reqDelete(state.checkedHash, all)
     },
-        //恢复下载
-    async setResume({ commit },hash) {
+    //恢复下载
+    async setResume({ commit }, hash) {
         await reqResume(hash)
     },
     //暂停下载
-    async setPause({ commit },hash) {
+    async setPause({ commit }, hash) {
         await reqPause(hash)
     },
-        //添加种子
+    //添加种子
     async addTorrents({ commit }, link) {
         let par = Object.keys(link)
         var forms = new FormData()

@@ -29,11 +29,7 @@
         </div>
       </div>
       <!-- 全局信息界面 -->
-      <div class="globalInfo col" v-show="global">
-        <div class="infoBox"></div>
-        <div class="infoBox"></div>
-        <div class="infoBox"></div>
-      </div>
+      <Global v-if="global"></Global>
     </div>
     <!-- 轮播下载中的种子 -->
     <div class="carousel" v-show="!global">
@@ -190,12 +186,14 @@
 <script>
 import tra from "../../utils/translation.json";
 import Card from "./card/index.vue";
+import Global from './global';
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
 export default {
   name: "torrentsList",
   components: {
     Card,
+    Global,
   },
   data() {
     return {
@@ -272,10 +270,10 @@ export default {
   },
   computed: {
     ...mapState({
-      itemInfo: (state) => state.item.itemInfo,
-      globalInfo: (state) => state.item.globalInfo,
-      files: (state) => state.item.files,
-      deleteName: (state) => state.item.deleteName,
+      itemInfo: (state) => state.data.itemInfo,
+      globalInfo: (state) => state.data.globalInfo,
+      files: (state) => state.data.files,
+      deleteName: (state) => state.data.deleteName,
     }),
     ...mapGetters(["downloading", "categories", "tags", "trackers"]),
     //筛选设置
@@ -319,6 +317,7 @@ export default {
     //展开全局信息界面
     showGlobal() {
       this.global = !this.global;
+      
     },
     onSearch() {},
     onCancel() {},
@@ -394,15 +393,7 @@ export default {
     min-height: 100px;
     border-bottom: 1px solid black;
     padding: 0 10px;
-    .globalInfo {
-      height: calc(100vh - 103px);
-      border-top: 1px solid black;
-      .infoBox {
-        flex-grow: 1;
-        margin: 10px;
-        border: 1px solid black;
-      }
-    }
+
     .topBar {
       height: 100px;
       flex-grow: 1;
