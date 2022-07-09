@@ -31,10 +31,10 @@
             </div>
             <div><van-icon name="apps-o" />{{ torrentInfo.category }}</div>
             <div v-if="swipe">
-              <van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}
+              <van-icon name="arrow-down" />{{ torrentInfo.dlspeed }}/s
             </div>
             <div v-if="swipe">
-              <van-icon name="arrow-up" />{{ torrentInfo.upspeed }}
+              <van-icon name="arrow-up" />{{ torrentInfo.upspeed }}/s
             </div>
           </div>
           <!-- 进度条 -->

@@ -16,7 +16,7 @@ import {
   DatasetComponent,
   TransformComponent,
   DataZoomComponent,
-  LegendComponent ,
+  LegendComponent,
 } from "echarts/components";
 import { LabelLayout, UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
@@ -33,8 +33,9 @@ echarts.use([
   CanvasRenderer,
   LineChart,
   DataZoomComponent,
-  LegendComponent ,
+  LegendComponent,
 ]);
+import renderSize from "@/utils/renderSize";
 import { mapState } from "vuex";
 export default {
   name: "Global",
@@ -52,7 +53,7 @@ export default {
         title: {
           text: "速度统计",
         },
-          legend: {},
+        legend: {},
         grid: {
           left: "30",
           right: "10",
@@ -82,7 +83,10 @@ export default {
             length: 12,
           },
           axisLabel: {
-            formatter: "{value}kb/s",
+            formatter: (value, index) => {
+              value = renderSize(value, "formatter");
+              return value.size + value.unit;
+            },
             align: "center",
           },
         },
@@ -90,16 +94,24 @@ export default {
           sourceHeader: false,
           dimensions: [
             { name: "now", type: "time" },
-            // "dht_nodes",
             "dl_info_speed",
             "up_info_speed",
           ],
           source: this.globalHistory,
         },
         series: [
-          // { type: "line", encode: { x: "now", y: "dht_nodes" } },
-          { name:'下载', type: "line", encode: { x: "now", y: "dl_info_speed" } ,showSymbol: false,smooth: true},
-          { name:'上传', type: "line", encode: { x: "now", y: "up_info_speed" } ,showSymbol: false,smooth: true},
+          {
+            name: "下载",
+            type: "line",
+            encode: { x: "now", y: "dl_info_speed" },
+            showSymbol: false,
+          },
+          {
+            name: "上传",
+            type: "line",
+            encode: { x: "now", y: "up_info_speed" },
+            showSymbol: false,
+          },
         ],
       };
     },
@@ -113,7 +125,7 @@ export default {
     this.speedChart = echarts.init(this.$refs.speed);
     this.speedChart.setOption(this.option);
     let update = setInterval(() => {
-      this.speedChart.setOption({ dataset: { source: this.globalHistory } });
+      this.speedChart.setOption(this.option);
     }, 2000);
   },
 };
@@ -121,10 +133,9 @@ export default {
 
 <style lang="less" scoped>
 .globalInfo {
+  background-color: #fff;
   height: calc(100vh - 103px);
-  border-top: 1px solid black;
   .infoBox {
-    // flex-grow: 1;
     height: 33%;
     margin: 10px;
     border: 1px solid black;

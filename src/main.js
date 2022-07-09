@@ -100,7 +100,8 @@ import {
   List,
   Dialog,
   Checkbox,
-  Switch 
+  Switch,
+  Overlay
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -121,6 +122,9 @@ Vue.use(List);
 Vue.use(Dialog);
 Vue.use(Checkbox);
 Vue.use(Switch);
+Vue.use(Overlay);
+
+
 
 
 

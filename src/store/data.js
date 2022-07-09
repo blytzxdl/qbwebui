@@ -67,8 +67,8 @@ const mutations = {
     //保存全局信息历史
     SAVEGLOBALHISTORY(state) {
         let obj = {}
-        obj.dl_info_speed = state.originalData.server_state.dl_info_speed/1024
-        obj.up_info_speed = state.originalData.server_state.up_info_speed/1024
+        obj.dl_info_speed = state.originalData.server_state.dl_info_speed
+        obj.up_info_speed = state.originalData.server_state.up_info_speed
         obj.now = dayjs().format()
         let num = state.globalHistory.push(obj)
         if (num>=901) {

@@ -29,10 +29,12 @@
         </div>
       </div>
       <!-- 全局信息界面 -->
-      <Global v-if="global"></Global>
+      <van-overlay :show="global" class-name="overlay">
+        <Global v-if="global"></Global>
+      </van-overlay>
     </div>
     <!-- 轮播下载中的种子 -->
-    <div class="carousel" v-show="!global">
+    <div class="carousel">
       <van-swipe
         v-show="downloading.length != 0"
         class="my-swipe"
@@ -46,23 +48,22 @@
     <!-- 所有种子,无限滚动 -->
     <van-list
       class="list"
-      v-show="!global"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoad"
       :immediate-check="false"
     >
-      <Card
-        v-for="(item, index) in itemInfo"
-        v-show="index < showNum"
-        :key="item.hash"
-        :torrentInfo="item"
-        :files="files"
-        :stateTrans="translation.torrentState"
-        :infoTrans="translation.info"
-        :infoCell="infoCell"
-      />
+      <div v-for="(item, index) in itemInfo" :key="item.hash">
+        <Card
+          v-if="index < showNum"
+          :torrentInfo="item"
+          :files="files"
+          :stateTrans="translation.torrentState"
+          :infoTrans="translation.info"
+          :infoCell="infoCell"
+        />
+      </div>
     </van-list>
     <!-- 底部导航 -->
     <div class="bottom row" size="100%" v-show="!global">
@@ -186,7 +187,7 @@
 <script>
 import tra from "../../utils/translation.json";
 import Card from "./card/index.vue";
-import Global from './global';
+import Global from "./global";
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
 export default {
@@ -317,7 +318,6 @@ export default {
     //展开全局信息界面
     showGlobal() {
       this.global = !this.global;
-      
     },
     onSearch() {},
     onCancel() {},
@@ -356,11 +356,6 @@ export default {
           this.newTorrents.tags = "";
         } else {
           Toast.fail("添加失败");
-          // Notification.error({
-          //   title: "添加失败",
-          //   message: "请检查输入项",
-          //   duration: 3000,
-          // });
         }
       });
     },
@@ -393,7 +388,10 @@ export default {
     min-height: 100px;
     border-bottom: 1px solid black;
     padding: 0 10px;
-
+    .overlay {
+      height: calc(100vh - 100px);
+      margin-top: 103px;
+    }
     .topBar {
       height: 100px;
       flex-grow: 1;
