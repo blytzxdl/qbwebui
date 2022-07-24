@@ -1,14 +1,14 @@
 <template>
   <div class="globalInfo col">
     <div class="infoBox speed" ref="speed"></div>
-    <div class="infoBox" @click="set"></div>
-    <div class="infoBox"></div>
+    <div class="infoBox" ref="categories"></div>
+    <div class="infoBox" ref="tags"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts/core";
-import { LineChart } from "echarts/charts";
+import { LineChart,PieChart, } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -34,6 +34,7 @@ echarts.use([
   LineChart,
   DataZoomComponent,
   LegendComponent,
+  PieChart,
 ]);
 import renderSize from "@/utils/renderSize";
 import { mapState } from "vuex";
@@ -42,16 +43,23 @@ export default {
   data() {
     return {
       speedChart: null,
+      speedUpdate: setInterval(() => {
+        this.speedChart.setOption(this.speedOption);
+      }, 2000),
+      categoriesChart: null,
+      tagsChart: null,
     };
   },
   computed: {
     ...mapState({
       globalHistory: (state) => state.data.globalHistory,
+      categories:(state) => state.data.categories,
+      tags:(state) => state.data.tags,
     }),
-    option() {
+    speedOption() {
       return {
         title: {
-          text: "速度统计",
+          text: "速度",
         },
         legend: {},
         grid: {
@@ -115,18 +123,78 @@ export default {
         ],
       };
     },
+    categoriesOption() {
+      return {
+        title: {
+          text: "分类",
+          // subtext: "点击以筛选",
+          textAlign:'left'
+        },
+        legend: {
+          orient: "horizontal",
+          bottom:'0'
+        },
+        series: [
+          {
+            name: "Access From",
+            type: "pie",
+            radius: "50%",
+            data: this.categories,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+      };
+    },
+    tagsOption() {
+      return {
+        title: {
+          text: "标签",
+          // subtext: "点击以筛选",
+          textAlign:'left'
+        },
+        legend: {
+          orient: "horizontal",
+          bottom:'0'
+        },
+        series: [
+          {
+            name: "Access From",
+            type: "pie",
+            radius: "50%",
+            data: this.tags,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+      };
+    },
   },
   methods: {
     set() {
-      this.speedChart.setOption(this.option);
+      this.speedChart.setOption(this.speedOption);
     },
   },
   mounted() {
     this.speedChart = echarts.init(this.$refs.speed);
-    this.speedChart.setOption(this.option);
-    let update = setInterval(() => {
-      this.speedChart.setOption(this.option);
-    }, 2000);
+    this.categoriesChart = echarts.init(this.$refs.categories);
+    this.tagsChart = echarts.init(this.$refs.tags);
+    this.speedChart.setOption(this.speedOption);
+    this.categoriesChart.setOption(this.categoriesOption);
+    this.tagsChart.setOption(this.tagsOption);
+  },
+  beforeDestroy() {
+    clearInterval(this.speedUpdate);
   },
 };
 </script>
@@ -137,7 +205,7 @@ export default {
   height: calc(100vh - 103px);
   .infoBox {
     height: 33%;
-    margin: 10px;
+    margin: 10px 10px 0 10px;
     border: 1px solid black;
   }
 }

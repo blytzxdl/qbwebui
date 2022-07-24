@@ -6,13 +6,16 @@ import _ from 'lodash';
 import dayjs from 'dayjs';
 const state = {
     rid: 0,
-    originalData: {},
-    itemInfo: [],
-    globalInfo: {},
-    files: [],
-    deleteName: "",
-    checkedHash: '',
-    globalHistory:[]
+    originalData: {},//原始数据
+    itemInfo: [],//种子信息
+    globalInfo: {},//全局信息
+    files: [],//选中种子内容
+    deleteName: "",//要删除的种子名称
+    checkedHash: '',//已选择种子的哈希
+    globalHistory: [],//全局上下行历史
+    categories: [],//分类信息
+    tags: [],//标签信息
+
     // query: {
     //     filter: "all",
     //     category: "",
@@ -60,7 +63,7 @@ const mutations = {
         state.checkedHash = hash
     },
     //取消删除
-    CANCELDELETE() {
+    CANCELDELETE(state) {
         state.deleteName = ''
         state.checkedHash = ''
     },
@@ -71,9 +74,35 @@ const mutations = {
         obj.up_info_speed = state.originalData.server_state.up_info_speed
         obj.now = dayjs().format()
         let num = state.globalHistory.push(obj)
-        if (num>=901) {
+        if (num >= 901) {
             state.globalHistory.shift()
         }
+    },
+    //统计分类与标签
+    SAVECATEGORIESANDTAGS(state) {
+        let cats = merger({ 'uncategorized': { name: 'uncategorized' } }, state.originalData.categories)
+        for (const key in cats) {
+            cats[key].value = 0
+        }
+        let tags = Object.values(state.originalData.tags)
+        let tagres = {}
+        tags.push('untagged')
+        tags.forEach((val) => {
+            tagres[val] = { name: val, value: 0 }
+        })
+        state.itemInfo.forEach((item) => {
+            if (item.category == '') { cats.uncategorized.value++ } else {
+                cats[item.category].value++
+            }
+            let arr = item.tags.split(', ')
+            arr.forEach(v => {
+                if (tagres[v]) { tagres[v].value++ } else {
+                    tagres.untagged.value++
+                }
+            })
+        })
+        state.tags = Object.values(tagres)
+        state.categories = Object.values(cats)
     }
 }
 const actions = {
@@ -110,11 +139,12 @@ const actions = {
             res[key] = renderVal(key, res[key])
         }
         commit('GETGLOBALINFO', res)
+
+        commit('SAVECATEGORIESANDTAGS')
     },
     //获取种子内容
     async getFiles({ commit }, hash) {
         let res = trimPath(await reqFiles(hash))
-        // let res = await reqFiles(hash)
         commit('GETFILES', res)
     },
     //删除种子
@@ -136,7 +166,7 @@ const actions = {
         par.forEach((key) => {
             forms.append(key, link[key])
         })
-        console.log(forms);
+        // console.log(forms);
         let result = await reqAddTorrents(forms)
         if (result == 'Fails.') {
             return false
@@ -148,12 +178,6 @@ const actions = {
 const getters = {
     downloading(state) {
         return state.itemInfo.filter(i => i.state == 'downloading')
-    },
-    categories(state) {
-        return state.originalData.categories
-    },
-    tags(state) {
-        return state.originalData.tags
     },
     trackers(state) {
         return state.originalData.trackers

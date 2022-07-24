@@ -147,10 +147,10 @@
             placeholder="输入以新建"
           >
             <el-option
-              v-for="cate in tags"
-              :key="cate"
-              :label="cate"
-              :value="cate"
+              v-for="tag in tags"
+              :key="tag.name"
+              :label="tag.name"
+              :value="tag.name"
             ></el-option>
           </el-select>
         </div>
@@ -166,10 +166,10 @@
             placeholder="C:/xxx"
           >
             <el-option
-              v-for="cate in tags"
-              :key="cate"
-              :label="tags[cate]"
-              :value="tags[cate]"
+              v-for="cate in categories"
+              :key="cate.name"
+              :label="cate.name"
+              :value="cate.name"
             ></el-option>
           </el-select>
         </div>
@@ -275,8 +275,10 @@ export default {
       globalInfo: (state) => state.data.globalInfo,
       files: (state) => state.data.files,
       deleteName: (state) => state.data.deleteName,
+      categories: (state) => state.data.categories,
+      tags: (state) => state.data.tags,
     }),
-    ...mapGetters(["downloading", "categories", "tags", "trackers"]),
+    ...mapGetters(["downloading", "trackers"]),
     //筛选设置
     showList() {
       if (this.showFilter == "all") {
