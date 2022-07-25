@@ -8,7 +8,7 @@
 
 <script>
 import * as echarts from "echarts/core";
-import { LineChart,PieChart, } from "echarts/charts";
+import { LineChart, PieChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -44,7 +44,7 @@ export default {
     return {
       speedChart: null,
       speedUpdate: setInterval(() => {
-        this.speedChart.setOption(this.speedOption);
+        this.speedChart.setOption({ dataset: { source: this.globalHistory } });
       }, 2000),
       categoriesChart: null,
       tagsChart: null,
@@ -53,8 +53,8 @@ export default {
   computed: {
     ...mapState({
       globalHistory: (state) => state.data.globalHistory,
-      categories:(state) => state.data.categories,
-      tags:(state) => state.data.tags,
+      categories: (state) => state.data.categories,
+      tags: (state) => state.data.tags,
     }),
     speedOption() {
       return {
@@ -128,15 +128,18 @@ export default {
         title: {
           text: "分类",
           // subtext: "点击以筛选",
-          textAlign:'left'
+          textAlign: "left",
+        },
+        tooltip: {
+          trigger: "item",
         },
         legend: {
           orient: "horizontal",
-          bottom:'0'
+          bottom: "0",
         },
         series: [
           {
-            name: "Access From",
+            name: "categories",
             type: "pie",
             radius: "50%",
             data: this.categories,
@@ -156,15 +159,18 @@ export default {
         title: {
           text: "标签",
           // subtext: "点击以筛选",
-          textAlign:'left'
+          textAlign: "left",
+        },
+        tooltip: {
+          trigger: "item",
         },
         legend: {
           orient: "horizontal",
-          bottom:'0'
+          bottom: "0",
         },
         series: [
           {
-            name: "Access From",
+            name: "tags",
             type: "pie",
             radius: "50%",
             data: this.tags,
@@ -207,6 +213,9 @@ export default {
     height: 33%;
     margin: 10px 10px 0 10px;
     border: 1px solid black;
+    &:last-child {
+      margin: 10px;
+    }
   }
 }
 </style>
