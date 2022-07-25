@@ -71,7 +71,7 @@
       <van-search
         v-model="search"
         show-action
-        placeholder="请输入搜索关键词"
+        placeholder="空格分隔关键词(支持名称,分类,标签)"
         input-align="center"
         @search="onSearch"
         @cancel="onCancel"
@@ -299,6 +299,7 @@ export default {
         return "red";
       }
     },
+    //添加种子保存路径
     selectPath: {
       get: function () {
         if (
@@ -321,8 +322,15 @@ export default {
     showGlobal() {
       this.global = !this.global;
     },
-    onSearch() {},
-    onCancel() {},
+    //搜索参数处理
+    onSearch(input) {
+      let searchParams = input.split(" ");
+      this.$store.commit("SETFILTER", { mode: "search", par: searchParams });
+    },
+    //取消搜索
+    onCancel() {
+      this.$store.commit("CLEARFILTER");
+    },
     //同步数据
     sync() {
       this.$store.dispatch("getMaindata");

@@ -1,4 +1,4 @@
-import { reqTorrentInfo, reqTrackers, reqPeers, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqCategories, reqTags } from '@/api/index';
+import { reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -15,18 +15,7 @@ const state = {
     globalHistory: [],//全局上下行历史
     categories: [],//分类信息
     tags: [],//标签信息
-
-    // query: {
-    //     filter: "all",
-    //     category: "",
-    //     tag: "",
-    //     sort: "name",
-    //     reverse: false,
-    // },
-
-    // trackerStatus: ['已禁用', '未联系', '工作中', '更新中', '未工作'],
-    // peers: [],
-    // selection: [],
+    filter: { mode: 'none' }//筛选参数
 }
 const mutations = {
     //处理主体数据
@@ -46,7 +35,23 @@ const mutations = {
     },
     //存入种子列表
     GETITEMINFO(state, itemInfo) {
-        state.itemInfo = Object.values(itemInfo)
+        //正常模式
+        if (state.filter.mode == 'none') {
+            state.itemInfo = Object.values(itemInfo)
+        }
+        //搜索模式
+        if (state.filter.mode == 'search') {
+            state.itemInfo = []
+            for (const hash in itemInfo) {
+                state.filter.par.forEach((val) => {
+                    if (itemInfo[hash].name.toLowerCase().includes(val.toLowerCase()) || itemInfo[hash].category.toLowerCase().includes(val.toLowerCase()) || itemInfo[hash].tags.toLowerCase().includes(val.toLowerCase())) {
+                        if (!state.itemInfo.includes(itemInfo[hash])) {
+                            state.itemInfo.push(itemInfo[hash])
+                        }
+                    }
+                })
+            }
+        }
     },
     //存入全局信息
     GETGLOBALINFO(state, globalInfo) {
@@ -103,15 +108,18 @@ const mutations = {
         })
         state.tags = Object.values(tagres)
         state.categories = Object.values(cats)
+    },
+    SETFILTER(state, par) {
+        console.log(par);
+        state.filter = par
+        this.commit('GETITEMINFO')
+    },
+    CLEARFILTER(state) {
+        state.filter = { mode: 'none' },
+            this.dispatch('getItemInfo')
     }
 }
 const actions = {
-    //筛选种子数据
-    // async getFil({ commit }) {
-    //     let { filter, category, tag, sort, reverse } = state.query
-    //     let result = await reqTorrentInfo(filter, category, tag, sort, reverse)
-    //     commit('GETITEM', result)
-    // },
     //同步数据
     async getMaindata({ commit }) {
         let res = await reqMaindata(state.rid)
