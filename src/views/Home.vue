@@ -8,6 +8,7 @@ export default {
   components: { torrentsList },
   name: "home",
   methods: {
+    //同步数据
     syncData() {
       this.$store.dispatch("getMaindata");
       setInterval(() => {

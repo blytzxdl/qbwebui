@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import tra from "../../utils/translation.json";
+import tra from "../../utils/translation.js";
 import Card from "./card/index.vue";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
@@ -270,14 +270,14 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      itemInfo: (state) => state.data.itemInfo,
-      globalInfo: (state) => state.data.globalInfo,
-      files: (state) => state.data.files,
-      deleteName: (state) => state.data.deleteName,
-      categories: (state) => state.data.categories,
-      tags: (state) => state.data.tags,
-    }),
+    ...mapState([
+      "itemInfo",
+      "globalInfo",
+      "files",
+      "deleteName",
+      "categories",
+      "tags",
+    ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
     showList() {
@@ -347,15 +347,19 @@ export default {
         }
       }, 300);
     },
+    //删除种子
     deleteTorrent() {
       this.$store.dispatch("deleteTorrent", this.deleteFiles);
     },
+    //取消删除
     cancelDelete() {
       this.confirmDelete = false;
     },
+    //添加种子弹窗
     queryAdd() {
       this.addTorrents = true;
     },
+    //执行添加
     confirmAdd() {
       let result = this.$store.dispatch("addTorrents", this.newTorrents);
       result.then((result) => {
@@ -369,6 +373,7 @@ export default {
         }
       });
     },
+    //取消添加
     cancelAdd() {
       this.newTorrents.urls = "";
       this.newTorrents.category = "";

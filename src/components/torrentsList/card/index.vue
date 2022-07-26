@@ -4,7 +4,8 @@
     <div class="base row">
       <!-- 开始/暂停按钮 -->
       <div class="control col">
-        <van-icon class="stateIcon"
+        <van-icon
+          class="stateIcon"
           :name="icon[torrentInfo.state].show"
           @click="icon[torrentInfo.state].click()"
         />
@@ -25,7 +26,9 @@
         <!-- 基本信息，状态与分类 -->
         <div class="baseInfo col">
           <div class="row" id="text">
-            <div v-if="!swipe" class="state">{{ stateTrans[torrentInfo.state] }}</div>
+            <div v-if="!swipe" class="state">
+              {{ stateTrans[torrentInfo.state] }}
+            </div>
             <div v-if="!swipe">
               <van-icon name="cluster-o" />{{ torrentInfo.ratio }}
             </div>
@@ -76,26 +79,6 @@
           </van-cell>
         </van-cell-group>
       </van-swipe-item>
-      <!-- <van-swipe-item class="col"
-        ><div class="pageName">种子信息</div></van-swipe-item
-      >
-      <van-swipe-item class="col"
-        ><div class="pageName">Tracker</div>
-        <el-table :data="trackerData">
-          <el-table-column prop="tier" label="层级" width="50">
-          </el-table-column>
-          <el-table-column prop="url" label="URL"> </el-table-column>
-          <el-table-column prop="status" label="状态"> </el-table-column>
-          <el-table-column prop="num_peers" label="用户"> </el-table-column>
-          <el-table-column prop="num_peers" label="做种"> </el-table-column>
-          <el-table-column prop="num_leeches" label="下载"> </el-table-column>
-          <el-table-column prop="num_downloaded" label="完成"></el-table-column>
-          <el-table-column prop="msg" label="消息">
-          </el-table-column> </el-table
-      ></van-swipe-item>
-      <van-swipe-item class="col"
-        ><div class="pageName">用户</div></van-swipe-item
-      > -->
       <van-swipe-item class="col"
         ><div class="pageName">内容</div>
         <el-tree :data="files"></el-tree>
@@ -105,7 +88,6 @@
     <template #right>
       <div class="delete" v-if="!swipe" @click="deleteTorrent">删除</div>
     </template>
-
   </van-swipe-cell>
 </template>
 
@@ -123,7 +105,7 @@ export default {
   ],
   data() {
     return {
-      fold: true,
+      fold: true, //折叠状态
       trackerData: [],
     };
   },
@@ -168,14 +150,16 @@ export default {
         unknown: { show: "more-o", click: null },
       };
     },
-    showState(){
-      if (this.torrentInfo.state == 'pausedDL') {
-        return 'card col paused'
-      }else if (this.torrentInfo.state == 'downloading') {
-        return 'card col downloading'
+    //根据种子状态动态切换样式
+    showState() {
+      if (this.torrentInfo.state == "pausedDL") {
+        return "card col paused";
+      } else if (this.torrentInfo.state == "downloading") {
+        return "card col downloading";
+      } else {
+        return "card col";
       }
-      else {return 'card col'}
-    }
+    },
   },
   methods: {
     //切换完整信息
@@ -210,7 +194,6 @@ export default {
         name: this.torrentInfo.name,
         hash: this.torrentInfo.hash,
       });
-      // this.$store.dispatch('deleteTorrent',this.torrentInfo.hash)
     },
     //开始种子
     startTorrent() {
@@ -302,7 +285,6 @@ export default {
         overflow: visible;
         line-height: 1.5;
         justify-content: space-between;
-        // border-bottom: 1px solid black;
         .van-cell__title {
           max-width: 200px;
         }
@@ -310,17 +292,18 @@ export default {
     }
   }
 }
-.paused{
+.paused {
   border: 1px solid #fa8072;
-  .state,.stateIcon{
-      color: #fa8072;
-    }
-  
+  .state,
+  .stateIcon {
+    color: #fa8072;
+  }
 }
-.downloading{
+.downloading {
   border: 1px solid #427337;
-  .state,.stateIcon{
-      color: #427337;
-    }
+  .state,
+  .stateIcon {
+    color: #427337;
+  }
 }
 </style>

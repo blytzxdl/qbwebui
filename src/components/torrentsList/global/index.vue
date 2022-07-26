@@ -7,6 +7,7 @@
 </template>
 
 <script>
+  // 引入echarts
 import * as echarts from "echarts/core";
 import { LineChart, PieChart } from "echarts/charts";
 import {
@@ -20,8 +21,6 @@ import {
 } from "echarts/components";
 import { LabelLayout, UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-
-// 注册必须的组件
 echarts.use([
   TitleComponent,
   TooltipComponent,
@@ -36,6 +35,7 @@ echarts.use([
   LegendComponent,
   PieChart,
 ]);
+// 
 import renderSize from "@/utils/renderSize";
 import { mapState } from "vuex";
 export default {
@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       speedChart: null,
+      //速度图更新
       speedUpdate: setInterval(() => {
         this.speedChart.setOption({ dataset: { source: this.globalHistory } });
       }, 2000),
@@ -51,11 +52,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      globalHistory: (state) => state.data.globalHistory,
-      categories: (state) => state.data.categories,
-      tags: (state) => state.data.tags,
-    }),
+    ...mapState( ["globalHistory", "categories", "tags"]),
     speedOption() {
       return {
         title: {
@@ -187,9 +184,6 @@ export default {
     },
   },
   methods: {
-    set() {
-      this.speedChart.setOption(this.speedOption);
-    },
   },
   mounted() {
     this.speedChart = echarts.init(this.$refs.speed);

@@ -1,4 +1,4 @@
-{
+export default {
     "chs": {
         "info": {
             "added_on": "添加于",
@@ -65,7 +65,7 @@
             "errored": "错误"
         },
         "torrentState": {
-            "downloading":"下载",
+            "downloading": "下载",
             "error": "错误",
             "missingFiles": "文件丢失",
             "uploading": "做种",
@@ -85,8 +85,8 @@
             "moving": "移动中",
             "unknown": "未知"
         },
-        "connectState":{
-            "connected":"已连接"
+        "connectState": {
+            "connected": "已连接"
         }
     }
 }

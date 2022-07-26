@@ -4,7 +4,7 @@ import axios from 'axios';
 const requests = axios.create({
     baseURL:'/api',
     //延长超时时间，改善低速网络环境的使用体验
-    timeout:20000,
+    timeout:30000,
     // /跨域请求时是否需要使用凭证
     withCredentials:true
 })
