@@ -18,7 +18,7 @@ export const reqCategories = () => requests({
     method: 'get'
 })
 
-export const reqTorrentInfo = (filter,category,tag,sort,reverse) => requests({
+export const reqTorrentInfo = (filter, category, tag, sort, reverse) => requests({
     url: `/v2/torrents/info?filter=${filter}${category}&sort=${sort}${tag}`,
     method: 'get'
 })
@@ -31,38 +31,38 @@ export const reqTransferInfo = () => requests({
 export const reqTrackers = (hash) => requests({
     method: 'post',
     url: '/v2/torrents/trackers',
-    data:`hash=${hash}`,
+    data: `hash=${hash}`,
 })
 
 export const reqPeers = (hash) => requests({
     method: 'post',
     url: `/v2/sync/torrentPeers`,
-    data:`hash=${hash}`,
+    data: `hash=${hash}`,
 
 })
 
 export const reqFiles = (hash) => requests({
     method: 'post',
     url: '/v2/torrents/files',
-    data:`hash=${hash}`,
+    data: `hash=${hash}`,
 })
 
 export const reqResume = (hash) => requests({
     method: 'post',
     url: '/v2/torrents/resume',
-    data:`hashes=${hash}`,
+    data: `hashes=${hash}`,
 })
 
 export const reqPause = (hash) => requests({
     method: 'post',
     url: '/v2/torrents/pause',
-    data:`hashes=${hash}`,
+    data: `hashes=${hash}`,
 })
 
-export const reqLogin = (userName,password) => requests({
+export const reqLogin = (userName, password) => requests({
     method: 'post',
     url: '/v2/auth/login',
-    data:`username=${userName}&password=${password}`,
+    data: `username=${userName}&password=${password}`,
 })
 
 export const reqMaindata = (rid) => requests({
@@ -73,11 +73,28 @@ export const reqMaindata = (rid) => requests({
 export const reqAddTorrents = (link) => requests({
     method: 'post',
     url: `/v2/torrents/add`,
-    data:link,
+    data: link,
 })
 
-export const reqDelete = (hash,all) => requests({
+export const reqDelete = (hash, all) => requests({
     method: 'post',
     url: '/v2/torrents/delete',
-    data:`hashes=${hash}&deleteFiles=${all}`,
+    data: `hashes=${hash}&deleteFiles=${all}`,
+})
+
+export const reqSetDownloadLimit = (val) => requests({
+    method: 'post',
+    url: '/v2/transfer/setDownloadLimit',
+    data: `limit=${val}`,
+})
+
+export const reqSetUploadLimit = (val) => requests({
+    method: 'post',
+    url: '/v2/transfer/setUploadLimit',
+    data: `limit=${val}`,
+})
+
+export const reqToggleSpeedLimitsMode = () => requests({
+    method: 'post',
+    url: '/v2/transfer/toggleSpeedLimitsMode',
 })

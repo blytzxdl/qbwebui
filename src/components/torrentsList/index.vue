@@ -11,7 +11,8 @@
             globalInfo.dht_nodes
           }}
         </div>
-        <div class="col">
+        <!-- 速度 -->
+        <div class="col" @click="querySetSpeedLimit">
           <div class="globalUpload row">
             <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}/s
             <!-- 上传速度限制，不为0时显示 -->
@@ -38,7 +39,7 @@
       <van-swipe
         v-show="downloading.length != 0"
         class="my-swipe"
-        :autoplay="0"
+        :autoplay="5000"
       >
         <van-swipe-item v-for="item in downloading" :key="item.hash">
           <Card :torrentInfo="item" :swipe="true" />
@@ -78,6 +79,45 @@
         class="search"
       />
     </div>
+    <!-- 限速弹窗 -->
+    <van-dialog
+      v-model="setSpeedLimit"
+      :showCancelButton="true"
+      overlay-class="overlay"
+      get-container="body"
+      @confirm="confirmSetSpeedLimit"
+      @cancel="cancelSetSpeedLimit"
+    >
+      <div class="col speedLimit">
+        <div class="row alt">
+          <div>切换备用</div>
+          <van-switch v-model="speedLimit.alternativeSpeedLimit" />
+        </div>
+        <div class="row manualSet">
+          <div class="speedType">上传</div>
+          <van-field
+            v-model="speedLimit.upload"
+            :formatter="formatter"
+            class="manualInput"
+            :border="false"
+          />
+          <div>KiB/s</div>
+        </div>
+        <van-slider v-model="speedLimit.upload" max="10000" />
+        <div class="row manualSet">
+          <div class="speedType">下载</div>
+          <van-field
+            v-model="speedLimit.download"
+            :formatter="formatter"
+            class="manualInput"
+            :border="false"
+          />
+          <div>KiB/s</div>
+        </div>
+
+        <van-slider v-model="speedLimit.download" max="10000" />
+      </div>
+    </van-dialog>
     <!-- 删除弹窗 -->
     <van-dialog
       v-model="confirmDelete"
@@ -205,7 +245,7 @@ export default {
       showNum: 40, //卡片显示数量
       search: "",
       language: "chs",
-      tra,
+      tra, //翻译源
       infoCell: [
         "added_on",
         "amount_left",
@@ -256,6 +296,12 @@ export default {
         "uploaded_session",
         "upspeed",
       ],
+      setSpeedLimit: false,
+      speedLimit: {
+        alternativeSpeedLimit: true,
+        upload: 0,
+        download: 0,
+      },
       deleteFiles: false,
       confirmDelete: false,
       addTorrents: false,
@@ -303,11 +349,15 @@ export default {
     selectPath: {
       get: function () {
         if (
-          this.newTorrents.category &&
-          this.categories[this.newTorrents.category] &&
-          this.newTorrents.autoTMM
+          this.newTorrents.category && //已设置新建种子分类
+          this.categories.find((item) => {
+            return item.name == this.newTorrents.category;
+          }) && //该分类已存在
+          this.newTorrents.autoTMM //已开启自动管理
         ) {
-          return this.categories[this.newTorrents.category].savePath;
+          return this.categories.find((item) => {
+            return item.name == this.newTorrents.category;
+          }).savePath;
         } else {
           return "";
         }
@@ -346,6 +396,28 @@ export default {
           this.finished = true;
         }
       }, 300);
+    },
+    //限速弹窗
+    querySetSpeedLimit() {
+      console.log(parseInt(this.globalInfo.dl_rate_limit));
+      //初始化速度限制
+      this.speedLimit.alternativeSpeedLimit =
+        this.globalInfo.use_alt_speed_limits;
+      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit);
+      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit);
+      this.setSpeedLimit = true;
+    },
+    //确认设置限速
+    confirmSetSpeedLimit() {
+      this.$store.dispatch("setSpeedLimit", this.speedLimit);
+    },
+    //取消设置限速
+    cancelSetSpeedLimit() {
+      this.setSpeedLimit = false;
+    },
+    //限速输入框格式化
+    formatter(val) {
+      return Number(val);
     },
     //删除种子
     deleteTorrent() {

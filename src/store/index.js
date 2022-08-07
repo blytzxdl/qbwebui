@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { reqLogin,reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete } from '@/api/index';
+import { reqLogin, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqSetDownloadLimit, reqSetUploadLimit, reqToggleSpeedLimitsMode } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -10,23 +10,25 @@ Vue.use(Vuex)
 
 
 export default new Vuex.Store({
-    state(){return{
-        showError:false,
-        rid: 0,
-        originalData: {},//原始数据
-        itemInfo: [],//种子信息
-        globalInfo: {},//全局信息
-        files: [],//选中种子内容
-        deleteName: "",//要删除的种子名称
-        checkedHash: '',//已选择种子的哈希
-        globalHistory: [],//全局上下行历史
-        categories: [],//分类信息
-        tags: [],//标签信息
-        filter: { mode: 'none' }//筛选参数
-    }},
-    mutations:{
+    state() {
+        return {
+            showError: false,
+            rid: 0,
+            originalData: {},//原始数据
+            itemInfo: [],//种子信息
+            globalInfo: {},//全局信息
+            files: [],//选中种子内容
+            deleteName: "",//要删除的种子名称
+            checkedHash: '',//已选择种子的哈希
+            globalHistory: [],//全局上下行历史
+            categories: [],//分类信息
+            tags: [],//标签信息
+            filter: { mode: 'none' }//筛选参数
+        }
+    },
+    mutations: {
         //登录错误提示
-        SHOWERROR(state){
+        SHOWERROR(state) {
             state.showError = true
         },
         //处理主体数据
@@ -131,26 +133,26 @@ export default new Vuex.Store({
                 this.dispatch('getItemInfo')
         }
     },
-    actions:{
+    actions: {
         //登录处理
-        async login({commit},userInfo){
-            let {userName,password} = userInfo
-            let result = await reqLogin(userName,password)
-            if (result == 'Fails.') {
+        async login({ commit }, userInfo) {
+            let { userName, password } = userInfo
+            let result = await reqLogin(userName, password)
+            if (result) {
+                router.push('/home')
+            } else {
                 return false
-            }else if (result== 'Ok.') {
-                router.push('/home')         
-            }      
+            }
         },
         //同步数据
-        async getMaindata({ commit,state }) {
+        async getMaindata({ commit, state }) {
             let res = await reqMaindata(state.rid)
             commit('GETMAINDATA', res)
             commit('SAVEGLOBALHISTORY')
             this.dispatch('getItemInfo')
         },
         //种子单位换算
-        getItemInfo({ commit,state }) {
+        getItemInfo({ commit, state }) {
             let res = JSON.parse(JSON.stringify(state.originalData.torrents))
             for (let hash in res) {
                 let ite = res[hash]
@@ -163,13 +165,13 @@ export default new Vuex.Store({
             this.dispatch('getGlobalInfo')
         },
         //获取全局信息
-        getGlobalInfo({ commit,state }) {
+        getGlobalInfo({ commit, state }) {
             let res = JSON.parse(JSON.stringify(state.originalData.server_state))
             for (let key in res) {
                 res[key] = renderVal(key, res[key])
             }
             commit('GETGLOBALINFO', res)
-    
+
             commit('SAVECATEGORIESANDTAGS')
         },
         //获取种子内容
@@ -196,13 +198,20 @@ export default new Vuex.Store({
             par.forEach((key) => {
                 forms.append(key, link[key])
             })
-            let result = await reqAddTorrents(forms)
-            if (result == 'Fails.') {
-                return false
-            } else { return true }
+            return await reqAddTorrents(forms)
+
+        },
+        //
+        async setSpeedLimit({ state }, limit) {
+            console.log(state);
+            await reqSetDownloadLimit(limit.download * 1024)
+            await reqSetUploadLimit(limit.upload * 1024)
+            if (limit.alternativeSpeedLimit != state.originalData.server_state.use_alt_speed_limits) {
+                await reqToggleSpeedLimitsMode()
+            }
         },
     },
-    getters:{
+    getters: {
         //筛选下载中的种子
         downloading(state) {
             return state.itemInfo.filter(i => i.state == 'downloading')

@@ -28,8 +28,10 @@ export default {
   flex-direction: column;
   border: 1px solid black;
   border-radius: 0;
+  height: auto;
+  min-height: 400px;
+  max-height: 1000px;
   width: 600px;
-  height: 400px;
   .van-dialog__content {
     flex-grow: 4;
     font-size: 36px;
@@ -93,7 +95,7 @@ export default {
           min-height: 64px;
           max-height: 600px;
           overflow: scroll;
-          .van-field__body{
+          .van-field__body {
             min-height: 60px;
             font-size: 24px;
           }
@@ -107,6 +109,31 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+}
+.speedLimit {
+  width: 500px;
+  height: 250px;
+  display: flex;
+  justify-content: space-evenly;
+  .alt {
+    justify-content: space-between;
+  }
+  .manualSet {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .speedType {
+      width: 120px;
+      text-align: left;
+    }
+    .manualInput {
+      width: 150px;
+      font-size: 36px;
+      .van-field__control {
+        text-align: center;
       }
     }
   }

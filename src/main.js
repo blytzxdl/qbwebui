@@ -89,19 +89,20 @@ import {
   Icon,
   SwipeCell,
   Search,
-  Tab, 
-  Tabs, 
-  NoticeBar, 
-  Form, 
-  Field, 
-  Cell, 
+  Tab,
+  Tabs,
+  NoticeBar,
+  Form,
+  Field,
+  Cell,
   CellGroup,
   // Toast,
   List,
   Dialog,
   Checkbox,
   Switch,
-  Overlay
+  Overlay,
+  Slider,
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -123,7 +124,7 @@ Vue.use(Dialog);
 Vue.use(Checkbox);
 Vue.use(Switch);
 Vue.use(Overlay);
-
+Vue.use(Slider);
 
 
 

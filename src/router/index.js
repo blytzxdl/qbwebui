@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import checkCookie from "@/utils/checkCookie";
+import { reqLogin } from '../api/index';
 
 // import home from '../views/home.vue';
 
@@ -8,8 +8,8 @@ Vue.use(VueRouter)
 
 const routes = [
     {
-        path: '/'
-        , redirect: '/login'
+        path: '/',
+        redirect: '/login'
     },
     {
         path: '/home',
@@ -24,13 +24,13 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    mode:'hash',
+    mode: 'hash',
     routes
 })
 
 router.beforeEach(async (to, from, next) => {
-    let login = await checkCookie()
-    if (login) {
+    let login = await reqLogin()
+    if (login == true) {
         if (to.path == '/home') {
             next()
         } else {
