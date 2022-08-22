@@ -103,6 +103,8 @@ import {
   Switch,
   Overlay,
   Slider,
+  NavBar,
+  Popup
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -125,6 +127,8 @@ Vue.use(Checkbox);
 Vue.use(Switch);
 Vue.use(Overlay);
 Vue.use(Slider);
+Vue.use(NavBar);
+Vue.use(Popup);
 
 
 

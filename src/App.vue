@@ -1,5 +1,5 @@
 <template>
-    <router-view></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -23,12 +23,17 @@ html {
   display: flex;
   flex-direction: column;
 }
-.van-toast{
-  min-width:200px !important;
+.van-toast {
+  min-width: 200px !important;
   height: 200px;
-  .van-toast__text{
+  .van-toast__text {
     font-size: 30px;
   }
+}
+.center {
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 /* ::-webkit-scrollbar {
   width: 8px;

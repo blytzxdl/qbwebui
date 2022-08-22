@@ -58,10 +58,9 @@
     </div>
 
     <!-- 完整信息区域 -->
-    <van-swipe class="infoPage col" v-if="!fold">
-      <van-swipe-item class="col"
-        ><div class="pageName">信息</div>
+    <div class="infoPage col" v-if="!fold">
         <van-cell-group class="cellList col" :border="false">
+          <van-cell class="infoCell" title="查看内容" @click="$bus.$emit('controlInfo',true)"><van-icon name="more-o" color="#0dbc79"/></van-cell>
           <!-- 将基本信息以单元格显示，hash与磁力链接以图标显示，点击复制 -->
           <van-cell
             class="infoCell"
@@ -78,12 +77,7 @@
             />
           </van-cell>
         </van-cell-group>
-      </van-swipe-item>
-      <van-swipe-item class="col"
-        ><div class="pageName">内容</div>
-        <el-tree :data="files"></el-tree>
-      </van-swipe-item>
-    </van-swipe>
+    </div>
     <!-- 左划删除 -->
     <template #right>
       <div class="delete" v-if="!swipe" @click="deleteTorrent">删除</div>

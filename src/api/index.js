@@ -98,3 +98,8 @@ export const reqToggleSpeedLimitsMode = () => requests({
     method: 'post',
     url: '/v2/transfer/toggleSpeedLimitsMode',
 })
+
+export const reqTranscode = (name) => requests({
+    method: 'post',
+    url: `/transcode?name=${name}`,
+})

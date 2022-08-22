@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { reqLogin, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqSetDownloadLimit, reqSetUploadLimit, reqToggleSpeedLimitsMode } from '@/api/index';
+import { reqLogin, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqSetDownloadLimit, reqSetUploadLimit, reqToggleSpeedLimitsMode,reqTranscode } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -203,13 +203,16 @@ export default new Vuex.Store({
         },
         //
         async setSpeedLimit({ state }, limit) {
-            console.log(state);
             await reqSetDownloadLimit(limit.download * 1024)
             await reqSetUploadLimit(limit.upload * 1024)
             if (limit.alternativeSpeedLimit != state.originalData.server_state.use_alt_speed_limits) {
                 await reqToggleSpeedLimitsMode()
             }
         },
+        async getTranscode ({},fileName){
+            // console.log(fileName);
+            await reqTranscode(fileName)
+        }
     },
     getters: {
         //筛选下载中的种子
