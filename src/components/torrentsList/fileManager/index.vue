@@ -3,7 +3,7 @@
     <div class="interface col">
       <div class="navbar row">
         <div class="left" @click="onClickLeft">返回</div>
-        <div class="right" @click="$bus.$emit('controlInfo', false)">关闭</div>
+        <div class="right" @click="$bus.$emit('controlInfo', {to:false})">关闭</div>
       </div>
       <div class="fileCellGroup">
         <div
@@ -37,6 +37,9 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  props:[
+    'rootPath'
+  ],
   data() {
     return {
       workSpace: null,
@@ -60,10 +63,12 @@ export default {
         this.workSpace = ite.children;
       } else {
         this.file = ite
+        this.file.rootPath=this.rootPath
         this.operate = true
       }
     },
     operateFile(){
+      this.operate = false
       this.$store.dispatch("getTranscode", this.file);
     }
   },
@@ -105,9 +110,6 @@ export default {
         min-height: 60px;
         justify-content: space-between;
         border-top: 1px solid #e4e7eb;
-        .right {
-          // width: 30px;
-        }
       }
     }
 

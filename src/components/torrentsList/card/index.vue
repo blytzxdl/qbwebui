@@ -60,7 +60,7 @@
     <!-- 完整信息区域 -->
     <div class="infoPage col" v-if="!fold">
         <van-cell-group class="cellList col" :border="false">
-          <van-cell class="infoCell" title="查看内容" @click="$bus.$emit('controlInfo',true)"><van-icon name="more-o" color="#0dbc79"/></van-cell>
+          <van-cell class="infoCell" title="查看内容" @click="$bus.$emit('controlInfo',{to:true,root:torrentInfo.save_path})"><van-icon name="more-o" color="#0dbc79"/></van-cell>
           <!-- 将基本信息以单元格显示，hash与磁力链接以图标显示，点击复制 -->
           <van-cell
             class="infoCell"

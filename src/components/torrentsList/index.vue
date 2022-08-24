@@ -80,8 +80,8 @@
       />
     </div>
     <!-- 文件管理弹窗 -->
-    <van-overlay :show="showInfo">
-      <fileManager v-if="showInfo"/>
+    <van-overlay :show="showInfo.to">
+      <fileManager v-if="showInfo.to" :rootPath='showInfo.root'/>
     </van-overlay>
     <!-- 限速弹窗 -->
     <van-dialog
@@ -252,7 +252,7 @@ export default {
       search: "",
       language: "chs",
       tra, //翻译源
-      showInfo: false,
+      showInfo:{ to:false},
       infoCell: [
         "added_on",
         "amount_left",
@@ -464,8 +464,8 @@ export default {
     this.$bus.$on("queryDelete", () => {
       this.confirmDelete = true;
     });
-    this.$bus.$on("controlInfo", (to)=>{
-      this.showInfo = to;
+    this.$bus.$on("controlInfo", (val)=>{
+      this.showInfo = val;
     });  
   },
 };
