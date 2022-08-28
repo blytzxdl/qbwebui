@@ -1,6 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { reqLogin, reqFiles, reqResume, reqPause, reqMaindata, reqAddTorrents, reqDelete, reqSetDownloadLimit, reqSetUploadLimit, reqToggleSpeedLimitsMode,reqTranscode } from '@/api/index';
+import {
+    reqLogin,
+    reqFiles,
+    reqResume,
+    reqPause,
+    reqMaindata,
+    reqAddTorrents,
+    reqDelete,
+    reqSetDownloadLimit,
+    reqSetUploadLimit,
+    reqToggleSpeedLimitsMode,
+    reqTranscode,
+} from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -23,7 +35,8 @@ export default new Vuex.Store({
             globalHistory: [],//全局上下行历史
             categories: [],//分类信息
             tags: [],//标签信息
-            filter: { mode: 'none' }//筛选参数
+            filter: { mode: 'none' },//筛选参数
+            video:null,
         }
     },
     mutations: {
@@ -131,7 +144,7 @@ export default new Vuex.Store({
         CLEARFILTER(state) {
             state.filter = { mode: 'none' },
                 this.dispatch('getItemInfo')
-        }
+        },
     },
     actions: {
         //登录处理
@@ -209,9 +222,10 @@ export default new Vuex.Store({
                 await reqToggleSpeedLimitsMode()
             }
         },
-        async getTranscode ({},fileName){
+        async reqTranscode({commit }, fileName) {
             // console.log(fileName);
-            await reqTranscode(fileName)
+            let res = await reqTranscode(fileName)
+            // console.log(res);
         }
     },
     getters: {

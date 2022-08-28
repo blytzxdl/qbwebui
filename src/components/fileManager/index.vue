@@ -37,6 +37,7 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  name:'FileManager',
   props:[
     'rootPath'
   ],
@@ -69,7 +70,8 @@ export default {
     },
     operateFile(){
       this.operate = false
-      this.$store.dispatch("getTranscode", this.file);
+      // this.$bus.$emit('controlVideo',true)
+      this.$store.dispatch("reqTranscode", this.file);
     }
   },
   computed: {

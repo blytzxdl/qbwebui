@@ -79,10 +79,6 @@
         class="search"
       />
     </div>
-    <!-- 文件管理弹窗 -->
-    <van-overlay :show="showInfo.to">
-      <fileManager v-if="showInfo.to" :rootPath='showInfo.root'/>
-    </van-overlay>
     <!-- 限速弹窗 -->
     <van-dialog
       v-model="setSpeedLimit"
@@ -225,13 +221,22 @@
         </div>
       </div>
     </van-dialog>
+        <!-- 文件管理弹窗 -->
+    <van-overlay :show="showInfo.to">
+      <fileManager v-if="showInfo.to" :rootPath='showInfo.root'/>
+    </van-overlay>
+        <!-- 视频播放弹窗 -->
+    <van-overlay :show="playVideo">
+      <videoPlayer v-if="playVideo"/>
+    </van-overlay>
   </div>
 </template>
 
 <script>
 import tra from "../../utils/translation.js";
 import Card from "./card/index.vue";
-import FileManager from './fileManager';
+import FileManager from '../fileManager';
+import VideoPlayer from '../videoPlayer';
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
@@ -241,6 +246,7 @@ export default {
     Card,
     Global,
     FileManager,
+    VideoPlayer
   },
   data() {
     return {
@@ -253,6 +259,7 @@ export default {
       language: "chs",
       tra, //翻译源
       showInfo:{ to:false},
+      playVideo:false,
       infoCell: [
         "added_on",
         "amount_left",
@@ -466,7 +473,10 @@ export default {
     });
     this.$bus.$on("controlInfo", (val)=>{
       this.showInfo = val;
-    });  
+    });     
+    this.$bus.$on("controlVideo", (val)=>{
+      this.playVideo = val;
+    }); 
   },
 };
 </script>

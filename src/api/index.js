@@ -1,12 +1,10 @@
 
 import requests from './request';
 
-export const reqVersion = () => {
-    return requests({
-        url: '/v2/app/version',
-        method: 'get'
-    })
-}
+export const reqVersion = () => requests({
+    url: '/v2/app/version',
+    method: 'get'
+})
 
 export const reqTags = () => requests({
     url: '/v2/torrents/tags',
