@@ -102,3 +102,8 @@ export const reqTranscode = (data) => requests({
     url: `/transcode`,
     data
 })
+
+export const reqClearVideoTemp = () => requests({
+    method: 'get',
+    url: `/transcode/clearVideoTemp`,
+})

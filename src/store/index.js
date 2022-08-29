@@ -12,6 +12,7 @@ import {
     reqSetUploadLimit,
     reqToggleSpeedLimitsMode,
     reqTranscode,
+    reqClearVideoTemp
 } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
@@ -37,6 +38,8 @@ export default new Vuex.Store({
             tags: [],//标签信息
             filter: { mode: 'none' },//筛选参数
             video:null,
+            fileServer:'http://localhost:9000',
+            playVideo:false
         }
     },
     mutations: {
@@ -145,6 +148,12 @@ export default new Vuex.Store({
             state.filter = { mode: 'none' },
                 this.dispatch('getItemInfo')
         },
+        CONTROLVIDEO(state,val){
+            state.playVideo = val;
+            if (!val) {
+              this.dispatch("clearVideoTemp");
+            }
+        },
     },
     actions: {
         //登录处理
@@ -222,10 +231,16 @@ export default new Vuex.Store({
                 await reqToggleSpeedLimitsMode()
             }
         },
-        async reqTranscode({commit }, fileName) {
-            // console.log(fileName);
+
+        async tryTranscode({commit }, fileName) {
             let res = await reqTranscode(fileName)
-            // console.log(res);
+            if (res == 'OK.') {
+                commit('CONTROLVIDEO',true)
+            }
+        },
+
+        clearVideoTemp(){
+            reqClearVideoTemp()
         }
     },
     getters: {

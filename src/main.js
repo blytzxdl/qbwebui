@@ -3,8 +3,9 @@ import App from './App.vue'
 import router from './router';
 import store from './store';
 import VueClipboard from 'vue-clipboard2';
-
+import VueCookies from 'vue-cookies'
 Vue.use(VueClipboard)
+Vue.use(VueCookies)
 
 import {
   // Button,

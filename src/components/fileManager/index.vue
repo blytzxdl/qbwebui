@@ -70,8 +70,7 @@ export default {
     },
     operateFile(){
       this.operate = false
-      // this.$bus.$emit('controlVideo',true)
-      this.$store.dispatch("reqTranscode", this.file);
+      this.$store.dispatch("tryTranscode", this.file)
     }
   },
   computed: {

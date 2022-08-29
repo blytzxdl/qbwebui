@@ -1,7 +1,8 @@
 <template>
-  <div class="base col center" @click="$bus.$emit('controlPlayer', false)">
+  <div class="base col center">
     <video ref="player" class="video-js"></video>
     <div class="btn" @click="playVideo()">play</div>
+    <div class="btn" @click="$store.commit('CONTROLVIDEO', false)">close</div>
   </div>
 </template>
 
@@ -17,7 +18,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([]),
+    ...mapState(["fileServer"]),
     playerTag() {
       return this.$refs.player;
     },
@@ -32,11 +33,14 @@ export default {
         },
       };
     },
+    cookie() {
+      return this.$cookies.get("file");
+    },
   },
   methods: {
     playVideo() {
       this.player.src({
-        src: 'http://localhost:9000/api/transcode/index.m3u8',
+        src: `${this.fileServer}/api/transcode/output/index.m3u8`,
         type: "application/x-mpegURL",
       });
     },
@@ -45,6 +49,7 @@ export default {
     this.player = videojs(this.playerTag, this.playerOptions, (res) =>
       console.log(res)
     );
+    this.playVideo()
     this.player.on(
       [
         "loadstart",
@@ -82,6 +87,7 @@ export default {
     );
   },
   beforeDestroy() {
+    this.player.dispose()
   },
 };
 </script>
@@ -91,5 +97,13 @@ export default {
   height: 100%;
   width: auto;
   background-color: transparent;
+  .btn {
+    width: 100%;
+    height: 200px;
+    background-color: #fff;
+  }
+  .video-js {
+    width: 100%;
+  }
 }
 </style>
