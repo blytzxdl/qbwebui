@@ -11,7 +11,7 @@ import {
     reqSetDownloadLimit,
     reqSetUploadLimit,
     reqToggleSpeedLimitsMode,
-    reqTranscode,
+    reqLocalFile,
     reqClearVideoTemp
 } from '@/api/index';
 import renderVal from '@/utils/renderVal';
@@ -232,8 +232,8 @@ export default new Vuex.Store({
             }
         },
 
-        async tryTranscode({commit }, fileName) {
-            let res = await reqTranscode(fileName)
+        async tryLocalFile({commit }, fileName) {
+            let res = await reqLocalFile(fileName)
             if (res == 'OK.') {
                 commit('CONTROLVIDEO',true)
             }

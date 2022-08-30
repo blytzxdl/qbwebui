@@ -97,13 +97,13 @@ export const reqToggleSpeedLimitsMode = () => requests({
     url: '/v2/transfer/toggleSpeedLimitsMode',
 })
 
-export const reqTranscode = (data) => requests({
+export const reqLocalFile = (data) => requests({
     method: 'post',
-    url: `/transcode`,
+    url: `/localFile`,
     data
 })
 
 export const reqClearVideoTemp = () => requests({
     method: 'get',
-    url: `/transcode/clearVideoTemp`,
+    url: `/localFile/clearVideoTemp`,
 })

@@ -70,7 +70,7 @@ export default {
     },
     operateFile(){
       this.operate = false
-      this.$store.dispatch("tryTranscode", this.file)
+      this.$store.dispatch("tryLocalFile", this.file)
     }
   },
   computed: {

@@ -40,7 +40,7 @@ export default {
   methods: {
     playVideo() {
       this.player.src({
-        src: `${this.fileServer}/api/transcode/output/index.m3u8`,
+        src: `${this.fileServer}/api/localFile/output/index.m3u8`,
         type: "application/x-mpegURL",
       });
     },
