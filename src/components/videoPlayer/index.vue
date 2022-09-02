@@ -9,7 +9,6 @@
 <script>
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
-import { mapState } from "vuex";
 export default {
   name: "VideoPlayer",
   data() {
@@ -18,12 +17,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(["fileServer"]),
     playerTag() {
       return this.$refs.player;
     },
     playerOptions() {
       return {
+        autoplay: false,
         controls: true,
         preload: "auto",
         html5: {
@@ -39,17 +38,22 @@ export default {
   },
   methods: {
     playVideo() {
-      this.player.src({
-        src: `${this.fileServer}/api/localFile/output/index.m3u8`,
-        type: "application/x-mpegURL",
-      });
+      this.$store
+        .dispatch("getVideoSrc")
+        .then((res) => {
+          this.player.src({
+            src: res,
+            type: "application/x-mpegURL",
+          });
+        })
+        .catch((err) => {console.log(err);});
     },
   },
   mounted() {
     this.player = videojs(this.playerTag, this.playerOptions, (res) =>
       console.log(res)
     );
-    this.playVideo()
+    this.playVideo();
     this.player.on(
       [
         "loadstart",
@@ -87,7 +91,7 @@ export default {
     );
   },
   beforeDestroy() {
-    this.player.dispose()
+    this.player.dispose();
   },
 };
 </script>

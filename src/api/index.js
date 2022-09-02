@@ -107,3 +107,8 @@ export const reqClearVideoTemp = () => requests({
     method: 'get',
     url: `/localFile/clearVideoTemp`,
 })
+
+export const reqVideoSrc = () => requests({
+    method: 'get',
+    url: `/localFile/videoSrc`,
+})

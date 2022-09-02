@@ -12,7 +12,8 @@ import {
     reqSetUploadLimit,
     reqToggleSpeedLimitsMode,
     reqLocalFile,
-    reqClearVideoTemp
+    reqClearVideoTemp,
+    reqVideoSrc
 } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
@@ -37,8 +38,6 @@ export default new Vuex.Store({
             categories: [],//分类信息
             tags: [],//标签信息
             filter: { mode: 'none' },//筛选参数
-            video:null,
-            fileServer:'http://localhost:9000',
             playVideo:false
         }
     },
@@ -241,6 +240,10 @@ export default new Vuex.Store({
 
         clearVideoTemp(){
             reqClearVideoTemp()
+        },
+
+        async getVideoSrc(){
+            return await reqVideoSrc()
         }
     },
     getters: {
