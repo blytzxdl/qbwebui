@@ -38,7 +38,8 @@ export default new Vuex.Store({
             categories: [],//分类信息
             tags: [],//标签信息
             filter: { mode: 'none' },//筛选参数
-            playVideo:false
+            playVideo:false,
+            fileName:''
         }
     },
     mutations: {
@@ -149,9 +150,6 @@ export default new Vuex.Store({
         },
         CONTROLVIDEO(state,val){
             state.playVideo = val;
-            if (!val) {
-              this.dispatch("clearVideoTemp");
-            }
         },
     },
     actions: {
@@ -231,9 +229,10 @@ export default new Vuex.Store({
             }
         },
 
-        async tryLocalFile({commit }, fileName) {
+        async tryLocalFile({commit,state }, fileName) {
             let res = await reqLocalFile(fileName)
             if (res == 'OK.') {
+                state.fileName = fileName.name
                 commit('CONTROLVIDEO',true)
             }
         },

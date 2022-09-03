@@ -26,7 +26,7 @@
       position="bottom"
       :style="{ height: '20%' }"
     >
-    <div class="operation" @click="operateFile()">播放(未实现)</div>
+    <div class="operation" @click="operateFile()">播放(部分支持)</div>
     <div class="operation">打开(未实现)</div>
     </van-popup>
     </div>
@@ -50,6 +50,9 @@ export default {
       file:null
     };
   },
+    computed: {
+      ...mapState(["files"]),
+    },
   methods: {
     onClickLeft() {
       if (this.workSpace.length > 1) {
@@ -72,9 +75,6 @@ export default {
       this.operate = false
       this.$store.dispatch("tryLocalFile", this.file)
     }
-  },
-  computed: {
-    ...mapState(["files"]),
   },
   mounted() {
     this.workSpace = this.files;
