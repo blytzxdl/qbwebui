@@ -224,6 +224,7 @@ export default {
         left: 0;
         width: 100%;
         height: 32px;
+        overflow: hidden;
       }
       .vjs-closeBtn {
         width: 32px;

@@ -38,8 +38,9 @@ export default new Vuex.Store({
             categories: [],//分类信息
             tags: [],//标签信息
             filter: { mode: 'none' },//筛选参数
-            playVideo:false,
-            fileName:''
+            foldHash: null,
+            playVideo: false,
+            fileName: ''
         }
     },
     mutations: {
@@ -148,7 +149,15 @@ export default new Vuex.Store({
             state.filter = { mode: 'none' },
                 this.dispatch('getItemInfo')
         },
-        CONTROLVIDEO(state,val){
+        SETFOLDHASH(state, hash) {
+            if (state.foldHash == hash) {
+                state.foldHash = null
+            }else{
+                state.foldHash = hash
+                this.dispatch("getFiles", hash);
+            }
+        },
+        CONTROLVIDEO(state, val) {
             state.playVideo = val;
         },
     },
@@ -229,19 +238,19 @@ export default new Vuex.Store({
             }
         },
 
-        async tryLocalFile({commit,state }, fileName) {
+        async tryLocalFile({ commit, state }, fileName) {
             let res = await reqLocalFile(fileName)
             if (res == 'OK.') {
                 state.fileName = fileName.name
-                commit('CONTROLVIDEO',true)
+                commit('CONTROLVIDEO', true)
             }
         },
 
-        clearVideoTemp(){
+        clearVideoTemp() {
             reqClearVideoTemp()
         },
 
-        async getVideoSrc(){
+        async getVideoSrc() {
             return await reqVideoSrc()
         }
     },

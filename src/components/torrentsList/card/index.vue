@@ -87,6 +87,7 @@
 
 <script>
 import { Toast } from "vant";
+import {mapState} from 'vuex';
 export default {
   name: "Card",
   props: [
@@ -99,11 +100,15 @@ export default {
   ],
   data() {
     return {
-      fold: true, //折叠状态
       trackerData: [],
     };
   },
   computed: {
+    ...mapState(['foldHash']),
+    //折叠状态
+    fold(){
+      return this.torrentInfo.hash != this.foldHash
+    }, 
     //是否滚动显示名称
     scroll() {
       return this.torrentInfo.name.length > 40 && this.fold;
@@ -158,8 +163,7 @@ export default {
   methods: {
     //切换完整信息
     changeFold() {
-      this.fold = !this.fold;
-      this.$store.dispatch("getFiles", this.torrentInfo.hash);
+      this.$store.commit('SETFOLDHASH',this.torrentInfo.hash)
     },
     //过滤hash及磁链
     filterLink(val) {
