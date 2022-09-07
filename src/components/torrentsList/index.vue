@@ -222,7 +222,7 @@
       </div>
     </van-dialog>
     <!-- 文件管理弹窗 -->
-    <van-overlay :show="showInfo.to">
+    <van-overlay :show="showInfo.to" :lock-scroll='false'>
       <fileManager v-if="showInfo.to" :rootPath="showInfo.root" />
     </van-overlay>
     <!-- 视频播放弹窗 -->
