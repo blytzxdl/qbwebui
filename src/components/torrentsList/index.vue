@@ -16,15 +16,15 @@
           <div class="globalUpload row">
             <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}/s
             <!-- 上传速度限制，不为0时显示 -->
-            <div class="limit" v-show="globalInfo.up_rate_limit != '0 Bytes'">
-              [{{ globalInfo.up_rate_limit }}/s]
+            <div class="limit" v-show="globalInfo.up_rate_limit != 0">
+              [{{ showSpeedLimit.up_rate_limit }}/s]
             </div>
           </div>
           <div class="globalDownload row">
             <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
             <!-- 下载速度限制，不为0时显示 -->
-            <div class="limit" v-show="globalInfo.dl_rate_limit != '0 Bytes'">
-              [{{ globalInfo.dl_rate_limit }}/s]
+            <div class="limit" v-show="globalInfo.dl_rate_limit != 0">
+              [{{ showSpeedLimit.dl_rate_limit }}/s]
             </div>
           </div>
         </div>
@@ -97,6 +97,7 @@
           <div class="speedType">上传</div>
           <van-field
             v-model="speedLimit.upload"
+            type="number"
             :formatter="formatter"
             class="manualInput"
             :border="false"
@@ -108,6 +109,7 @@
           <div class="speedType">下载</div>
           <van-field
             v-model="speedLimit.download"
+            type="number"
             :formatter="formatter"
             class="manualInput"
             :border="false"
@@ -222,7 +224,7 @@
       </div>
     </van-dialog>
     <!-- 文件管理弹窗 -->
-    <van-overlay :show="showInfo.to" :lock-scroll='false'>
+    <van-overlay :show="showInfo.to" :lock-scroll="false">
       <fileManager v-if="showInfo.to" :rootPath="showInfo.root" />
     </van-overlay>
     <!-- 视频播放弹窗 -->
@@ -240,6 +242,7 @@ import VideoPlayer from "../videoPlayer";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
+import renderSize from '@/utils/renderSize';
 export default {
   name: "torrentsList",
   components: {
@@ -380,6 +383,12 @@ export default {
         this.newTorrents.savepath = newVal;
       },
     },
+    showSpeedLimit(){
+      return {
+        up_rate_limit:renderSize(this.globalInfo.up_rate_limit),
+        dl_rate_limit:renderSize(this.globalInfo.dl_rate_limit)
+      }
+    }
   },
   methods: {
     //展开全局信息界面
@@ -413,12 +422,12 @@ export default {
     },
     //限速弹窗
     querySetSpeedLimit() {
-      console.log(parseInt(this.globalInfo.dl_rate_limit));
+      // console.log(parseInt(this.globalInfo.dl_rate_limit));
       //初始化速度限制
       this.speedLimit.alternativeSpeedLimit =
         this.globalInfo.use_alt_speed_limits;
-      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit);
-      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit);
+      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit/1024);
+      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit/1024);
       this.setSpeedLimit = true;
     },
     //确认设置限速
@@ -431,6 +440,7 @@ export default {
     },
     //限速输入框格式化
     formatter(val) {
+      // console.log(val);
       return Number(val);
     },
     //删除种子

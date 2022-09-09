@@ -12,8 +12,8 @@ const byteFilter = [
     'up_limit',
     'up_info_speed',
     'dl_info_speed',
-    'up_rate_limit',
-    'dl_rate_limit',
+    // 'up_rate_limit',
+    // 'dl_rate_limit',
     'dl_info_data',
     'up_info_data'
 ]
