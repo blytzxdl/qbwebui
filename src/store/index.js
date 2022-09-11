@@ -238,11 +238,14 @@ export default new Vuex.Store({
             }
         },
 
-        async tryLocalFile({ commit, state }, fileName) {
+        async tryLocalFile({ commit,dispatch, state }, file) {
+           let{fileName,met}=file
             let res = await reqLocalFile(fileName)
-            if (res == 'OK.') {
+            if (res == 'OK.'&&met=='play') {
                 state.fileName = fileName.name
                 commit('CONTROLVIDEO', true)
+            }else if (res == 'OK.'&&met=='path') {
+                return dispatch('getVideoSrc')
             }
         },
 

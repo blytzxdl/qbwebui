@@ -35,9 +35,16 @@
         <div
           class="label operation"
           v-if="fileType == 'video'"
-          @click="operateFile()"
+          @click="operateFile('play')"
         >
           播放视频(需设备支持)
+        </div>
+        <div
+          class="label operation"
+          v-if="fileType == 'video'"
+          @click="operateFile('path')"
+        >
+          获取串流地址
         </div>
         <div class="label operation" v-if="fileType == 'audio'">
           播放(未实现)
@@ -57,6 +64,7 @@
 </template>
 
 <script>
+import { Toast } from "vant";
 import { mapState } from "vuex";
 import renderSize from "@/utils/renderSize";
 export default {
@@ -114,9 +122,11 @@ export default {
         this.operate = true;
       }
     },
-    operateFile() {
+    async operateFile(met) {
       this.operate = false;
-      this.$store.dispatch("tryLocalFile", this.file);
+      let res =await this.$store.dispatch("tryLocalFile", {fileName:this.file,met});
+      this.$copyText(res);
+      Toast(`已复制到剪贴板`);
     },
   },
   mounted() {
