@@ -38,9 +38,9 @@ export default new Vuex.Store({
             categories: [],//分类信息
             tags: [],//标签信息
             filter: { mode: 'none' },//筛选参数
-            foldHash: null,
-            playVideo: false,
-            fileName: ''
+            foldHash: null,//折叠的种子hash
+            playVideo: false,//控制播放器界面的显示
+            fileName: ''//请求文件内容的文件名
         }
     },
     mutations: {
@@ -149,6 +149,7 @@ export default new Vuex.Store({
             state.filter = { mode: 'none' },
                 this.dispatch('getItemInfo')
         },
+        //控制种子折叠互斥
         SETFOLDHASH(state, hash) {
             if (state.foldHash == hash) {
                 state.foldHash = null
@@ -157,6 +158,7 @@ export default new Vuex.Store({
                 this.dispatch("getFiles", hash);
             }
         },
+        //控制播放器界面显示
         CONTROLVIDEO(state, val) {
             state.playVideo = val;
         },
@@ -204,6 +206,7 @@ export default new Vuex.Store({
         },
         //获取种子内容
         async getFiles({ commit }, hash) {
+            commit('GETFILES', [])
             let res = trimPath(await reqFiles(hash))
             commit('GETFILES', res)
         },
@@ -229,7 +232,7 @@ export default new Vuex.Store({
             return await reqAddTorrents(forms)
 
         },
-        //
+        //设置限速
         async setSpeedLimit({ state }, limit) {
             await reqSetDownloadLimit(limit.download * 1024)
             await reqSetUploadLimit(limit.upload * 1024)
@@ -237,7 +240,7 @@ export default new Vuex.Store({
                 await reqToggleSpeedLimitsMode()
             }
         },
-
+        //发送文件内容请求
         async tryLocalFile({ commit,dispatch, state }, file) {
            let{fileName,met}=file
             let res = await reqLocalFile(fileName)
@@ -248,11 +251,11 @@ export default new Vuex.Store({
                 return dispatch('getVideoSrc')
             }
         },
-
+        //清理服务器视频缓存
         clearVideoTemp() {
             reqClearVideoTemp()
         },
-
+        //获取视频串流地址
         async getVideoSrc() {
             return await reqVideoSrc()
         }

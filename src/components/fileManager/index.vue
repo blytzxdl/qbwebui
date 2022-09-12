@@ -125,8 +125,10 @@ export default {
     async operateFile(met) {
       this.operate = false;
       let res =await this.$store.dispatch("tryLocalFile", {fileName:this.file,met});
-      this.$copyText(res);
-      Toast(`已复制到剪贴板`);
+      if (met=='path') {
+        this.$copyText(res);
+        Toast(`已复制到剪贴板`);
+      }
     },
   },
   mounted() {
