@@ -263,14 +263,19 @@ export default {
       tra, //翻译源
       showInfo: { to: false },
       infoCell: [
-        "added_on",
-        "amount_left",
-        "auto_tmm",
-        "availability",
+        "name",
+        "size",
         "category",
+        "tags",
+        "auto_tmm",
+        "content_path",
+        "amount_left",
+        "infohash_v1",
+        "infohash_v2",
+        "added_on",
+        "availability",
         "completed",
         "completion_on",
-        "content_path",
         "dl_limit",
         "dlspeed",
         "download_path",
@@ -279,13 +284,10 @@ export default {
         "eta",
         "f_l_piece_prio",
         "force_start",
-        "infohash_v1",
-        "infohash_v2",
         "last_activity",
         "magnet_uri",
         "max_ratio",
         "max_seeding_time",
-        "name",
         "num_complete",
         "num_incomplete",
         "num_leechs",
@@ -299,10 +301,8 @@ export default {
         "seeding_time_limit",
         "seen_complete",
         "seq_dl",
-        "size",
         "state",
         "super_seeding",
-        "tags",
         "time_active",
         "total_size",
         "tracker",
@@ -502,6 +502,7 @@ export default {
     min-height: 100px;
     border-bottom: 1px solid black;
     padding: 0 10px;
+    background-color: #fff;
     .overlay {
       height: calc(100vh - 100px);
       margin-top: 103px;
@@ -535,6 +536,7 @@ export default {
     padding: 0 10px;
     justify-content: space-between;
     align-items: center;
+    background-color: #fff;
     .setting {
       font-size: 62px;
     }

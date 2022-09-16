@@ -18,9 +18,11 @@ import {
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
+import translation from "@/utils/translation";
 import dayjs from 'dayjs';
 import router from '@/router';
 Vue.use(Vuex)
+
 
 
 export default new Vuex.Store({
@@ -40,7 +42,8 @@ export default new Vuex.Store({
             filter: { mode: 'none' },//筛选参数
             foldHash: null,//折叠的种子hash
             playVideo: false,//控制播放器界面的显示
-            fileName: ''//请求文件内容的文件名
+            fileName: '',//请求文件内容的文件名
+            translation
         }
     },
     mutations: {
@@ -153,7 +156,7 @@ export default new Vuex.Store({
         SETFOLDHASH(state, hash) {
             if (state.foldHash == hash) {
                 state.foldHash = null
-            }else{
+            } else {
                 state.foldHash = hash
                 this.dispatch("getFiles", hash);
             }
@@ -241,13 +244,13 @@ export default new Vuex.Store({
             }
         },
         //发送文件内容请求
-        async tryLocalFile({ commit,dispatch, state }, file) {
-           let{fileName,met}=file
+        async tryLocalFile({ commit, dispatch, state }, file) {
+            let { fileName, met } = file
             let res = await reqLocalFile(fileName)
-            if (res == 'OK.'&&met=='play') {
+            if (res == 'OK.' && met == 'play') {
                 state.fileName = fileName.name
                 commit('CONTROLVIDEO', true)
-            }else if (res == 'OK.'&&met=='path') {
+            } else if (res == 'OK.' && met == 'path') {
                 return dispatch('getVideoSrc')
             }
         },
@@ -267,6 +270,116 @@ export default new Vuex.Store({
         },
         trackers(state) {
             return state.originalData.trackers
-        }
+        },
+        allStatus(state) {
+            let statusType = {
+                active: [
+                    "downloading",
+                    "uploading",
+                    "queuedUP",
+                    "queuedDL",
+                    "checkingUP",
+                    "forcedUP",
+                    "allocating",
+                    "metaDL",
+                    "checkingDL",
+                    "forcedDL",
+                    "checkingResumeData",
+                    "moving",
+                ],
+                inactive: ["pausedDL", "stalledUP", "stalledDL", "unknown"],
+                done:[ "pausedUP"],
+                error: ["error", "missingFiles"],
+            };
+            let allStatus = {
+                downloading: {
+                    icon: "pause-circle-o",
+                    click: () => {
+                        dispatch("setPause", hash);
+                    },
+                },
+                pausedDL: {
+                    icon: "play-circle-o",
+                    click() {
+                        dispatch("setResume", hash);
+                    },
+                },
+                error: { icon: "warning-o", click: null, },
+                missingFiles: {
+                    icon: "warning-o",
+                    click: null,
+                },
+                uploading: {
+                    icon: "upgrade",
+                    click: null,
+                },
+                pausedUP: {
+                    icon: "more-o",
+                    click: null,
+                },
+                queuedUP: {
+                    icon: "more-o",
+                    click: null,
+                },
+                stalledUP: {
+                    con: "upgrade",
+                    click: null,
+                },
+                checkingUP: {
+                    icon: "more-o",
+                    click: null,
+                },
+                forcedUP: {
+                    icon: "upgrade",
+                    click: null,
+                },
+                allocating: {
+                    icon: "more-o",
+                    click: null,
+                },
+                metaDL: {
+                    icon: "more-o",
+                    click: null,
+                },
+                queuedDL: {
+                    icon: "more-o",
+                    click: null,
+                },
+                stalledDL: {
+                    icon: "more-o",
+                    click: null,
+                },
+                checkingDL: {
+                    icon: "more-o",
+                    click: null,
+                },
+                forcedDL: {
+                    icon: "more-o",
+                    click: null,
+                },
+                checkingResumeData: {
+                    icon: "more-o",
+                    click: null,
+                },
+                moving: {
+                    icon: "more-o",
+                    click: null,
+                },
+                unknown: {
+                    icon: "more-o",
+                    click: null,
+                },
+            };
+            for (const name in allStatus) {
+                allStatus[name].name = name;
+                allStatus[name].translate = state.translation.chs.torrentState[name];
+                for (const type in statusType) {
+                    if (statusType[type].includes(name)) {
+                        allStatus[name].statusColor = `statusBar-color-${type}`
+                    }
+                }
+            }
+            return allStatus;
+        },
     }
 })

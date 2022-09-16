@@ -54,6 +54,7 @@ export default {
   justify-content: center;
   align-items: center;
   .form {
+    background-color: #fff;
     border: 1px solid black;
     width: 650px;
     height: 500px;

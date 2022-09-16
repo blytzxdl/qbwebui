@@ -15,6 +15,7 @@ export default {
 }
 html {
   font-size: 5.3333vw;
+  background-color: #f5f5f5;
 }
 .row {
   display: flex;
