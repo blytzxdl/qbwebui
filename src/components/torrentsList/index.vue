@@ -60,7 +60,6 @@
           v-if="index < showNum"
           :torrentInfo="item"
           :files="files"
-          :stateTrans="translation.torrentState"
           :infoTrans="translation.info"
           :infoCell="infoCell"
         />

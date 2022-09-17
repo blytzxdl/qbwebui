@@ -15,10 +15,14 @@ const byteFilter = [
     // 'up_rate_limit',
     // 'dl_rate_limit',
     'dl_info_data',
-    'up_info_data'
+    'up_info_data',
+    'amount_left'
 ]
 const timeFilter = [
-    'completion_on'
+    'completion_on',
+    'added_on',
+    'eta',
+    'last_activity'
 ]
 const renderVal=(key,val)=>{
     //日期

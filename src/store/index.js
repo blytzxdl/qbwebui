@@ -294,14 +294,14 @@ export default new Vuex.Store({
             let allStatus = {
                 downloading: {
                     icon: "pause-circle-o",
-                    click: () => {
-                        dispatch("setPause", hash);
+                    click(hash){
+                        this.dispatch("setPause",hash);
                     },
                 },
                 pausedDL: {
                     icon: "play-circle-o",
-                    click() {
-                        dispatch("setResume", hash);
+                    click(hash) {
+                        this.dispatch("setResume", hash);
                     },
                 },
                 error: { icon: "warning-o", click: null, },
@@ -322,7 +322,7 @@ export default new Vuex.Store({
                     click: null,
                 },
                 stalledUP: {
-                    con: "upgrade",
+                    icon: "upgrade",
                     click: null,
                 },
                 checkingUP: {

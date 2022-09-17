@@ -2,7 +2,7 @@ export default {
     "chs": {
         "info": {
             "added_on": "添加于",
-            "amount_left": "amount_left",
+            "amount_left": "剩余大小",
             "auto_tmm": "自动管理",
             "availability": "可用性",
             "category": "分类",
