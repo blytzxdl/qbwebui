@@ -311,10 +311,12 @@ export default new Vuex.Store({
                 },
                 uploading: {
                     icon: "upgrade",
-                    click: null,
+                    click(hash){
+                        this.dispatch("setPause",hash);
+                    },
                 },
                 pausedUP: {
-                    icon: "more-o",
+                    icon: "passed",
                     click: null,
                 },
                 queuedUP: {
@@ -322,7 +324,7 @@ export default new Vuex.Store({
                     click: null,
                 },
                 stalledUP: {
-                    icon: "upgrade",
+                    icon: "more-o",
                     click: null,
                 },
                 checkingUP: {
@@ -331,7 +333,9 @@ export default new Vuex.Store({
                 },
                 forcedUP: {
                     icon: "upgrade",
-                    click: null,
+                    click(hash){
+                        this.dispatch("setPause",hash);
+                    },
                 },
                 allocating: {
                     icon: "more-o",
@@ -373,6 +377,9 @@ export default new Vuex.Store({
             for (const name in allStatus) {
                 allStatus[name].name = name;
                 allStatus[name].translate = state.translation.chs.torrentState[name];
+                if (!allStatus[name].click) {
+                    allStatus[name].click=()=>{console.log(name)}
+                }
                 for (const type in statusType) {
                     if (statusType[type].includes(name)) {
                         allStatus[name].statusColor = `statusBar-color-${type}`
