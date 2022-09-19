@@ -43,7 +43,8 @@ export default new Vuex.Store({
             foldHash: null,//折叠的种子hash
             playVideo: false,//控制播放器界面的显示
             fileName: '',//请求文件内容的文件名
-            translation
+            translation,
+            fileServerState:false
         }
     },
     mutations: {
@@ -383,6 +384,7 @@ export default new Vuex.Store({
                 for (const type in statusType) {
                     if (statusType[type].includes(name)) {
                         allStatus[name].statusColor = `statusBar-color-${type}`
+                        allStatus[name].statusIconColor = `statusIcon-color-${type}`
                     }
                 }
             }

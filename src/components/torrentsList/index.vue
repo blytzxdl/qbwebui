@@ -5,23 +5,31 @@
       <div class="topBar row">
         <!-- 全局信息按钮 -->
         <van-icon name="bar-chart-o" class="globalBtn" @click="showGlobal" />
-
-        <div class="globalState">
-          <van-icon name="circle" :color="connectState" />DHT:{{
-            globalInfo.dht_nodes
-          }}
+        <div class="col state">
+          <div class="globalState">
+            <van-icon name="circle" :color="connectState" />DHT:{{
+              globalInfo.dht_nodes
+            }}
+          </div>
+          <div :class="`fileServer ${fileServerClass}`">
+            <van-icon name="desktop-o" />FileServer
+          </div>
         </div>
         <!-- 速度 -->
-        <div class="col" @click="querySetSpeedLimit">
-          <div class="globalUpload row">
-            <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}/s
+        <div class="col speed" @click="querySetSpeedLimit">
+          <div class="row upload">
+            <div class="globalUpload row">
+              <van-icon name="arrow-up" />{{ globalInfo.up_info_speed }}/s
+            </div>
             <!-- 上传速度限制，不为0时显示 -->
             <div class="limit" v-show="globalInfo.up_rate_limit != 0">
               [{{ showSpeedLimit.up_rate_limit }}/s]
             </div>
           </div>
-          <div class="globalDownload row">
-            <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
+          <div class="row download">
+            <div class="globalDownload row">
+              <van-icon name="arrow-down" />{{ globalInfo.dl_info_speed }}/s
+            </div>
             <!-- 下载速度限制，不为0时显示 -->
             <div class="limit" v-show="globalInfo.dl_rate_limit != 0">
               [{{ showSpeedLimit.dl_rate_limit }}/s]
@@ -241,7 +249,7 @@ import VideoPlayer from "../videoPlayer";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
-import renderSize from '@/utils/renderSize';
+import renderSize from "@/utils/renderSize";
 export default {
   name: "torrentsList",
   components: {
@@ -339,6 +347,7 @@ export default {
       "categories",
       "tags",
       "playVideo",
+      "fileServerState",
     ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
@@ -382,12 +391,24 @@ export default {
         this.newTorrents.savepath = newVal;
       },
     },
-    showSpeedLimit(){
+    showSpeedLimit() {
       return {
-        up_rate_limit:renderSize(this.globalInfo.up_rate_limit),
-        dl_rate_limit:renderSize(this.globalInfo.dl_rate_limit)
+        up_rate_limit: renderSize(this.globalInfo.up_rate_limit),
+        dl_rate_limit: renderSize(this.globalInfo.dl_rate_limit),
+      };
+    },
+    fileServerClass() {
+      if (this.fileServerState) {
+        return "serverOn";
+      } else {
+        return "";
       }
-    }
+    },
+    limit() {
+      return (
+        this.globalInfo.up_rate_limit != 0 || this.globalInfo.dl_rate_limit != 0
+      );
+    },
   },
   methods: {
     //展开全局信息界面
@@ -425,8 +446,8 @@ export default {
       //初始化速度限制
       this.speedLimit.alternativeSpeedLimit =
         this.globalInfo.use_alt_speed_limits;
-      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit/1024);
-      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit/1024);
+      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit / 1024);
+      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit / 1024);
       this.setSpeedLimit = true;
     },
     //确认设置限速
@@ -499,9 +520,11 @@ export default {
   }
   .top {
     min-height: 100px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #d8d8d8;
     padding: 0 10px;
     background-color: #fff;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     .overlay {
       height: calc(100vh - 100px);
       margin-top: 103px;
@@ -509,41 +532,60 @@ export default {
     .topBar {
       height: 100px;
       flex-grow: 1;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       display: flex;
       text-align: center;
+      font-size: 28px;
       .globalBtn {
         font-size: 62px;
-        border: 1px solid black;
+        color: #505050;
+        // border: 1px solid #d8d8d8;
       }
-      .globalState {
-        font-size: 32px;
+      .state,
+      .speed{
+        height: 100%;
+        width: 200px;
+        justify-content: space-evenly;
       }
-      div {
-        flex-grow: 1;
-        font-size: 28px;
-        .limit {
-          text-align: right;
-        }
+      .limit {
+        text-align: right;
+      }
+      .fileServer {
+        font-style: italic;
+        color: red;
+      }
+      .serverOn {
+        color: green;
       }
     }
   }
   .bottom {
-    border-top: 1px solid black;
+    border-top: 1px solid #949494;
+    border-radius: 12px 12px 0 0 ;
     min-height: 100px;
     padding: 0 10px;
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
     .setting {
-      font-size: 62px;
+      font-size: 52px;
+        color: #505050;
     }
     .search {
       width: 650px;
       height: 60px;
       padding: 0;
-      border: 1px solid black;
+      border: 1px solid #d8d8d8;
+      border-radius: 12px;
+      .van-search__content{
+        padding: 0;
+        background-color: #fff;
+        border: none;
+        .van-field{
+          font-size: 26px;
+        }
+      }
     }
   }
 }

@@ -8,7 +8,7 @@
       <div class="base row">
         <div class="control row">
           <van-icon
-            class="stateIcon"
+            :class="`stateIcon ${allStatus[torrentInfo.state].statusIconColor}`"
             :name="allStatus[torrentInfo.state].icon"
             @click="
               allStatus[torrentInfo.state].click.call(store, torrentInfo.hash)
@@ -37,7 +37,7 @@
               <!-- 基本信息，状态与分类 -->
               <div class="baseInfo col">
                 <div class="row text">
-                  <div class="row line">
+                  <div :class="`row line ${downloadingClass}`">
                     <template v-for="badge in cardBadge">
                       <div
                         :key="badge.name"
@@ -98,7 +98,13 @@
       <!-- 左划删除 -->
       <template #right>
         <!-- <div class="delete" v-if="!swipe" @click="deleteTorrent">删除</div> -->
-        <van-icon name="delete-o" class="delete" color="red" v-if="!swipe" @click="deleteTorrent" />
+        <van-icon
+          name="delete-o"
+          class="delete"
+          color="red"
+          v-if="!swipe"
+          @click="deleteTorrent"
+        />
       </template>
     </van-swipe-cell>
 
@@ -158,6 +164,13 @@ export default {
         return "card col";
       } else {
         return "card col unfold";
+      }
+    },
+    downloadingClass() {
+      if (this.swipe) {
+        return "downloading";
+      } else {
+        return "";
       }
     },
     //是否滚动显示名称
@@ -380,6 +393,11 @@ export default {
                 }
               }
               .speed {
+                margin: 0 0 0 20px;
+                justify-content: space-evenly;
+              }
+              .downloading {
+                flex-direction: column;
                 justify-content: space-evenly;
               }
             }
@@ -421,14 +439,26 @@ export default {
       .statusBar-color-inactive {
         background-color: gray;
       }
+      .statusIcon-color-inactive {
+        color: gray;
+      }
       .statusBar-color-active {
         background-color: skyblue;
+      }
+      .statusIcon-color-active {
+        color: skyblue;
       }
       .statusBar-color-done {
         background-color: rgb(74, 190, 74);
       }
+      .statusIcon-color-done {
+        color: rgb(74, 190, 74);
+      }
       .statusBar-color-error {
         background-color: red;
+      }
+      .statusIcon-color-error {
+        color: red;
       }
     }
     .delete {
