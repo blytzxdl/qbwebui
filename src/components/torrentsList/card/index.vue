@@ -60,14 +60,14 @@
                     <div v-if="swipe" class="row">
                       <van-icon name="arrow-up" />
                       <div>{{ torrentInfo.upspeed }}/s</div>
-                      <div v-if="torrentInfo.up_limit != '0 Bytes'">
+                      <div v-if="(torrentInfo.up_limit != '0 Bytes')&&(torrentInfo.up_limit != -1)">
                         [{{ torrentInfo.up_limit }}/s]
                       </div>
                     </div>
                     <div v-if="swipe" class="row">
                       <van-icon name="arrow-down" />
                       <div>{{ torrentInfo.dlspeed }}/s</div>
-                      <div v-if="torrentInfo.dl_limit != '0 Bytes'">
+                      <div v-if="(torrentInfo.dl_limit != '0 Bytes')&&(torrentInfo.dl_limit != -1)">
                         [{{ torrentInfo.dl_limit }}/s]
                       </div>
                     </div>

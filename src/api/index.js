@@ -112,3 +112,8 @@ export const reqVideoSrc = () => requests({
     method: 'get',
     url: `/localFile/videoSrc`,
 })
+
+export const reqCheckFileServer = () => requests({
+    method: 'get',
+    url: `/localFile/checkFileServer`,
+})

@@ -18,6 +18,7 @@ export default {
   },
   mounted() {
     this.syncData();
+    this.$store.dispatch("checkFileServer");
   },
 };
 </script>

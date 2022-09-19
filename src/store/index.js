@@ -13,7 +13,8 @@ import {
     reqToggleSpeedLimitsMode,
     reqLocalFile,
     reqClearVideoTemp,
-    reqVideoSrc
+    reqVideoSrc,
+    reqCheckFileServer
 } from '@/api/index';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
@@ -44,7 +45,7 @@ export default new Vuex.Store({
             playVideo: false,//控制播放器界面的显示
             fileName: '',//请求文件内容的文件名
             translation,
-            fileServerState:false
+            fileServerState: false
         }
     },
     mutations: {
@@ -248,10 +249,10 @@ export default new Vuex.Store({
         async tryLocalFile({ commit, dispatch, state }, file) {
             let { fileName, met } = file
             let res = await reqLocalFile(fileName)
-            if (res == 'OK.' && met == 'play') {
+            if (res && (met == 'play')) {
                 state.fileName = fileName.name
                 commit('CONTROLVIDEO', true)
-            } else if (res == 'OK.' && met == 'path') {
+            } else if (res && (met == 'path')) {
                 return dispatch('getVideoSrc')
             }
         },
@@ -262,6 +263,11 @@ export default new Vuex.Store({
         //获取视频串流地址
         async getVideoSrc() {
             return await reqVideoSrc()
+        },
+        async checkFileServer({ state }) {
+            if (await reqCheckFileServer()) {
+                state.fileServerState = true
+            }
         }
     },
     getters: {
@@ -289,14 +295,14 @@ export default new Vuex.Store({
                     "moving",
                 ],
                 inactive: ["pausedDL", "stalledUP", "stalledDL", "unknown"],
-                done:[ "pausedUP"],
+                done: ["pausedUP"],
                 error: ["error", "missingFiles"],
             };
             let allStatus = {
                 downloading: {
                     icon: "pause-circle-o",
-                    click(hash){
-                        this.dispatch("setPause",hash);
+                    click(hash) {
+                        this.dispatch("setPause", hash);
                     },
                 },
                 pausedDL: {
@@ -312,8 +318,8 @@ export default new Vuex.Store({
                 },
                 uploading: {
                     icon: "upgrade",
-                    click(hash){
-                        this.dispatch("setPause",hash);
+                    click(hash) {
+                        this.dispatch("setPause", hash);
                     },
                 },
                 pausedUP: {
@@ -334,8 +340,8 @@ export default new Vuex.Store({
                 },
                 forcedUP: {
                     icon: "upgrade",
-                    click(hash){
-                        this.dispatch("setPause",hash);
+                    click(hash) {
+                        this.dispatch("setPause", hash);
                     },
                 },
                 allocating: {
@@ -379,7 +385,7 @@ export default new Vuex.Store({
                 allStatus[name].name = name;
                 allStatus[name].translate = state.translation.chs.torrentState[name];
                 if (!allStatus[name].click) {
-                    allStatus[name].click=()=>{console.log(name)}
+                    allStatus[name].click = () => { console.log(name) }
                 }
                 for (const type in statusType) {
                     if (statusType[type].includes(name)) {

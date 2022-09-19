@@ -543,10 +543,13 @@ export default {
         // border: 1px solid #d8d8d8;
       }
       .state,
-      .speed{
+      .speed {
         height: 100%;
-        width: 200px;
         justify-content: space-evenly;
+        .globalUpload,
+        .globalDownload {
+          min-width: 200px;
+        }
       }
       .limit {
         text-align: right;
@@ -562,7 +565,7 @@ export default {
   }
   .bottom {
     border-top: 1px solid #949494;
-    border-radius: 12px 12px 0 0 ;
+    border-radius: 12px 12px 0 0;
     min-height: 100px;
     padding: 0 10px;
     justify-content: space-between;
@@ -570,7 +573,7 @@ export default {
     background-color: #fff;
     .setting {
       font-size: 52px;
-        color: #505050;
+      color: #505050;
     }
     .search {
       width: 650px;
@@ -578,11 +581,11 @@ export default {
       padding: 0;
       border: 1px solid #d8d8d8;
       border-radius: 12px;
-      .van-search__content{
+      .van-search__content {
         padding: 0;
         background-color: #fff;
         border: none;
-        .van-field{
+        .van-field {
           font-size: 26px;
         }
       }
