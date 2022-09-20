@@ -11,7 +11,7 @@
               globalInfo.dht_nodes
             }}
           </div>
-          <div :class="`fileServer ${fileServerClass}`">
+          <div :class="`fileServer ${fileServerClass}`" @click="openFSSettings">
             <van-icon name="desktop-o" />FileServer
           </div>
         </div>
@@ -232,11 +232,14 @@
     </van-dialog>
     <!-- 文件管理弹窗 -->
     <van-overlay :show="showInfo.to" :lock-scroll="false">
-      <fileManager v-if="showInfo.to" :rootPath="showInfo.root" />
+      <FileManager v-if="showInfo.to" :rootPath="showInfo.root" />
     </van-overlay>
     <!-- 视频播放弹窗 -->
     <van-overlay :show="playVideo">
-      <videoPlayer v-if="playVideo" />
+      <VideoPlayer v-if="playVideo" />
+    </van-overlay>
+    <van-overlay :show="showFSSettings">
+      <FileServerController v-if="showFSSettings" />
     </van-overlay>
   </div>
 </template>
@@ -246,6 +249,7 @@ import tra from "../../utils/translation.js";
 import Card from "./card/index.vue";
 import FileManager from "../fileManager";
 import VideoPlayer from "../videoPlayer";
+import FileServerController from "@/components/fileServerController";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
 import { Toast } from "vant";
@@ -257,6 +261,7 @@ export default {
     Global,
     FileManager,
     VideoPlayer,
+    FileServerController,
   },
   data() {
     return {
@@ -269,6 +274,23 @@ export default {
       language: "chs",
       tra, //翻译源
       showInfo: { to: false },
+      setSpeedLimit: false,
+      speedLimit: {
+        alternativeSpeedLimit: true,
+        upload: 0,
+        download: 0,
+      },
+      deleteFiles: false,
+      confirmDelete: false,
+      addTorrents: false,
+      newTorrents: {
+        urls: "",
+        autoTMM: true,
+        category: null,
+        tags: "",
+        savepath: "",
+        paused: true,
+      },
       infoCell: [
         "name",
         "size",
@@ -319,23 +341,6 @@ export default {
         "uploaded_session",
         "upspeed",
       ],
-      setSpeedLimit: false,
-      speedLimit: {
-        alternativeSpeedLimit: true,
-        upload: 0,
-        download: 0,
-      },
-      deleteFiles: false,
-      confirmDelete: false,
-      addTorrents: false,
-      newTorrents: {
-        urls: "",
-        autoTMM: true,
-        category: null,
-        tags: "",
-        savepath: "",
-        paused: true,
-      },
     };
   },
   computed: {
@@ -348,6 +353,7 @@ export default {
       "tags",
       "playVideo",
       "fileServerState",
+      "showFSSettings",
     ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
@@ -495,6 +501,11 @@ export default {
       this.newTorrents.category = "";
       this.newTorrents.tags = "";
       this.newTorrents.savepath = "";
+    },
+    openFSSettings() {
+      if (this.fileServerState) {
+        this.$store.commit("CONTROLFSSETTINGS", true);
+      }
     },
   },
   mounted() {

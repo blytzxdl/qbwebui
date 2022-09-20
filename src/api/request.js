@@ -26,5 +26,10 @@ requests.interceptors.response.use((res) => {
     return Promise.reject(new Error('faile'))
 })
 
+export const reqMatchVideo = (name) => {
+    return axios.create()({
+    method: 'get',
+    url: `https://api.dandanplay.net/api/v2/search/anime?keyword=${name}`,
+})}
 
 export default requests

@@ -14,8 +14,11 @@ import {
     reqLocalFile,
     reqClearVideoTemp,
     reqVideoSrc,
-    reqCheckFileServer
+    reqCheckFileServer,
+    reqRename,
+    reqChangeFSSettings
 } from '@/api/index';
+import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -45,7 +48,9 @@ export default new Vuex.Store({
             playVideo: false,//控制播放器界面的显示
             fileName: '',//请求文件内容的文件名
             translation,
-            fileServerState: false
+            fileServerState: false,
+            FSSettings: {},
+            showFSSettings: false
         }
     },
     mutations: {
@@ -167,6 +172,9 @@ export default new Vuex.Store({
         CONTROLVIDEO(state, val) {
             state.playVideo = val;
         },
+        CONTROLFSSETTINGS(state, val) {
+            state.showFSSettings = val
+        }
     },
     actions: {
         //登录处理
@@ -206,7 +214,6 @@ export default new Vuex.Store({
                 res[key] = renderVal(key, res[key])
             }
             commit('GETGLOBALINFO', res)
-
             commit('SAVECATEGORIESANDTAGS')
         },
         //获取种子内容
@@ -235,7 +242,6 @@ export default new Vuex.Store({
                 forms.append(key, link[key])
             })
             return await reqAddTorrents(forms)
-
         },
         //设置限速
         async setSpeedLimit({ state }, limit) {
@@ -265,10 +271,21 @@ export default new Vuex.Store({
             return await reqVideoSrc()
         },
         async checkFileServer({ state }) {
-            if (await reqCheckFileServer()) {
+            try {
+                var res = await reqCheckFileServer()
+            } catch (error) {
+                console.log(error);
+            }
+            if (res) {
+                state.FSSettings = res
                 state.fileServerState = true
             }
+        },
+        async changeFSSettings({ commit }, settings) {
+            let result = await reqChangeFSSettings(settings)
+            commit("CONTROLFSSETTINGS", !result);
         }
+
     },
     getters: {
         //筛选下载中的种子

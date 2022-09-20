@@ -170,27 +170,27 @@ export default {
       function (e) {
         //        console.warn('VIDEOJS player event: ', e.type);
         if (e.type == "play") {
-          console.log("开始播放");
+          // console.log("开始播放");
           _this.videoPause = false;
           _this.showControl();
         } else if (e.type == "playing") {
-          console.log("正在播放...");
+          // console.log("正在播放...");
         } else if (e.type == "pause") {
-          console.log("暂停播放");
+          // console.log("暂停播放");
           _this.videoPause = true;
           _this.showControl();
         } else if (e.type == "firstplay") {
-          console.log("初次播放");
+          // console.log("初次播放");
         } else if (e.type == "useractive") {
-          console.log("活动");
+          // console.log("活动");
           _this.showControl();
         } else if (e.type == "userinactive") {
-          console.log("静默");
+          // console.log("静默");
           if (_this.videoPause == false) {
             _this.hideControl();
           }
         } else {
-          console.log(e.type);
+          // console.log(e.type);
         }
       }
     );

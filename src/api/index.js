@@ -117,3 +117,18 @@ export const reqCheckFileServer = () => requests({
     method: 'get',
     url: `/localFile/checkFileServer`,
 })
+
+export const reqRename = (data) => requests({
+    method: 'post',
+    url: `/v2/torrents/rename`,
+    headers:{
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    data:`hash=${data.hash}&name=${data.name}`
+})
+
+export const reqChangeFSSettings = (data) => requests({
+    method: 'post',
+    url: `/localFile/changeFileServerSettings`,
+    data
+})
