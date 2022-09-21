@@ -206,7 +206,9 @@ export default {
   .infoBox {
     height: 33%;
     margin: 10px 10px 0 10px;
-    border: 1px solid black;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #d6d6d6;
     &:last-child {
       margin: 10px;
     }

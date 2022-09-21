@@ -87,149 +87,28 @@
       />
     </div>
     <!-- 限速弹窗 -->
-    <van-dialog
-      v-model="setSpeedLimit"
-      :showCancelButton="true"
-      overlay-class="overlay"
-      get-container="body"
-      @confirm="confirmSetSpeedLimit"
-      @cancel="cancelSetSpeedLimit"
-    >
-      <div class="col speedLimit">
-        <div class="row alt">
-          <div>切换备用</div>
-          <van-switch v-model="speedLimit.alternativeSpeedLimit" />
-        </div>
-        <div class="row manualSet">
-          <div class="speedType">上传</div>
-          <van-field
-            v-model="speedLimit.upload"
-            type="number"
-            :formatter="formatter"
-            class="manualInput"
-            :border="false"
-          />
-          <div>KiB/s</div>
-        </div>
-        <van-slider v-model="speedLimit.upload" max="10000" />
-        <div class="row manualSet">
-          <div class="speedType">下载</div>
-          <van-field
-            v-model="speedLimit.download"
-            type="number"
-            :formatter="formatter"
-            class="manualInput"
-            :border="false"
-          />
-          <div>KiB/s</div>
-        </div>
-
-        <van-slider v-model="speedLimit.download" max="10000" />
-      </div>
-    </van-dialog>
+    <van-overlay :show="setSpeedLimit">
+      <SetSpeedLimit v-if="setSpeedLimit"></SetSpeedLimit>
+    </van-overlay>
     <!-- 删除弹窗 -->
-    <van-dialog
-      v-model="confirmDelete"
-      :showCancelButton="true"
-      overlay-class="overlay"
-      get-container="body"
-      @confirm="deleteTorrent"
-      @cancel="cancelDelete"
-      ><div>确定删除{{ deleteName }}?</div>
-      <van-checkbox v-model="deleteFiles" shape="square" class="checkDelete"
-        >同时删除文件</van-checkbox
+    <van-overlay :show="confirmDelete">
+      <Overlay
+        v-if="confirmDelete"
+        :onConfirm="deleteTorrent"
+        :onCancel="cancelDelete"
       >
-    </van-dialog>
+        <div class="queryDelete col">
+          <div>确定删除"{{ deleteName }}"?</div>
+          <van-checkbox v-model="deleteFiles" shape="square" class="checkDelete"
+            >同时删除文件</van-checkbox
+          >
+        </div>
+      </Overlay>
+    </van-overlay>
     <!-- 添加种子弹窗 -->
-    <van-dialog
-      v-model="addTorrents"
-      :showCancelButton="true"
-      class="addDialog"
-      overlay-class="overlay"
-      get-container="body"
-      @confirm="confirmAdd"
-      @cancel="cancelAdd"
-    >
-      <div class="cell">
-        <div class="option">种子链接</div>
-        <div class="content">
-          <van-field
-            v-model="newTorrents.urls"
-            rows="1"
-            autosize
-            type="textarea"
-            placeholder="请输入链接，换行分隔"
-          />
-        </div>
-      </div>
-      <div class="cell">
-        <div class="option">自动管理</div>
-        <div class="content">
-          <van-switch v-model="newTorrents.autoTMM" size="20" />
-        </div>
-      </div>
-      <div class="cell">
-        <div class="option">分类</div>
-        <div class="content">
-          <el-select
-            v-model="newTorrents.category"
-            filterable
-            allow-create
-            placeholder="输入以新建"
-          >
-            <el-option
-              v-for="cate in categories"
-              :key="cate.name"
-              :label="cate.name"
-              :value="cate.name"
-            ></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="cell">
-        <div class="option">标签</div>
-        <div class="content">
-          <el-select
-            v-model="newTorrents.tags"
-            filterable
-            allow-create
-            placeholder="输入以新建"
-          >
-            <el-option
-              v-for="tag in tags"
-              :key="tag.name"
-              :label="tag.name"
-              :value="tag.name"
-            ></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="cell">
-        <div class="option">保存路径</div>
-        <div class="content">
-          <el-select
-            v-model="selectPath"
-            filterable
-            allow-create
-            :disabled="newTorrents.autoTMM"
-            placeholder="C:/xxx"
-          >
-            <el-option
-              v-for="cate in categories"
-              :key="cate.name"
-              :label="cate.name"
-              :value="cate.name"
-            ></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="cell">
-        <div class="option">延迟下载</div>
-        <div class="content">
-          <van-switch v-model="newTorrents.paused" size="20" />
-        </div>
-      </div>
-    </van-dialog>
+    <van-overlay :show="showAddTorrents" :lock-scroll="false">
+      <AddTorrents v-if="showAddTorrents"></AddTorrents>
+    </van-overlay>
     <!-- 文件管理弹窗 -->
     <van-overlay :show="showInfo.to" :lock-scroll="false">
       <FileManager v-if="showInfo.to" :rootPath="showInfo.root" />
@@ -250,9 +129,11 @@ import Card from "./card/index.vue";
 import FileManager from "../fileManager";
 import VideoPlayer from "../videoPlayer";
 import FileServerController from "@/components/fileServerController";
+import AddTorrents from "@/components/addTorrents";
+import SetSpeedLimit from "@/components/setSpeedLimit";
+import Overlay from "@/components/overlay";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
-import { Toast } from "vant";
 import renderSize from "@/utils/renderSize";
 export default {
   name: "torrentsList",
@@ -262,6 +143,9 @@ export default {
     FileManager,
     VideoPlayer,
     FileServerController,
+    AddTorrents,
+    SetSpeedLimit,
+    Overlay,
   },
   data() {
     return {
@@ -274,23 +158,8 @@ export default {
       language: "chs",
       tra, //翻译源
       showInfo: { to: false },
-      setSpeedLimit: false,
-      speedLimit: {
-        alternativeSpeedLimit: true,
-        upload: 0,
-        download: 0,
-      },
       deleteFiles: false,
       confirmDelete: false,
-      addTorrents: false,
-      newTorrents: {
-        urls: "",
-        autoTMM: true,
-        category: null,
-        tags: "",
-        savepath: "",
-        paused: true,
-      },
       infoCell: [
         "name",
         "size",
@@ -354,6 +223,8 @@ export default {
       "playVideo",
       "fileServerState",
       "showFSSettings",
+      "showAddTorrents",
+      "setSpeedLimit",
     ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
@@ -375,27 +246,6 @@ export default {
       } else {
         return "red";
       }
-    },
-    //添加种子保存路径
-    selectPath: {
-      get: function () {
-        if (
-          this.newTorrents.category && //已设置新建种子分类
-          this.categories.find((item) => {
-            return item.name == this.newTorrents.category;
-          }) && //该分类已存在
-          this.newTorrents.autoTMM //已开启自动管理
-        ) {
-          return this.categories.find((item) => {
-            return item.name == this.newTorrents.category;
-          }).savePath;
-        } else {
-          return "";
-        }
-      },
-      set: function (newVal) {
-        this.newTorrents.savepath = newVal;
-      },
     },
     showSpeedLimit() {
       return {
@@ -448,30 +298,18 @@ export default {
     },
     //限速弹窗
     querySetSpeedLimit() {
-      // console.log(parseInt(this.globalInfo.dl_rate_limit));
-      //初始化速度限制
-      this.speedLimit.alternativeSpeedLimit =
-        this.globalInfo.use_alt_speed_limits;
-      this.speedLimit.upload = parseInt(this.globalInfo.up_rate_limit / 1024);
-      this.speedLimit.download = parseInt(this.globalInfo.dl_rate_limit / 1024);
-      this.setSpeedLimit = true;
-    },
-    //确认设置限速
-    confirmSetSpeedLimit() {
-      this.$store.dispatch("setSpeedLimit", this.speedLimit);
-    },
-    //取消设置限速
-    cancelSetSpeedLimit() {
-      this.setSpeedLimit = false;
-    },
-    //限速输入框格式化
-    formatter(val) {
-      // console.log(val);
-      return Number(val);
+      this.$store.commit("CONTROLSETSPEEDLIMIT", true);
     },
     //删除种子
     deleteTorrent() {
-      this.$store.dispatch("deleteTorrent", this.deleteFiles);
+      this.$store
+        .dispatch("deleteTorrent", this.deleteFiles)
+        .then((result) => {
+          this.confirmDelete = false;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     //取消删除
     cancelDelete() {
@@ -479,32 +317,14 @@ export default {
     },
     //添加种子弹窗
     queryAdd() {
-      this.addTorrents = true;
-    },
-    //执行添加
-    confirmAdd() {
-      let result = this.$store.dispatch("addTorrents", this.newTorrents);
-      result.then((result) => {
-        if (result) {
-          this.newTorrents.urls = "";
-          this.newTorrents.category = "";
-          this.newTorrents.savepath = "";
-          this.newTorrents.tags = "";
-        } else {
-          Toast.fail("添加失败");
-        }
-      });
-    },
-    //取消添加
-    cancelAdd() {
-      this.newTorrents.urls = "";
-      this.newTorrents.category = "";
-      this.newTorrents.tags = "";
-      this.newTorrents.savepath = "";
+      this.$store.commit("CONTROLADDTORRENTS", true);
     },
     openFSSettings() {
       if (this.fileServerState) {
-        this.$store.commit("CONTROLFSSETTINGS", true);
+        this.$store.dispatch("checkFileServer").then((result) => {
+          this.$store.commit("CONTROLFSSETTINGS", true);
+        }).catch((err) => {
+        });
       }
     },
   },
@@ -513,8 +333,11 @@ export default {
       this.confirmDelete = true;
     });
     this.$bus.$on("controlInfo", (val) => {
-      this.showInfo = val;
+      if (this.files) {
+        this.showInfo = val;
+      }
     });
+    this.$store.dispatch("checkFileServer");
   },
 };
 </script>
@@ -599,6 +422,20 @@ export default {
         .van-field {
           font-size: 26px;
         }
+      }
+    }
+  }
+  .queryDelete {
+    height: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 36px;
+    .checkDelete {
+      line-height: 1.5;
+      font-size: 36px;
+      // font-size: inherit;
+      /deep/.van-checkbox__icon {
+        font-size: inherit;
       }
     }
   }

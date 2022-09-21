@@ -2,9 +2,9 @@
   <div class="col base">
     <div class="interface col">
       <div class="navbar row">
-        <div class="left" @click="onClickLeft">返回</div>
+        <div class="left" @click="onClickLeft"><van-icon name="arrow-left" /></div>
         <div class="right" @click="$bus.$emit('controlInfo', { to: false })">
-          关闭
+          <van-icon name="cross" />
         </div>
       </div>
       <div class="fileCellGroup">
@@ -14,7 +14,9 @@
           :key="index"
           @click="onClickCell(ite)"
         >
-          <!-- <div class="left"></div> -->
+          <div class="left" v-if="!ite.children">
+            {{ ite.label.split(".").reverse()[0] }}
+          </div>
           <div class="content">
             {{ ite.label }}
           </div>
@@ -106,7 +108,7 @@ export default {
   },
   methods: {
     onClickLeft() {
-      if (this.workSpace.length > 1) {
+      if (this.backSpace.length > 1) {
         this.workSpace = this.backSpace.pop();
       }
     },
@@ -124,8 +126,11 @@ export default {
     },
     async operateFile(met) {
       this.operate = false;
-      let res =await this.$store.dispatch("tryLocalFile", {fileName:this.file,met});
-      if (met=='path') {
+      let res = await this.$store.dispatch("tryLocalFile", {
+        fileName: this.file,
+        met,
+      });
+      if (met == "path") {
         this.$copyText(res);
         Toast(`已复制到剪贴板`);
       }
@@ -148,6 +153,7 @@ export default {
     margin: 102px 0px;
     background-color: #fff;
     overflow: hidden;
+    border-radius: 12px;
     .navbar {
       // height: 80px;
       font-size: 45px;
@@ -155,17 +161,36 @@ export default {
       justify-content: space-between;
       align-items: center;
       align-content: center;
+      border-radius: 12px;
+      border-bottom: 1px solid #d8d8d8;
     }
     .fileCellGroup {
       overflow: scroll;
-      padding: 0 20px;
+      padding: 0 10px;
       .fileCell {
-        padding: 10px 0;
-        font-size: 36px;
-        line-height: 54px;
-        min-height: 60px;
+        min-height: 80px;
+        padding: 10px 10px;
+        font-size: 30px;
+        line-height: 1.5;
         justify-content: space-between;
-        border-top: 1px solid #e4e7eb;
+        border-bottom: 1px solid #d8d8d8;
+        .content{
+          flex-grow: 1;
+          color: #222222;
+        }
+        .left {
+          @length:50px;
+          min-width: @length;
+          min-height: @length;
+          font-size: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #d8d8d8;
+          border-radius: 12px;
+          margin-right: 10px;
+          color: #666666;
+        }
       }
     }
 
@@ -174,6 +199,8 @@ export default {
       min-height: 250px;
       display: flex;
       justify-content: space-evenly;
+          border-radius: 12px 12px 0 0 ;
+
       .label {
         font-size: 32px;
         text-align: center;
@@ -184,9 +211,12 @@ export default {
       }
       .operation {
         width: 80%;
-        font-size: 52px;
+        font-size: 36px;
+        line-height: 1.5;
         margin: 10px 0;
-        border: 1px solid black;
+        border: 1px solid #666666;
+          border-radius: 12px;
+
       }
     }
   }

@@ -84,15 +84,19 @@ export default {
         });
     },
     showControl() {
-      console.log("show");
+      // console.log("show");
       this.closeBtn.removeClass("vjs-user-inactive");
       this.titleBar.removeClass("vjs-user-inactive");
     },
     hideControl() {
-      console.log("hide");
+      // console.log("hide");
       this.closeBtn.addClass("vjs-user-inactive");
       this.titleBar.addClass("vjs-user-inactive");
     },
+    controlPause(met){
+      // console.log(met);
+      this.videoPause = met
+    }
   },
   mounted() {
     let _this = this;
@@ -117,7 +121,7 @@ export default {
           text = "Title Unknown";
         }
         videojs.dom.emptyEl(this.el());
-        videojs.dom.appendContent(this.el(), _this.fileName);
+        videojs.dom.appendContent(this.el(), _this.fileName.split('/').reverse()[0]);
       }
     }
     class CloseBtn extends Component {
@@ -132,7 +136,7 @@ export default {
         });
       }
       click() {
-        console.log("close");
+        // console.log("close");
         _this.$store.commit("CONTROLVIDEO", false);
       }
     }
@@ -170,14 +174,15 @@ export default {
       function (e) {
         //        console.warn('VIDEOJS player event: ', e.type);
         if (e.type == "play") {
-          // console.log("开始播放");
-          _this.videoPause = false;
+          console.log("开始播放");
+          _this.controlPause(false);
+
           _this.showControl();
         } else if (e.type == "playing") {
           // console.log("正在播放...");
         } else if (e.type == "pause") {
-          // console.log("暂停播放");
-          _this.videoPause = true;
+          console.log("暂停播放");
+          _this.controlPause(true);
           _this.showControl();
         } else if (e.type == "firstplay") {
           // console.log("初次播放");
@@ -190,7 +195,7 @@ export default {
             _this.hideControl();
           }
         } else {
-          // console.log(e.type);
+          console.log(e.type);
         }
       }
     );
@@ -223,12 +228,14 @@ export default {
         top: 0;
         left: 0;
         width: 100%;
-        height: 32px;
+        height: 60px;
         overflow: hidden;
+        overflow-wrap: break-word;
       }
       .vjs-closeBtn {
-        width: 32px;
-        height: 32px;
+        width: 60px;
+        height: 60px;
+        z-index: 999;
         // background-color: #fff;
         position: absolute;
         top: 0;
@@ -251,6 +258,12 @@ export default {
       .vjs-big-play-button .vjs-paused.vjs-has-started .vjs-title-bar,
       .vjs-user-active.vjs-has-started .vjs-title-bar {
         display: block;
+      }
+      .vjs-control-bar{
+        font-size: 0.4rem;
+      }
+      .vjs-modal-dialog-content{
+        margin-top: 100px;
       }
     }
     //  .closeIcon{

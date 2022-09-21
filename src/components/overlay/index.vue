@@ -42,13 +42,11 @@ export default {
   },
   methods: {
     cancel() {
-        console.log('can');
         if (this.onCancel) {
             this.onCancel()
         }
     },
     confirm() {
-        console.log('con');
         if (this.onConfirm) {
             this.onConfirm()
         }
@@ -66,9 +64,11 @@ export default {
     min-height: 300px;
     background-color: #fff;
     border-radius: 12px;
+      max-height: 90%;
     .content {
-      flex-grow: 1;
+      overflow: scroll;
       border-radius: 12px 12px 0 0;
+      flex-grow: 1;
     }
     .switch {
       border-top: 1px solid #d8d8d8;

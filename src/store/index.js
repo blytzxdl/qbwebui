@@ -50,7 +50,9 @@ export default new Vuex.Store({
             translation,
             fileServerState: false,
             FSSettings: {},
-            showFSSettings: false
+            showFSSettings: false,
+            showAddTorrents: false,
+            setSpeedLimit: false,
         }
     },
     mutations: {
@@ -174,6 +176,12 @@ export default new Vuex.Store({
         },
         CONTROLFSSETTINGS(state, val) {
             state.showFSSettings = val
+        },
+        CONTROLADDTORRENTS(state, val) {
+            state.showAddTorrents = val
+        },
+        CONTROLSETSPEEDLIMIT(state, val) {
+            state.setSpeedLimit = val
         }
     },
     actions: {
@@ -218,13 +226,14 @@ export default new Vuex.Store({
         },
         //获取种子内容
         async getFiles({ commit }, hash) {
-            commit('GETFILES', [])
+            commit('GETFILES', false)
             let res = trimPath(await reqFiles(hash))
             commit('GETFILES', res)
         },
         //删除种子
         async deleteTorrent({ state }, all) {
             let result = await reqDelete(state.checkedHash, all)
+            return result
         },
         //恢复下载
         async setResume({ commit }, hash) {
@@ -244,12 +253,13 @@ export default new Vuex.Store({
             return await reqAddTorrents(forms)
         },
         //设置限速
-        async setSpeedLimit({ state }, limit) {
+        async setSpeedLimit({ state, commit }, limit) {
             await reqSetDownloadLimit(limit.download * 1024)
             await reqSetUploadLimit(limit.upload * 1024)
             if (limit.alternativeSpeedLimit != state.originalData.server_state.use_alt_speed_limits) {
                 await reqToggleSpeedLimitsMode()
             }
+            commit("CONTROLSETSPEEDLIMIT", false);
         },
         //发送文件内容请求
         async tryLocalFile({ commit, dispatch, state }, file) {
