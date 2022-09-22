@@ -105,7 +105,9 @@ import {
   Overlay,
   Slider,
   NavBar,
-  Popup
+  Popup,
+  Radio,
+  RadioGroup
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -130,6 +132,8 @@ Vue.use(Overlay);
 Vue.use(Slider);
 Vue.use(NavBar);
 Vue.use(Popup);
+Vue.use(Radio);
+Vue.use(RadioGroup);
 
 
 

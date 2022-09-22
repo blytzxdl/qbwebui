@@ -117,7 +117,8 @@
     <van-overlay :show="playVideo">
       <VideoPlayer v-if="playVideo" />
     </van-overlay>
-    <van-overlay :show="showFSSettings">
+    <!-- FileServer控制弹窗 -->
+    <van-overlay :show="showFSSettings" :lock-scroll="false">
       <FileServerController v-if="showFSSettings" />
     </van-overlay>
   </div>
