@@ -2,7 +2,9 @@
   <div class="col base">
     <div class="interface col">
       <div class="navbar row">
-        <div class="left" @click="onClickLeft"><van-icon name="arrow-left" /></div>
+        <div class="left" @click="onClickLeft">
+          <van-icon name="arrow-left" />
+        </div>
         <div class="right" @click="$bus.$emit('controlInfo', { to: false })">
           <van-icon name="cross" />
         </div>
@@ -85,6 +87,7 @@ export default {
         picture: ["jpg", "png"],
         audio: ["mp3", "wav", "flac"],
       },
+      loadingToast:null,
     };
   },
   computed: {
@@ -126,10 +129,16 @@ export default {
     },
     async operateFile(met) {
       this.operate = false;
+      Toast.loading({
+        message: "生成中...",
+        forbidClick: true,
+        duration:0,
+      });
       let res = await this.$store.dispatch("tryLocalFile", {
         fileName: this.file,
         met,
       });
+      Toast.clear()
       if (met == "path") {
         this.$copyText(res);
         Toast(`已复制到剪贴板`);
@@ -174,12 +183,12 @@ export default {
         line-height: 1.5;
         justify-content: space-between;
         border-bottom: 1px solid #d8d8d8;
-        .content{
+        .content {
           flex-grow: 1;
           color: #222222;
         }
         .left {
-          @length:50px;
+          @length: 50px;
           min-width: @length;
           min-height: @length;
           font-size: 24px;
@@ -199,7 +208,7 @@ export default {
       min-height: 250px;
       display: flex;
       justify-content: space-evenly;
-          border-radius: 12px 12px 0 0 ;
+      border-radius: 12px 12px 0 0;
 
       .label {
         font-size: 32px;
@@ -215,8 +224,7 @@ export default {
         line-height: 1.5;
         margin: 10px 0;
         border: 1px solid #666666;
-          border-radius: 12px;
-
+        border-radius: 12px;
       }
     }
   }
