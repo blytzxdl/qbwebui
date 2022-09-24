@@ -16,7 +16,8 @@ import {
     reqVideoSrc,
     reqCheckFileServer,
     reqRename,
-    reqChangeFSSettings
+    reqChangeFSSettings,
+    reqToggleOriginUI,
 } from '@/api/index';
 import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
@@ -53,6 +54,7 @@ export default new Vuex.Store({
             showFSSettings: false,
             showAddTorrents: false,
             setSpeedLimit: false,
+            showSettings:false
         }
     },
     mutations: {
@@ -182,6 +184,9 @@ export default new Vuex.Store({
         },
         CONTROLSETSPEEDLIMIT(state, val) {
             state.setSpeedLimit = val
+        },
+        SONTROLSETTINGS(state,val){
+            state.showSettings = val
         }
     },
     actions: {
@@ -294,8 +299,10 @@ export default new Vuex.Store({
         async changeFSSettings({ commit }, settings) {
             let result = await reqChangeFSSettings(settings)
             commit("CONTROLFSSETTINGS", !result);
+        },
+        async toggleOriginUI(){
+            await reqToggleOriginUI()
         }
-
     },
     getters: {
         //筛选下载中的种子

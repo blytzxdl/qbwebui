@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     onClickLeft() {
-      if (this.backSpace.length > 1) {
+      if (this.backSpace.length >= 1) {
         this.workSpace = this.backSpace.pop();
       }
     },

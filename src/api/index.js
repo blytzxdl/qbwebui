@@ -1,5 +1,6 @@
 
 import requests from './request';
+import axios from 'axios';
 
 export const reqVersion = () => requests({
     url: '/v2/app/version',
@@ -132,3 +133,14 @@ export const reqChangeFSSettings = (data) => requests({
     url: `/localFile/changeFileServerSettings`,
     data
 })
+
+export const reqToggleOriginUI = () => requests({
+    method: 'get',
+    url: `/v2/app/setPreferences?json={"alternative_webui_enabled":false}`,
+})
+
+export const reqMatchVideo = (name) => {
+    return axios.create()({
+    method: 'get',
+    url: `https://api.dandanplay.net/api/v2/search/anime?keyword=${name}`,
+})}

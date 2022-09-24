@@ -76,6 +76,10 @@
     <!-- 底部导航 -->
     <div class="bottom row" size="100%" v-show="!global">
       <van-icon name="add-o" class="setting" @click="queryAdd" />
+      <!-- <van-icon name="search" 
+        v-show="!searchBar"
+        @click="searchBar = true"
+      /> -->
       <van-search
         v-model="search"
         show-action
@@ -85,7 +89,11 @@
         @cancel="onCancel"
         class="search"
       />
+      <van-icon name="setting-o" class="setting" @click="$store.commit('SONTROLSETTINGS',true)"/>
     </div>
+        <van-overlay :show="showSettings">
+      <Settings v-if="showSettings"></Settings>
+    </van-overlay>
     <!-- 限速弹窗 -->
     <van-overlay :show="setSpeedLimit">
       <SetSpeedLimit v-if="setSpeedLimit"></SetSpeedLimit>
@@ -132,6 +140,7 @@ import VideoPlayer from "../videoPlayer";
 import FileServerController from "@/components/fileServerController";
 import AddTorrents from "@/components/addTorrents";
 import SetSpeedLimit from "@/components/setSpeedLimit";
+import Settings from '@/components/settings';
 import Overlay from "@/components/overlay";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
@@ -147,6 +156,7 @@ export default {
     AddTorrents,
     SetSpeedLimit,
     Overlay,
+    Settings,
   },
   data() {
     return {
@@ -211,6 +221,8 @@ export default {
         "uploaded_session",
         "upspeed",
       ],
+      // searchBar:false,
+      
     };
   },
   computed: {
@@ -226,6 +238,7 @@ export default {
       "showFSSettings",
       "showAddTorrents",
       "setSpeedLimit",
+      'showSettings'
     ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
@@ -280,6 +293,7 @@ export default {
     //取消搜索
     onCancel() {
       this.$store.commit("CLEARFILTER");
+      // this.searchBar = false
     },
     //同步数据
     sync() {
@@ -408,6 +422,7 @@ export default {
     background-color: #fff;
     .setting {
       font-size: 52px;
+      padding: 0 5px;
       color: #505050;
     }
     .search {
