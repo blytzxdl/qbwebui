@@ -482,7 +482,7 @@ export default {
     text-align: center;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     .cellList {
-      overflow: scroll;
+      overflow-y: scroll;
       border-radius: 0 0 12px 12px;
       // margin: 0 10px;
       .infoCell {

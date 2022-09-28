@@ -43,6 +43,7 @@ import {
   // Switch,
   // Carousel,
   // CarouselItem,
+  Upload
 } from 'element-ui';
 // Vue.use(Container)
 // Vue.use(Header)
@@ -79,7 +80,7 @@ Vue.use(Option);
 // Vue.use(Switch);
 // Vue.use(Carousel);
 // Vue.use(CarouselItem);
-
+Vue.use(Upload)
 
 
 import {
@@ -107,7 +108,8 @@ import {
   NavBar,
   Popup,
   Radio,
-  RadioGroup
+  RadioGroup,
+  // Uploader
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -134,6 +136,7 @@ Vue.use(NavBar);
 Vue.use(Popup);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+// Vue.use(Uploader);
 
 
 

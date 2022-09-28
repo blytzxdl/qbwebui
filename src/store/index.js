@@ -15,11 +15,11 @@ import {
     reqClearVideoTemp,
     reqVideoSrc,
     reqCheckFileServer,
-    reqRename,
+    // reqRename,
     reqChangeFSSettings,
     reqToggleOriginUI,
 } from '@/api/index';
-import { reqMatchVideo } from '@/api/request';
+// import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
 import trimPath from '@/utils/trimPath';
 import merger from '@/utils/merger';
@@ -82,6 +82,17 @@ export default new Vuex.Store({
             //正常模式
             if (state.filter.mode == 'none') {
                 state.itemInfo = Object.values(itemInfo)
+                state.itemInfo.sort((aVal,bVal)=>{
+                    let index = ['error','missingFiles','queuedUP','downloading','pausedDL','uploading']
+                    let a = index.indexOf(aVal.state)
+                    a = a>=0?a:99
+                    let b = index.indexOf(bVal.state)
+                    b = b>=0?b:99
+                    // console.log(a,b);
+                    // if (a==b) {
+                    // }
+                    return a-b
+                })
             }
             //搜索模式
             if (state.filter.mode == 'search') {
@@ -249,12 +260,17 @@ export default new Vuex.Store({
             await reqPause(hash)
         },
         //添加种子
-        async addTorrents({ commit }, link) {
-            let par = Object.keys(link)
+        async addTorrents({ commit }, data) {
             var forms = new FormData()
-            par.forEach((key) => {
-                forms.append(key, link[key])
-            })
+                for (const key in data) {
+                    forms.append(key, data[key])
+                    if (key == 'fileList') {
+                        data[key].forEach((val,ind)=>{
+                            forms.append('file',val.raw)
+                        })
+                    }
+                }
+            // console.log(forms);
             return await reqAddTorrents(forms)
         },
         //设置限速

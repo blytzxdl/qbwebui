@@ -174,7 +174,7 @@ export default {
       border-bottom: 1px solid #d8d8d8;
     }
     .fileCellGroup {
-      overflow: scroll;
+      overflow-y: scroll;
       padding: 0 10px;
       .fileCell {
         min-height: 80px;

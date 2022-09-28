@@ -5,8 +5,24 @@
     class="addTorrents col"
   >
     <div class="cell row">
+      <div class="option">种子文件</div>
+      <div class="fileField">
+        <el-upload
+          accept=".torrent"
+          :on-change="handleChange"
+          action=""
+          :auto-upload='false'
+          class="fileList col"
+          :limit='5'
+        >
+          <van-button icon="plus" type="primary" class="fileBtn">上传种子</van-button>
+
+        </el-upload>
+      </div>
+    </div>
+    <div class="cell row" v-show="Boolean(!newTorrents.fileList[0])">
       <div class="option">种子链接</div>
-      <div class="field">
+      <div class="linkField">
         <van-field
           v-model="newTorrents.urls"
           rows="1"
@@ -105,6 +121,7 @@ export default {
         tags: "",
         savepath: "",
         paused: true,
+        fileList: [],
       },
     };
   },
@@ -156,6 +173,10 @@ export default {
       this.newTorrents.savepath = "";
       this.$store.commit("CONTROLADDTORRENTS", false);
     },
+    handleChange(file, fileList) {
+      // console.log(fileList.indexOf(file));
+      this.newTorrents.fileList =fileList
+    },
   },
 };
 </script>
@@ -176,16 +197,34 @@ export default {
     .field {
       flex-grow: 1;
       text-align: right;
-      overflow: scroll;
       display: flex;
       align-items: center;
       justify-content: flex-end;
       /deep/.el-input__inner {
         font-size: 28px;
       }
+    }
+    .linkField {
+      // &:extend(.field);
+      flex-grow: 1;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      overflow-y: scroll;
       /deep/.van-field__control {
         line-height: 1.5;
         font-size: 28px;
+      }
+    }
+    .fileField{
+      overflow: hidden;
+      .fileList{
+        width: 100%;
+        /deep/.el-upload{
+          display: flex;
+          justify-content: flex-end;
+        }
       }
     }
   }

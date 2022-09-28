@@ -66,7 +66,7 @@ export default {
     border-radius: 12px;
       max-height: 90%;
     .content {
-      overflow: scroll;
+      overflow-y: scroll;
       border-radius: 12px 12px 0 0;
       flex-grow: 1;
     }

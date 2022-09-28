@@ -89,9 +89,13 @@
         @cancel="onCancel"
         class="search"
       />
-      <van-icon name="setting-o" class="setting" @click="$store.commit('SONTROLSETTINGS',true)"/>
+      <van-icon
+        name="setting-o"
+        class="setting"
+        @click="$store.commit('SONTROLSETTINGS', true)"
+      />
     </div>
-        <van-overlay :show="showSettings">
+    <van-overlay :show="showSettings">
       <Settings v-if="showSettings"></Settings>
     </van-overlay>
     <!-- 限速弹窗 -->
@@ -106,7 +110,7 @@
         :onCancel="cancelDelete"
       >
         <div class="queryDelete col">
-          <div>确定删除"{{ deleteName }}"?</div>
+          <div class="deleteName">确定删除"{{ deleteName }}"?</div>
           <van-checkbox v-model="deleteFiles" shape="square" class="checkDelete"
             >同时删除文件</van-checkbox
           >
@@ -140,7 +144,7 @@ import VideoPlayer from "../videoPlayer";
 import FileServerController from "@/components/fileServerController";
 import AddTorrents from "@/components/addTorrents";
 import SetSpeedLimit from "@/components/setSpeedLimit";
-import Settings from '@/components/settings';
+import Settings from "@/components/settings";
 import Overlay from "@/components/overlay";
 import Global from "./global";
 import { mapState, mapGetters } from "vuex";
@@ -222,7 +226,6 @@ export default {
         "upspeed",
       ],
       // searchBar:false,
-      
     };
   },
   computed: {
@@ -238,7 +241,7 @@ export default {
       "showFSSettings",
       "showAddTorrents",
       "setSpeedLimit",
-      'showSettings'
+      "showSettings",
     ]),
     ...mapGetters(["downloading", "trackers"]),
     //筛选设置
@@ -336,10 +339,12 @@ export default {
     },
     openFSSettings() {
       if (this.fileServerState) {
-        this.$store.dispatch("checkFileServer").then((result) => {
-          this.$store.commit("CONTROLFSSETTINGS", true);
-        }).catch((err) => {
-        });
+        this.$store
+          .dispatch("checkFileServer")
+          .then((result) => {
+            this.$store.commit("CONTROLFSSETTINGS", true);
+          })
+          .catch((err) => {});
       }
     },
   },
@@ -442,13 +447,19 @@ export default {
     }
   }
   .queryDelete {
-    height: 100%;
+    // height: 100%;
+    margin: 20px;
     justify-content: space-evenly;
     align-items: center;
     font-size: 36px;
+    line-height: 1.5;
+    min-height: 200px;
+    text-align: center;
+    .deleteName{
+      width: 100%;
+      word-wrap: break-word;
+    }
     .checkDelete {
-      line-height: 1.5;
-      font-size: 36px;
       // font-size: inherit;
       /deep/.van-checkbox__icon {
         font-size: inherit;
