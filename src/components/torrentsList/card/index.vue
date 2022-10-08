@@ -280,7 +280,9 @@ export default {
       if (this.isLink(val)) {
         return null;
       } else {
-        return this.torrentInfo[val].toString();
+        if (this.torrentInfo[val]) {
+          return this.torrentInfo[val].toString();
+        }
       }
     },
     //判断hash及磁链
