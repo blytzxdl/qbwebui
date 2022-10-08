@@ -2,10 +2,21 @@
 
 ## 使用方法
 
+---
+
+将release的压缩包解压到qBittorrent的根目录，在qBittorrent中设置开启备用web UI，文件位置为dist文件夹所在路径，即最后路径为X:\\...\qBittorrent\dist
+
+
+
+## 编译
+
+---
+
 ```javascript
 yarn serve//调试
 yarn build//编译，编译完的文件放到qBittorrent下/dist/public文件夹内（没有则新建）
 ```
+
 
 
 ## 上线示例 [qBittorrent](https://qb.xiezi08.ink/).
