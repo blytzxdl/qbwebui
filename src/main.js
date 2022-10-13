@@ -4,8 +4,17 @@ import router from './router';
 import store from './store';
 import VueClipboard from 'vue-clipboard2';
 import VueCookies from 'vue-cookies'
+// import IO from 'vue-socket.io';
+// import VueLazyload from 'vue-lazyload'
+
+// Vue.use(VueLazyload)
 Vue.use(VueClipboard)
 Vue.use(VueCookies)
+
+// Vue.use(new IO({
+//   debug:true,
+//   connection:''
+// }))
 
 import {
   // Button,
@@ -109,7 +118,8 @@ import {
   Popup,
   Radio,
   RadioGroup,
-  // Uploader
+  // Uploader,
+  // Lazyload
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -137,7 +147,7 @@ Vue.use(Popup);
 Vue.use(Radio);
 Vue.use(RadioGroup);
 // Vue.use(Uploader);
-
+// Vue.use(Lazyload);
 
 
 

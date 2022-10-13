@@ -20,7 +20,9 @@
         <div class="info col">
           <div class="container1 row">
             <!-- 缩略图 -->
-            <div class="poster" v-if="poster && !swipe"></div>
+            <div class="poster" v-if="poster && !swipe">
+              <img class="poster" :src="poster" />
+            </div>
             <div class="container2 col">
               <!-- 滚动显示名称 -->
               <van-notice-bar
@@ -33,7 +35,7 @@
                 v-if="swipe"
               >
               </van-notice-bar>
-              <div class="name" v-if="!swipe">{{ torrentInfo.name }}</div>
+              <div class="name" v-if="!swipe">{{ (torrentInfo.animeInfo&&torrentInfo.animeInfo.animeTitle)?torrentInfo.animeInfo.animeTitle:null||torrentInfo.name }}</div>
               <!-- 基本信息，状态与分类 -->
               <div class="baseInfo col">
                 <div class="row text">
@@ -60,14 +62,24 @@
                     <div v-if="swipe" class="row">
                       <van-icon name="arrow-up" />
                       <div>{{ torrentInfo.upspeed }}/s</div>
-                      <div v-if="(torrentInfo.up_limit != '0 Bytes')&&(torrentInfo.up_limit != -1)">
+                      <div
+                        v-if="
+                          torrentInfo.up_limit != '0 Bytes' &&
+                          torrentInfo.up_limit != -1
+                        "
+                      >
                         [{{ torrentInfo.up_limit }}/s]
                       </div>
                     </div>
                     <div v-if="swipe" class="row">
                       <van-icon name="arrow-down" />
                       <div>{{ torrentInfo.dlspeed }}/s</div>
-                      <div v-if="(torrentInfo.dl_limit != '0 Bytes')&&(torrentInfo.dl_limit != -1)">
+                      <div
+                        v-if="
+                          torrentInfo.dl_limit != '0 Bytes' &&
+                          torrentInfo.dl_limit != -1
+                        "
+                      >
                         [{{ torrentInfo.dl_limit }}/s]
                       </div>
                     </div>
@@ -148,13 +160,19 @@ export default {
   data() {
     return {
       trackerData: [],
-      poster: false,
       store: this.$store,
     };
   },
   computed: {
     ...mapState(["foldHash"]),
     ...mapGetters(["allStatus"]),
+    poster() {
+      if (this.torrentInfo.animeInfo && this.torrentInfo.animeInfo.imageUrl) {
+        if (this.torrentInfo.animeInfo.imageUrl.includes("default.jpg")) {
+          return null;
+        } else return this.torrentInfo.animeInfo.imageUrl;
+      } else return null;
+    },
     //折叠状态
     fold() {
       return this.torrentInfo.hash != this.foldHash;
@@ -338,11 +356,11 @@ export default {
       display: flex;
       justify-content: space-between;
       .poster {
-        min-width: 156px;
+        max-width: 156px;
         // padding-top: 20px;
         // margin: 12px 12px 0 12px;
         // background-color: red;
-        border: 1px solid gray;
+        // border: 1px solid gray;
         border-radius: 12px;
       }
       .info {

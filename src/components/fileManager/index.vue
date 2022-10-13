@@ -11,16 +11,21 @@
       </div>
       <div class="fileCellGroup">
         <div
-          class="fileCell center row"
           v-for="(ite, index) in workSpace"
+          :class="'fileCell center '+itemStyle(ite)"
           :key="index"
           @click="onClickCell(ite)"
         >
-          <div class="left" v-if="!ite.children">
+          <div class="left" v-if="!ite.children&&!ite.videoInfo">
             {{ ite.label.split(".").reverse()[0] }}
           </div>
+          <div class="poster" v-if="ite.videoInfo">
+            <!-- <img :v-lazy="ite.videoInfo.imgUrl"> -->
+            <img :src="ite.videoInfo.imgUrl">
+          </div>
           <div class="content">
-            {{ ite.label }}
+            {{(ite.videoInfo&&ite.videoInfo.AnimeTitle)?ite.videoInfo.AnimeTitle:ite.label }}
+            {{(ite.videoInfo&&ite.videoInfo.EpisodeTitle)?ite.videoInfo.EpisodeTitle:null}}
           </div>
           <div class="right" v-if="ite.children"><van-icon name="arrow" /></div>
         </div>
@@ -144,6 +149,11 @@ export default {
         Toast(`已复制到剪贴板`);
       }
     },
+    itemStyle(ite){
+      if (ite.videoInfo) {
+        return "col"
+      }else return "row"
+    }
   },
   mounted() {
     this.workSpace = this.files;
@@ -183,6 +193,12 @@ export default {
         line-height: 1.5;
         justify-content: space-between;
         border-bottom: 1px solid #d8d8d8;
+        .poster{
+          img{
+            width: 100%;
+      border-radius: 12px;
+          }
+        }
         .content {
           flex-grow: 1;
           color: #222222;
