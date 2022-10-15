@@ -117,7 +117,7 @@ export default {
   },
   mounted() {
     let allType = {
-      text: ["qbHost", "tempPath", "cert", "key","ffmpegPath"],
+      text: ["qbHost", "tempPath", "cert", "key","ffmpegPath","dandanplayPath"],
       switch: ["secure", "burnSubtitle", "forceTranscode", "share"],
       radio: ["platform", "encode"],
       textarea: ["customInputCommand","customOutputCommand"],
