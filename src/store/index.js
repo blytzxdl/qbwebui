@@ -18,6 +18,7 @@ import {
     // reqRename,
     reqChangeFSSettings,
     reqToggleOriginUI,
+    reqUpdateLibrary
 } from '@/api/index';
 // import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
@@ -54,7 +55,7 @@ export default new Vuex.Store({
             showFSSettings: false,
             showAddTorrents: false,
             setSpeedLimit: false,
-            showSettings:false
+            showSettings: false
         }
     },
     mutations: {
@@ -82,16 +83,19 @@ export default new Vuex.Store({
             //正常模式
             if (state.filter.mode == 'none') {
                 state.itemInfo = Object.values(itemInfo)
-                state.itemInfo.sort((aVal,bVal)=>{
-                    let index = ['error','missingFiles','queuedUP','downloading','pausedDL','uploading']
+                state.itemInfo.sort((aVal, bVal) => {
+                    let index = ['error', 'missingFiles', 'queuedUP', 'downloading', 'pausedDL', 'uploading']
                     let a = index.indexOf(aVal.state)
-                    a = a>=0?a:99
+                    a = a >= 0 ? a : 99
                     let b = index.indexOf(bVal.state)
-                    b = b>=0?b:99
+                    b = b >= 0 ? b : 99
                     // console.log(a,b);
-                    // if (a==b) {
-                    // }
-                    return a-b
+                    if (a == b) {
+                        if (aVal.added_on > bVal.added_on) {
+                            return -1
+                        } else return 1
+                    }
+                    return a - b
                 })
             }
             //搜索模式
@@ -99,7 +103,8 @@ export default new Vuex.Store({
                 state.itemInfo = []
                 for (const hash in itemInfo) {
                     state.filter.par.forEach((val) => {
-                        if (itemInfo[hash].name.toLowerCase().includes(val.toLowerCase()) || itemInfo[hash].category.toLowerCase().includes(val.toLowerCase()) || itemInfo[hash].tags.toLowerCase().includes(val.toLowerCase())) {
+                        let reg = new RegExp(val, 'gim')
+                        if (reg.test(itemInfo[hash].name) || reg.test(itemInfo[hash].category) || reg.test(itemInfo[hash].tags) || (itemInfo[hash].animeInfo && itemInfo[hash].animeInfo.animeTitle && reg.test(itemInfo[hash].animeInfo.animeTitle))) {
                             if (!state.itemInfo.includes(itemInfo[hash])) {
                                 state.itemInfo.push(itemInfo[hash])
                             }
@@ -196,7 +201,7 @@ export default new Vuex.Store({
         CONTROLSETSPEEDLIMIT(state, val) {
             state.setSpeedLimit = val
         },
-        SONTROLSETTINGS(state,val){
+        SONTROLSETTINGS(state, val) {
             state.showSettings = val
         }
     },
@@ -262,14 +267,14 @@ export default new Vuex.Store({
         //添加种子
         async addTorrents({ commit }, data) {
             var forms = new FormData()
-                for (const key in data) {
-                    forms.append(key, data[key])
-                    if (key == 'fileList') {
-                        data[key].forEach((val,ind)=>{
-                            forms.append('file',val.raw)
-                        })
-                    }
+            for (const key in data) {
+                forms.append(key, data[key])
+                if (key == 'fileList') {
+                    data[key].forEach((val, ind) => {
+                        forms.append('file', val.raw)
+                    })
                 }
+            }
             // console.log(forms);
             return await reqAddTorrents(forms)
         },
@@ -316,8 +321,12 @@ export default new Vuex.Store({
             let result = await reqChangeFSSettings(settings)
             commit("CONTROLFSSETTINGS", !result);
         },
-        async toggleOriginUI(){
+        async toggleOriginUI() {
             await reqToggleOriginUI()
+        },
+        updateLibrary({commit}) {
+            reqUpdateLibrary()
+            commit("SONTROLSETTINGS", false)
         }
     },
     getters: {

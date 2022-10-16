@@ -134,6 +134,11 @@ export const reqChangeFSSettings = (data) => requests({
     data
 })
 
+export const reqUpdateLibrary = (data) => requests({
+    method: 'get',
+    url: `/localFile/updateLibrary`,
+})
+
 export const reqToggleOriginUI = () => requests({
     method: 'get',
     url: `/v2/app/setPreferences?json={"alternative_webui_enabled":false}`,

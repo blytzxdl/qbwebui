@@ -51,16 +51,7 @@
           autosize
           v-if="val.type == 'textarea'"
           type="textarea"
-          :placeholder="
-`-ss 0
--i input
--自定义ffmpeg指令生效位置，换行分隔，前后为固定的指令示例，不了解请勿修改
--f hls
--hls_time 10
--hls_segment_type fmp4(h265)/mpegts(h264)
--hls_playlist_type event
--hide_banner
-output/index.m3u8`"
+          :placeholder="`指令设定请参考readme文档，勿轻易修改`"
           id="link"
           input-align="left"
         />
@@ -126,10 +117,10 @@ export default {
   },
   mounted() {
     let allType = {
-      text: ["qbHost", "tempPath", "cert", "key"],
+      text: ["qbHost", "tempPath", "cert", "key","ffmpegPath","dandanplayPath"],
       switch: ["secure", "burnSubtitle", "forceTranscode", "share"],
       radio: ["platform", "encode"],
-      textarea: ["customCommand"],
+      textarea: ["customInputCommand","customOutputCommand"],
       number: ["serverPort", "bitrate"],
     };
     for (const name in this.FSSettings) {

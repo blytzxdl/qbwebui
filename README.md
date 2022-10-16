@@ -14,20 +14,15 @@
 
 ```javascript
 yarn serve//调试
-yarn build//编译，编译完的文件放到qBittorrent下/dist/public文件夹内（没有则新建）
+yarn build//编译
 ```
 
 
 
-## 上线示例 [qBittorrent](https://qb.xiezi08.ink/).
 
-更换方案中，暂时下线
+## 配套文件服务器[FileServer-for-qBittorrent](https://github.com/blytzxdl/FileServer-for-qBittorrent)
 
-
-
-## 配套文件服务器[File-server-for-qBittorrent](https://github.com/blytzxdl/File-server-for-qBittorrent)
-
-windows端服务（后续可能支持linux、openwrt等），配置后可为webUI提供文件内容服务，重点支持视频播放（可转码、烧录字幕）
+windows端服务（后续可能支持linux、openwrt等），配置后可为webUI提供文件内容服务，重点支持视频播放（可转码串流、烧录字幕）
 
 
 
@@ -45,7 +40,7 @@ windows端服务（后续可能支持linux、openwrt等），配置后可为webU
 
   ![preview-0](preview/README/preview-2.png)
 
-- 文件服务器配置弹窗（具体配置说明请看[File-server-for-qBittorrent](https://github.com/blytzxdl/File-server-for-qBittorrent)）
+- 文件服务器配置弹窗（具体配置说明请看[FileServer-for-qBittorrent](https://github.com/blytzxdl/FileServer-for-qBittorrent)）
 
   ![preview-0](preview/README/preview-3.png)
 

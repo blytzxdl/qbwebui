@@ -4,6 +4,9 @@
       <div>切回原版UI(刷新生效)</div>
       <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" />
     </div>
+    <div class="line">
+      <div @click="$store.dispatch('updateLibrary')">更新刮削数据</div>
+    </div>
   </Overlay>
 </template>
 
