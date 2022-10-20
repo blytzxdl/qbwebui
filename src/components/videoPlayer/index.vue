@@ -231,6 +231,7 @@ export default {
         height: 60px;
         overflow: hidden;
         overflow-wrap: break-word;
+        word-break: break-all;
       }
       .vjs-closeBtn {
         width: 60px;

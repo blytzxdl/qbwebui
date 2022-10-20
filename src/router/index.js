@@ -29,20 +29,20 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-    let login = await reqLogin()
-    if (login == true) {
-        if (to.path == '/home') {
+    if (to.path == '/login') {
+        next()
+    }else if (to.path == '/home') {
+        if (from.path == '/home') {
             next()
-        } else {
-            return next('/home')
+        }else{
+            let login = await reqLogin()
+            if (login == true) {
+                next()
+            } else {
+                next('/login')
+            }  
         }
-    } else {
-        if (to.path == '/login') {
-            next()
-        } else {
-            next('/login')
-        }
-    }
+    }else next('/login')
 })
 
 export default router

@@ -14,7 +14,7 @@ module.exports = defineConfig({
     proxy: {
       '/api': {
         // target:'http://localhost:8989',
-        target: 'http://pc.victorytoken.top:7788',
+        target: 'http://localhost:7788',
         // pathRewrite:{'^/api':''},
         secure: false,
         // changeOrigin:true,

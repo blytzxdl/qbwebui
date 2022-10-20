@@ -118,6 +118,7 @@ import {
   Popup,
   Radio,
   RadioGroup,
+  CheckboxGroup,
   // Uploader,
   // Lazyload
 } from 'vant';
@@ -146,6 +147,7 @@ Vue.use(NavBar);
 Vue.use(Popup);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+Vue.use(CheckboxGroup);
 // Vue.use(Uploader);
 // Vue.use(Lazyload);
 

@@ -18,7 +18,8 @@ import {
     // reqRename,
     reqChangeFSSettings,
     reqToggleOriginUI,
-    reqUpdateLibrary
+    reqUpdateLibrary,
+    reqStopTranscode
 } from '@/api/index';
 // import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
@@ -104,7 +105,7 @@ export default new Vuex.Store({
                 for (const hash in itemInfo) {
                     state.filter.par.forEach((val) => {
                         let reg = new RegExp(val, 'gim')
-                        if (reg.test(itemInfo[hash].name) || reg.test(itemInfo[hash].category) || reg.test(itemInfo[hash].tags) || (itemInfo[hash].animeInfo && itemInfo[hash].animeInfo.animeTitle && reg.test(itemInfo[hash].animeInfo.animeTitle))) {
+                        if (reg.test(itemInfo[hash].name) || reg.test(itemInfo[hash].category) || reg.test(itemInfo[hash].tags) || (itemInfo[hash].mediaInfo && itemInfo[hash].mediaInfo.title && reg.test(itemInfo[hash].mediaInfo.title))) {
                             if (!state.itemInfo.includes(itemInfo[hash])) {
                                 state.itemInfo.push(itemInfo[hash])
                             }
@@ -299,8 +300,10 @@ export default new Vuex.Store({
             }
         },
         //清理服务器视频缓存
-        clearVideoTemp() {
+        clearVideoTemp({commit}) {
+            reqStopTranscode()
             reqClearVideoTemp()
+            commit("SONTROLSETTINGS", false)
         },
         //获取视频串流地址
         async getVideoSrc() {
@@ -324,10 +327,13 @@ export default new Vuex.Store({
         async toggleOriginUI() {
             await reqToggleOriginUI()
         },
-        updateLibrary({commit}) {
-            reqUpdateLibrary()
+        updateLibrary({commit},settings) {
+            reqUpdateLibrary(settings)
             commit("SONTROLSETTINGS", false)
-        }
+        },
+        stopTranscode(){
+            reqStopTranscode()
+        },
     },
     getters: {
         //筛选下载中的种子

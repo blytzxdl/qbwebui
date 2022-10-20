@@ -35,7 +35,7 @@
                 v-if="swipe"
               >
               </van-notice-bar>
-              <div class="name" v-if="!swipe">{{ (torrentInfo.animeInfo&&torrentInfo.animeInfo.animeTitle)?torrentInfo.animeInfo.animeTitle:null||torrentInfo.name }}</div>
+              <div class="name" v-if="!swipe">{{ (torrentInfo.mediaInfo&&torrentInfo.mediaInfo.title)?torrentInfo.mediaInfo.title:null||torrentInfo.name }}</div>
               <!-- 基本信息，状态与分类 -->
               <div class="baseInfo col">
                 <div class="row text">
@@ -167,10 +167,10 @@ export default {
     ...mapState(["foldHash"]),
     ...mapGetters(["allStatus"]),
     poster() {
-      if (this.torrentInfo.animeInfo && this.torrentInfo.animeInfo.imageUrl) {
-        if (this.torrentInfo.animeInfo.imageUrl.includes("default.jpg")) {
+      if (this.torrentInfo.mediaInfo && this.torrentInfo.mediaInfo.poster) {
+        if (this.torrentInfo.mediaInfo.poster.includes("default.jpg")) {
           return null;
-        } else return this.torrentInfo.animeInfo.imageUrl;
+        } else return this.torrentInfo.mediaInfo.poster;
       } else return null;
     },
     //折叠状态

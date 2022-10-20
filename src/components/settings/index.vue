@@ -1,11 +1,52 @@
 <template>
-  <Overlay class="settings" :onCancel="closeSettings" :onConfirm="closeSettings">
+  <Overlay
+    class="settings"
+    :onCancel="closeSettings"
+    :onConfirm="closeSettings"
+    :showConfirm="false"
+  >
     <div class="line row">
       <div>切回原版UI(刷新生效)</div>
-      <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" />
+      <div class="btn center">
+      <!-- <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" /> -->
+      执行
+      </div>
     </div>
-    <div class="line">
-      <div @click="$store.dispatch('updateLibrary')">更新刮削数据</div>
+    <div class="line row">
+      <div>刮削数据</div>
+      <van-checkbox
+        name="fullUpdate"
+        v-model="fullUpdate"
+        shape="square"
+        icon-size="1rem"
+        >完全</van-checkbox
+      >
+      <van-checkbox
+        name="overwrite"
+        v-model="overwrite"
+        shape="square"
+        icon-size="1rem"
+        >
+        <div style="color:red">
+        覆盖
+        </div>
+        </van-checkbox
+      >
+      <div
+        :class="`btn ${warn}`"
+        @click="$store.dispatch('updateLibrary', { fullUpdate, overwrite })"
+      >
+        更新
+      </div>
+    </div>
+    <!-- <div class="line" @click="$store.dispatch('stopTranscode')">停止转码</div> -->
+    <div class="line row" >
+      <div>
+      停止转码并清理缓存
+      </div>
+      <div class="btn" @click="$store.dispatch('clearVideoTemp')">
+        执行
+      </div>
     </div>
   </Overlay>
 </template>
@@ -17,6 +58,19 @@ export default {
   name: "Settings",
   components: {
     Overlay,
+  },
+  data() {
+    return {
+      fullUpdate: false,
+      overwrite: false,
+    };
+  },
+  computed:{
+    warn(){
+      if (this.overwrite) {
+        return 'warn'
+      }else return ''
+    }
   },
   methods: {
     closeSettings() {
@@ -36,6 +90,17 @@ export default {
     justify-content: space-between;
     align-content: center;
     align-items: center;
+    .btn {
+      padding: 5px 20px;
+      border: 1px solid #d6d6d6;
+      border-radius: 12px;
+    }
+    .van-checkbox {
+      height: 1rem;
+    }
+    .warn {
+      color: red;
+    }
   }
 }
 </style>

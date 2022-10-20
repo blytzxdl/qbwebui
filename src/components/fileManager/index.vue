@@ -12,22 +12,36 @@
       <div class="fileCellGroup">
         <div
           v-for="(ite, index) in workSpace"
-          :class="'fileCell center '+itemStyle(ite)"
+          :class="'fileCell center ' + itemStyle(ite)"
           :key="index"
           @click="onClickCell(ite)"
         >
-          <div class="left" v-if="!ite.children&&!ite.videoInfo">
+          <div class="left" v-if="!ite.children && !ite.mediaInfo">
             {{ ite.label.split(".").reverse()[0] }}
           </div>
-          <div class="poster" v-if="ite.videoInfo">
-            <!-- <img :v-lazy="ite.videoInfo.imgUrl"> -->
-            <img :src="ite.videoInfo.imgUrl">
+          <div class="poster" v-if="ite.mediaInfo || isSeason(ite)">
+            <!-- <img :v-lazy="ite.mediaInfo.poster"> -->
+            <img
+              v-if="ite.mediaInfo && ite.mediaInfo.poster"
+              :src="ite.mediaInfo.poster"
+            />
           </div>
           <div class="content">
-            {{(ite.videoInfo&&ite.videoInfo.AnimeTitle)?ite.videoInfo.AnimeTitle:ite.label }}
-            {{(ite.videoInfo&&ite.videoInfo.EpisodeTitle)?ite.videoInfo.EpisodeTitle:null}}
+            {{
+              ite.mediaInfo && ite.mediaInfo.title
+                ? ite.mediaInfo.title
+                : ite.label
+            }}
           </div>
-          <div class="right" v-if="ite.children"><van-icon name="arrow" /></div>
+          <div
+            class="content seasonTitle"
+            v-if="ite.mediaInfo && ite.mediaInfo.title && ite.mediaInfo.season"
+          >
+            {{ ite.label }}
+          </div>
+          <div class="right" v-if="ite.children && !ite.mediaInfo">
+            <van-icon name="arrow" />
+          </div>
         </div>
       </div>
       <van-popup
@@ -92,7 +106,7 @@ export default {
         picture: ["jpg", "png"],
         audio: ["mp3", "wav", "flac"],
       },
-      loadingToast:null,
+      loadingToast: null,
     };
   },
   computed: {
@@ -137,25 +151,60 @@ export default {
       Toast.loading({
         message: "生成中...",
         forbidClick: true,
-        duration:0,
+        duration: 0,
       });
       let res = await this.$store.dispatch("tryLocalFile", {
         fileName: this.file,
         met,
       });
-      Toast.clear()
+      Toast.clear();
       if (met == "path") {
         this.$copyText(res);
         Toast(`已复制到剪贴板`);
       }
     },
-    itemStyle(ite){
-      if (ite.videoInfo) {
-        return "col"
-      }else return "row"
-    }
+    itemStyle(ite) {
+      if (ite.mediaInfo) {
+        return "col";
+      } else return "row";
+    },
+    isSeason(ite) {
+      if (ite.children) {
+        let mediaInfo;
+        let title = {};
+        let poster = {};
+        ite.children.forEach((v, i) => {
+          if (v.mediaInfo && v.mediaInfo.seasonTitle) {
+            if (title[v.mediaInfo.seasonTitle]) {
+              title[v.mediaInfo.seasonTitle]++;
+            } else {
+              title[v.mediaInfo.seasonTitle] = 1;
+            }
+          }
+          if (v.mediaInfo && v.mediaInfo.seasonPoster) {
+            if (poster[v.mediaInfo.seasonPoster]) {
+              poster[v.mediaInfo.seasonPoster]++;
+            } else {
+              poster[v.mediaInfo.seasonPoster] = 1;
+            }
+          }
+        });
+        title = Object.keys(title).sort((a, b) => title[b] - title[a])[0];
+        poster = Object.keys(poster).sort((a, b) => poster[ab] - poster[a])[0];
+        mediaInfo = {
+          title,
+          poster,
+          season: true,
+        };
+        return mediaInfo;
+      } else return false;
+    },
   },
   mounted() {
+    this.files.forEach((v) => {
+      v.mediaInfo = this.isSeason(v);
+      // console.log(v);
+    });
     this.workSpace = this.files;
   },
 };
@@ -193,15 +242,20 @@ export default {
         line-height: 1.5;
         justify-content: space-between;
         border-bottom: 1px solid #d8d8d8;
-        .poster{
-          img{
+        .poster {
+          img {
             width: 100%;
-      border-radius: 12px;
+            border-radius: 12px;
           }
         }
         .content {
           flex-grow: 1;
           color: #222222;
+        }
+        .seasonTitle {
+          font-size: 18px;
+          word-break: break-all;
+          color: #666666;
         }
         .left {
           @length: 50px;

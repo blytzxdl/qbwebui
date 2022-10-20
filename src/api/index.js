@@ -134,9 +134,13 @@ export const reqChangeFSSettings = (data) => requests({
     data
 })
 
-export const reqUpdateLibrary = (data) => requests({
-    method: 'get',
+export const reqUpdateLibrary = (settings) => requests({
+    method: 'post',
     url: `/localFile/updateLibrary`,
+    params:{
+        fullUpdate:settings.fullUpdate,
+        overwrite:settings.overwrite
+    }
 })
 
 export const reqToggleOriginUI = () => requests({
@@ -149,3 +153,8 @@ export const reqMatchVideo = (name) => {
     method: 'get',
     url: `https://api.dandanplay.net/api/v2/search/anime?keyword=${name}`,
 })}
+
+export const reqStopTranscode = (data) => requests({
+    method: 'post',
+    url: `/localFile/stopTranscode`,
+})
