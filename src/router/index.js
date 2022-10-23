@@ -20,7 +20,12 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('@/views/Login')
-    }
+    },
+    {
+        path: '/library',
+        name: 'library',
+        component: () => import('@/views/library')
+    },
 ]
 
 const router = new VueRouter({
@@ -32,7 +37,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.path == '/login') {
         next()
     }else if (to.path == '/home') {
-        if (from.path == '/home') {
+        if (from.path == '/home'||from.path == '/library') {
             next()
         }else{
             let login = await reqLogin()
@@ -42,7 +47,20 @@ router.beforeEach(async (to, from, next) => {
                 next('/login')
             }  
         }
-    }else next('/login')
+    }else if (to.path == '/library') {
+        if (from.path == '/home'||from.path == '/library') {
+            next()
+        }else{
+            let login = await reqLogin()
+            if (login == true) {
+                next()
+            } else {
+                next('/login')
+            }  
+        }
+    } else {
+        next('/login')
+    }
 })
 
 export default router

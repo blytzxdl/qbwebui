@@ -158,3 +158,8 @@ export const reqStopTranscode = (data) => requests({
     method: 'post',
     url: `/localFile/stopTranscode`,
 })
+
+export const reqLibrary = (data) => requests({
+    method: 'post',
+    url: `/localFile/library`,
+})

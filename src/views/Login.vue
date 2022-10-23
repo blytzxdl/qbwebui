@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <van-form @submit="onSubmit" class="form">
+    <van-form class="form">
       <div class="logo">qBittorrent</div>
       <div class="row line">
         <van-icon name="user-circle-o" />
@@ -21,10 +21,12 @@
           label="密码"
         />
       </div>
-
-      <van-button plain block native-type="submit" class="submit"
-        >登录</van-button
-      >
+      <div class="row entrance">
+      <van-button @click="onSubmit('torrents')" class="submit"
+        >种子管理</van-button>
+        <van-button @click="onSubmit('library')" class="submit"
+        >媒体库</van-button>
+      </div>
     </van-form>
   </div>
 </template>
@@ -40,8 +42,8 @@ export default {
     };
   },
   methods: {
-    onSubmit(values) {
-      let result = this.$store.dispatch("login", values);
+    onSubmit(to) {
+      let result = this.$store.dispatch("login", {userName:this.userName,password:this.password,to});
       result.then((res) => {
         if (res == false) {
           Toast.fail("登录失败");
@@ -108,6 +110,11 @@ export default {
       border-radius: 48px;
       font-size: 36px;
     }
+  .entrance{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly
+  }
   }
   // .form {
   //   width: 700px;

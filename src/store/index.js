@@ -19,7 +19,8 @@ import {
     reqChangeFSSettings,
     reqToggleOriginUI,
     reqUpdateLibrary,
-    reqStopTranscode
+    reqStopTranscode,
+    reqLibrary
 } from '@/api/index';
 // import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
@@ -56,7 +57,8 @@ export default new Vuex.Store({
             showFSSettings: false,
             showAddTorrents: false,
             setSpeedLimit: false,
-            showSettings: false
+            showSettings: false,
+            library:[],
         }
     },
     mutations: {
@@ -209,13 +211,22 @@ export default new Vuex.Store({
     actions: {
         //登录处理
         async login({ commit }, userInfo) {
-            let { userName, password } = userInfo
+            commit("SONTROLSETTINGS", false)
+            let { userName, password,to } = userInfo
+            console.log(to);
             let result = await reqLogin(userName, password)
             if (result) {
-                router.push('/home')
+                if (to == 'torrents') {
+                    router.push('/home')
+                }else if (to == 'library') {
+                    router.push('/library')
+                }
             } else {
                 return false
             }
+        },
+        async getLibrary({state}){
+            state.library =  await reqLibrary()
         },
         //同步数据
         async getMaindata({ commit, state }) {

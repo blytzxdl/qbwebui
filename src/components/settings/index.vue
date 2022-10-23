@@ -8,8 +8,8 @@
     <div class="line row">
       <div>切回原版UI(刷新生效)</div>
       <div class="btn center">
-      <!-- <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" /> -->
-      执行
+        <!-- <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" /> -->
+        执行
       </div>
     </div>
     <div class="line row">
@@ -26,12 +26,9 @@
         v-model="overwrite"
         shape="square"
         icon-size="1rem"
-        >
-        <div style="color:red">
-        覆盖
-        </div>
-        </van-checkbox
       >
+        <div style="color: red">覆盖</div>
+      </van-checkbox>
       <div
         :class="`btn ${warn}`"
         @click="$store.dispatch('updateLibrary', { fullUpdate, overwrite })"
@@ -40,12 +37,18 @@
       </div>
     </div>
     <!-- <div class="line" @click="$store.dispatch('stopTranscode')">停止转码</div> -->
-    <div class="line row" >
-      <div>
-      停止转码并清理缓存
+    <div class="line row">
+      <div>停止转码并清理缓存</div>
+      <div class="btn" @click="$store.dispatch('clearVideoTemp')">执行</div>
+    </div>
+    <div class="line row">
+      <div>切换至</div>
+      <div class="btn" @click="$store.dispatch('login', { to: 'torrents' })">
+        <van-icon name="guide-o" />
+        种子管理
       </div>
-      <div class="btn" @click="$store.dispatch('clearVideoTemp')">
-        执行
+      <div class="btn" @click="$store.dispatch('login', { to: 'library' })">
+        <van-icon name="guide-o" />媒体库
       </div>
     </div>
   </Overlay>
@@ -65,16 +68,16 @@ export default {
       overwrite: false,
     };
   },
-  computed:{
-    warn(){
+  computed: {
+    warn() {
       if (this.overwrite) {
-        return 'warn'
-      }else return ''
-    }
+        return "warn";
+      } else return "";
+    },
   },
   methods: {
     closeSettings() {
-      this.$store.commit("SONTROLSETTINGS", false);
+      this.$store.commit("SONTROLSETTINGS", false)
     },
   },
 };
