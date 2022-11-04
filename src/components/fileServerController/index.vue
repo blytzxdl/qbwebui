@@ -68,7 +68,7 @@
             <van-radio name="nvidia">nvidia</van-radio>
             <van-radio name="intel">intel</van-radio>
             <van-radio name="amd">amd</van-radio>
-            <van-radio name="other">other</van-radio>
+            <van-radio name="vaapi">vaapi</van-radio>
           </div>
         </van-radio-group>
         <van-radio-group

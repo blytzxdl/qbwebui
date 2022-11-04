@@ -5,13 +5,12 @@
     :onConfirm="closeSettings"
     :showConfirm="false"
   >
-    <div class="line row">
+    <!-- <div class="line row">
       <div>切回原版UI(刷新生效)</div>
-      <div class="btn center">
-        <!-- <van-icon name="guide-o" @click="$store.dispatch('toggleOriginUI')" /> -->
+      <div class="btn center" @click="$store.dispatch('toggleOriginUI')">
         执行
       </div>
-    </div>
+    </div> -->
     <div class="line row">
       <div>刮削数据</div>
       <van-checkbox
