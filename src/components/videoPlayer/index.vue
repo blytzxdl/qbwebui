@@ -70,18 +70,13 @@ export default {
     },
   },
   methods: {
-    playVideo() {
-      this.$store
-        .dispatch("getVideoSrc")
-        .then((res) => {
-          this.player.src({
-            src: res,
-            type: "application/x-mpegURL",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    async playVideo() {
+      try {
+        let src = await this.$store.dispatch("getVideoSrc")
+        this.player.src(src);
+      } catch (error) {
+        console.log(err);
+      }
     },
     showControl() {
       // console.log("show");

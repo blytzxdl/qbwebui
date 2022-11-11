@@ -5,7 +5,7 @@
     class="overlay"
   >
     <van-cell-group :border="false">
-      <template v-for="val in settings">
+      <template v-for="val in FSSettings">
         <van-field
           v-if="val.type == 'text'"
           :key="val.name"
@@ -13,7 +13,7 @@
           v-model="val.value"
           :name="val.name"
           :label="val.name"
-          :placeholder="FSSettings[val.name].toString()"
+          :placeholder="val.placeholder"
           input-align="right"
         >
         </van-field>
@@ -25,7 +25,7 @@
           v-model="val.value"
           :name="val.name"
           :label="val.name"
-          :placeholder="FSSettings[val.name].toString()"
+          :placeholder="val.placeholder"
           input-align="right"
         >
         </van-field>
@@ -45,44 +45,26 @@
           :key="val.name"
           :name="val.name"
           :label="val.name"
-          class="line customCommand col"
+          class="line col"
           v-model="val.value"
           rows="1"
           autosize
           v-if="val.type == 'textarea'"
           type="textarea"
-          :placeholder="`指令设定请参考readme文档，勿轻易修改`"
-          id="link"
+          :placeholder="val.placeholder"
           input-align="left"
         />
         <van-radio-group
           class="line row radio-group"
-          v-if="val.name == 'platform'"
+          v-if="val.type == 'radios'"
           :key="val.name"
           v-model="val.value"
           direction="horizontal"
           icon-size="16px"
         >
-          <div class="platform">platform</div>
+          <div :class="val.name">{{val.name}}</div>
           <div class="radios row">
-            <van-radio name="nvidia">nvidia</van-radio>
-            <van-radio name="intel">intel</van-radio>
-            <van-radio name="amd">amd</van-radio>
-            <van-radio name="vaapi">vaapi</van-radio>
-          </div>
-        </van-radio-group>
-        <van-radio-group
-          :key="val.name"
-          v-if="val.name == 'encode'"
-          class="line row radio-group"
-          v-model="val.value"
-          direction="horizontal"
-          icon-size="16px"
-        >
-          <div class="encode">encode</div>
-          <div class="radios row">
-            <van-radio name="h265">h265</van-radio>
-            <van-radio name="h264">h264</van-radio>
+            <van-radio v-for="v in val.radios" :key="v.name" :name="v.name">{{v.name}}</van-radio>
           </div>
         </van-radio-group>
       </template>
@@ -101,11 +83,17 @@ export default {
   },
   data() {
     return {
-      settings: [],
-    };
+      };
   },
   computed: {
     ...mapState(["FSSettings"]),
+    settings(){
+      let temp={}
+      for (const key in this.FSSettings) {
+        temp[key] = this.FSSettings[key].value
+      }
+      return temp
+    } ,
   },
   methods: {
     confirmFSSettings() {
@@ -116,29 +104,29 @@ export default {
     },
   },
   mounted() {
-    let allType = {
-      text: ["qbHost", "tempPath", "cert", "key","ffmpegPath","dandanplayPath"],
-      switch: ["secure", "burnSubtitle", "forceTranscode", "share","autoBitrate"],
-      radio: ["platform", "encode"],
-      textarea: ["customInputCommand","customOutputCommand"],
-      number: ["serverPort", "bitrate"],
-    };
-    for (const name in this.FSSettings) {
-      let type;
-      let placeholder;
-      for (const key in allType) {
-        if (allType[key].includes(name)) {
-          type = key;
-          break;
-        }
-      }
-      let set = {
-        name,
-        value: this.FSSettings[name],
-        type,
-      };
-      this.settings.push(set);
-    }
+    // let allType = {
+    //   text: ["qbHost", "tempPath", "cert", "key","ffmpegPath","dandanplayPath"],
+    //   switch: ["secure", "burnSubtitle", "forceTranscode", "share","autoBitrate"],
+    //   radio: ["platform", "encode"],
+    //   textarea: ["customInputCommand","customOutputCommand"],
+    //   number: ["serverPort", "bitrate"],
+    // };
+    // for (const name in this.FSSettings) {
+    //   let type;
+    //   let placeholder;
+    //   for (const key in allType) {
+    //     if (allType[key].includes(name)) {
+    //       type = key;
+    //       break;
+    //     }
+    //   }
+    //   let set = {
+    //     name,
+    //     value: this.FSSettings[name],
+    //     type,
+    //   };
+    //   this.settings.push(set);
+    // }
   },
 };
 </script>

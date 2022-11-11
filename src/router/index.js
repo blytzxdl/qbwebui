@@ -35,6 +35,14 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.path == '/login') {
+        if (from.path == '/home'||from.path == '/library'){
+            if (await reqLogin()) {
+                next(from.path)
+                return
+            }else{
+                next('/login')
+            }
+        }
         next()
     }else if (to.path == '/home') {
         if (from.path == '/home'||from.path == '/library') {

@@ -100,7 +100,7 @@ export const reqToggleSpeedLimitsMode = () => requests({
 
 export const reqLocalFile = (data) => requests({
     method: 'post',
-    url: `/localFile`,
+    url: `/localFile/getFile`,
     data
 })
 
@@ -109,9 +109,10 @@ export const reqClearVideoTemp = () => requests({
     url: `/localFile/clearVideoTemp`,
 })
 
-export const reqVideoSrc = () => requests({
+export const reqVideoSrc = (method) => requests({
     method: 'get',
     url: `/localFile/videoSrc`,
+    data:{method}
 })
 
 export const reqCheckFileServer = () => requests({

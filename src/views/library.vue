@@ -29,7 +29,7 @@
               <!-- <img :v-lazy="ite.mediaInfo.poster"> -->
               <img
                 v-if="ite.poster"
-                :src="`/api/localFile/img.jpg?type=picture&path=${encodeURIComponent(
+                :src="`/api/localFile/getFile/img.jpg?type=picture&path=${encodeURIComponent(
                   ite.poster
                 )}`"
               />
