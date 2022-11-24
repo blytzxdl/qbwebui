@@ -20,7 +20,10 @@ import {
     reqToggleOriginUI,
     reqUpdateLibrary,
     reqStopTranscode,
-    reqLibrary
+    reqLibrary,
+    reqLibrarySettings,
+    reqUpdateLibrarySettings,
+    reqUpdateDir
 } from '@/api/index';
 // import { reqMatchVideo } from '@/api/request';
 import renderVal from '@/utils/renderVal';
@@ -58,7 +61,9 @@ export default new Vuex.Store({
             showAddTorrents: false,
             setSpeedLimit: false,
             showSettings: false,
-            library:[],
+            library: {},
+            librarySettings: {},
+            showLibrarySettings: false
         }
     },
     mutations: {
@@ -206,27 +211,30 @@ export default new Vuex.Store({
         },
         SONTROLSETTINGS(state, val) {
             state.showSettings = val
+        },
+        CONTROLLIBRARYSETTINGS(state,val){
+            state.showLibrarySettings = val
         }
     },
     actions: {
         //登录处理
         async login({ commit }, userInfo) {
             commit("SONTROLSETTINGS", false)
-            let { userName, password,to } = userInfo
+            let { userName, password, to } = userInfo
             console.log(to);
             let result = await reqLogin(userName, password)
             if (result) {
                 if (to == 'torrents') {
                     router.push('/home')
-                }else if (to == 'library') {
+                } else if (to == 'library') {
                     router.push('/library')
                 }
             } else {
                 return false
             }
         },
-        async getLibrary({state}){
-            state.library =  await reqLibrary()
+        async getLibrary({ state }) {
+            state.library = await reqLibrary()
         },
         //同步数据
         async getMaindata({ commit, state }) {
@@ -301,17 +309,17 @@ export default new Vuex.Store({
         },
         //发送文件内容请求
         async tryLocalFile({ commit, dispatch, state }, file) {
-            let { fileName, met } = file
-            let res = await reqLocalFile(fileName)
+            let { fileInfo, met } = file
+            let res = await reqLocalFile(fileInfo)
             if (res && (met == 'play')) {
-                state.fileName = fileName.name
+                state.fileName = fileInfo.name ? fileInfo.name : fileInfo.label ? fileInfo.label : ''
                 commit('CONTROLVIDEO', true)
             } else if (res && (met == 'path')) {
                 return dispatch('getVideoSrc')
             }
         },
         //清理服务器视频缓存
-        clearVideoTemp({commit}) {
+        clearVideoTemp({ commit }) {
             reqStopTranscode()
             reqClearVideoTemp()
             commit("SONTROLSETTINGS", false)
@@ -338,13 +346,29 @@ export default new Vuex.Store({
         async toggleOriginUI() {
             await reqToggleOriginUI()
         },
-        updateLibrary({commit},settings) {
+        updateLibrary({ commit }, settings) {
             reqUpdateLibrary(settings)
             commit("SONTROLSETTINGS", false)
         },
-        stopTranscode(){
+        stopTranscode() {
             reqStopTranscode()
         },
+        async getLibrarySettings({ state }) {
+            state.librarySettings = await reqLibrarySettings()
+        },
+        async updateLibrarySettings({ state }, settings) {
+            let res = await reqUpdateLibrarySettings(settings)
+            if (res.success === true) {
+                state.showLibrarySettings = false
+            }
+            return res
+        },
+        async updateLibrary({ state }, data) {
+            return await reqUpdateLibrary(data)
+        },
+        async updateDir({state},data){
+            return await reqUpdateDir(data)
+        }
     },
     getters: {
         //筛选下载中的种子

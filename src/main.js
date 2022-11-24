@@ -120,7 +120,8 @@ import {
   RadioGroup,
   CheckboxGroup,
   // Uploader,
-  // Lazyload
+  Lazyload,
+  Image as VanImage
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -149,7 +150,8 @@ Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(CheckboxGroup);
 // Vue.use(Uploader);
-// Vue.use(Lazyload);
+Vue.use(Lazyload);
+Vue.use(VanImage);
 
 
 

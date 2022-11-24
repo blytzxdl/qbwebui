@@ -5,40 +5,63 @@
         <div class="left" @click="onClickLeft">
           <van-icon name="arrow-left" />
         </div>
+        <div
+          class="middle row center"
+          v-if="workSpace.result == 'season' || workSpace.result == 'tvshow'"
+        >
+          <van-icon name="replay" @click="updateDir()" />
+          <div class="little">更新当前目录</div>
+        </div>
         <div :class="`FS`" @click="openFSSettings">
           <van-icon name="desktop-o" />
         </div>
       </div>
       <van-list
         :class="`fileCellGroup ${
-          workSpace[0].children ? 'seasons' : 'epsoids'
+          workSpace.result == 'episodedetails' ? 'epsoids' : 'seasons'
         }`"
         v-model="loading"
         :finished="finished"
         @load="onLoad"
         :immediate-check="false"
       >
-        <template v-for="(ite, index) in workSpace">
+        <template v-for="(ite, index) in workSpace.children">
           <div
             v-if="index < showNum"
-            :class="`fileCell center ${ite.children ? 'season' : 'epsoid'}`"
-            :key="ite.label"
+            :class="`fileCell col ${
+              ite.result == 'episodedetails' ? 'epsoid' : 'season'
+            } ${!ite.result || !ite.poster ? 'normal' : ''}`"
+            :key="ite.path"
             @click="onClickCell(ite)"
           >
-            <div class="poster" v-if="ite.poster">
+            <div class="poster col center" v-if="ite.poster">
               <!-- <img :v-lazy="ite.mediaInfo.poster"> -->
-              <img
-                v-if="ite.poster"
+              <!-- <img
+                :src="`/api/localFile/getFile/img.jpg?type=picture&path=${encodeURI(
+                  ite.poster
+                )}`"
+              /> -->
+              <van-image
+                class="posterImage"
+                fit="contain"
+                lazy-load
                 :src="`/api/localFile/getFile/img.jpg?type=picture&path=${encodeURIComponent(
                   ite.poster
                 )}`"
               />
             </div>
             <div class="title col center">
-              <div class="content">
+              <div class="content van-multi-ellipsis--l2">
                 {{ ite.title ? ite.title : ite.label }}
               </div>
-              <div class="content originalTitle" v-if="ite.children">
+              <div
+                class="content originalTitle van-ellipsis"
+                v-if="
+                  ite.result != 'episodedetails' &&
+                  ite.title &&
+                  ite.title != ite.label
+                "
+              >
                 {{ ite.label }}
               </div>
             </div>
@@ -47,6 +70,10 @@
       </van-list>
       <!-- 底部导航 -->
       <div class="bottom row" size="100%">
+        <van-icon
+          name="plus"
+          @click="$store.commit('CONTROLLIBRARYSETTINGS', true)"
+        />
         <van-search
           v-model="search"
           show-action
@@ -86,6 +113,9 @@
     <van-overlay :show="showSettings">
       <Settings v-if="showSettings"></Settings>
     </van-overlay>
+    <van-overlay :show="showLibrarySettings">
+      <LibrarySettings v-if="showLibrarySettings"></LibrarySettings>
+    </van-overlay>
   </div>
 </template>
 
@@ -96,13 +126,15 @@ import renderSize from "@/utils/renderSize";
 import VideoPlayer from "../components/videoPlayer";
 import FileServerController from "@/components/fileServerController";
 import Settings from "@/components/settings";
-
+import LibrarySettings from "@/components/librarySettings";
+// import path from 'path';
 export default {
   name: "library",
   components: {
     VideoPlayer,
     FileServerController,
     Settings,
+    LibrarySettings,
   },
   data() {
     return {
@@ -111,21 +143,33 @@ export default {
       loading: false,
       finished: false,
       showNum: 10,
-      workSpace: [{label:"本功能需要先更新刮削数据",children:{}}],
+      workSpace: {
+        children: [{ label: "本功能需要先建立媒体库", children: {} }],
+      },
       backSpace: [],
-      searchSpace: [],
+      // backSpace: [],
       workIndex: "",
       operate: false,
       loadingToast: null,
       file: { label: "" },
       search: "",
+      // scoll:''
     };
   },
   computed: {
-    ...mapState(["playVideo", "library", "showFSSettings", "showSettings"]),
+    ...mapState([
+      "playVideo",
+      "library",
+      "showFSSettings",
+      "showSettings",
+      "showLibrarySettings",
+    ]),
     fileSize() {
       return renderSize(this.file.size);
     },
+    // rootPath(){
+    //   return path.resolve()
+    // }
   },
   methods: {
     //无限滚动判定
@@ -141,16 +185,32 @@ export default {
       }, 300);
     },
     onClickLeft() {
-      if (this.backSpace.length >= 1) {
+      if (this.backSpace.length > 0) {
         this.workSpace = this.backSpace.pop();
       }
     },
     onClickCell(ite) {
-      // console.log(ite.label);
       if (ite.children) {
-        this.backSpace.push(this.workSpace);
-        this.workIndex = ite.label;
-        this.workSpace = ite.children;
+        if (ite.children.length > 0) {
+          this.backSpace.push(this.workSpace);
+          this.rootPath = ite.path;
+          this.workIndex = ite.label;
+          this.workSpace = ite;
+          if (
+            this.workSpace.result == "tvshow" ||
+            this.workSpace.result == "season"
+          ) {
+            this.workSpace.children.sort((a, b) =>
+              a.episode && b.episode
+                ? a.episode - b.episode
+                : !a.episode
+                ? 1
+                : !b.episode
+                ? -1
+                : 1
+            );
+          }
+        }
       } else {
         this.file = ite;
         this.file.rootPath = this.rootPath;
@@ -162,20 +222,20 @@ export default {
       Toast.loading({
         message: "生成中...",
         forbidClick: true,
-        duration: 0,
+        duration: 5000,
       });
       let res = await this.$store.dispatch("tryLocalFile", {
-        fileName: this.file,
+        fileInfo: this.file,
         met,
       });
       Toast.clear();
       if (met == "path") {
-        this.$copyText(res);
+        this.$copyText(`window.location.origin${res.src}`);
         Toast(`已复制到剪贴板`);
       }
     },
     openFSSettings() {
-      if (this.workSpace[0]) {
+      if (this.workSpace) {
         this.$store
           .dispatch("checkFileServer")
           .then((result) => {
@@ -186,51 +246,51 @@ export default {
     },
     //搜索参数处理
     onSearch(input) {
-      if (this.searchSpace.length > 0) {
-        this.workSpace = this.searchSpace.pop();
-      }
-      let searchParams = input.split(" ");
-      // console.log(searchParams);
-      let temp = [];
-      searchParams.forEach((v) => {
-        if (v.length > 0) {
-          temp.push(v);
-        }
-      });
-      searchParams = temp;
-      if (searchParams) {
-        temp = [];
-        this.workSpace.forEach((item) => {
-          searchParams.forEach((val) => {
-            let reg = new RegExp(val, "gim");
-            if (reg.test(item.label) || reg.test(item.title)) {
-              if (!temp.includes(item)) {
-                temp.push(item);
+      if (this.workSpace.children.length > 0) {
+        this.backSpace.push(this.workSpace);
+        let searchParams = input.split(" ").filter((v) => v.length > 0);
+        if (searchParams.length > 0) {
+          this.workSpace = {
+            label: "",
+            children: this.workSpace.children.filter((item) => {
+              for (let index = 0; index < searchParams.length; index++) {
+                const val = searchParams[index];
+                let reg = new RegExp(val, "gim");
+                if (reg.test(item.label) || reg.test(item.title)) {
+                  return true;
+                }
               }
-            }
-          });
-        });
-        this.searchSpace.push(this.workSpace);
-        if (temp.length > 0) {
-          this.workSpace = temp;
-        } else this.workSpace = [{}];
+            }),
+          };
+        }
+      }
+      if (this.workSpace.children.length == 0) {
+        this.workSpace.children = [{ label: "无结果" }];
       }
     },
     //取消搜索
     onCancel() {
-      // console.log('can');
-      this.workSpace = this.searchSpace.pop();
+      if (this.backSpace.length > 0) {
+        this.workSpace = this.backSpace.pop();
+      }
+    },
+    updateDir() {
+      this.$store.dispatch("updateDir", { dirPath: this.rootPath });
     },
   },
   mounted() {
+    this.$store.dispatch("getLibrarySettings");
     this.$store
       .dispatch("getLibrary")
       .then((result) => {
         if (this.library) {
-            this.workSpace = this.library;
-            while (this.workSpace.length == 1) {
-              this.workSpace = this.workSpace[0].children;
-            }       
+          this.workSpace = this.library;
+          while (this.workSpace.children.length == 1) {
+            this.workSpace = this.workSpace.children[0];
+            if (this.workSpace.path) {
+              this.rootPath = this.workSpace.path;
+            }
+          }
         }
       })
       .catch((err) => {});
@@ -258,6 +318,9 @@ export default {
       border-radius: 12px;
       border-bottom: 1px solid #d8d8d8;
       background-color: #fff;
+      .little {
+        font-size: 24px;
+      }
     }
     .seasons {
       flex-direction: row;
@@ -272,11 +335,23 @@ export default {
       display: flex;
       word-break: break-all;
       height: 100%;
+      align-content: flex-start;
       .season {
-        width: 40%;
-        min-height: 80px;
+        width: 45%;
+        height: 640px;
+        .title {
+          height: 3rem;
+        }
       }
       .epsoid {
+        width: 45%;
+        height: 280px;
+        .title {
+          height: 2rem;
+          .content {
+            font-size: 28px;
+          }
+        }
       }
       .fileCell {
         background-color: #fff;
@@ -289,16 +364,17 @@ export default {
         border: 1px solid #ebebeb;
         border-radius: 12px;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        overflow: hidden;
         .poster {
-          img {
-            width: 100%;
-            border-radius: 12px 12px 0px 0px;
-          }
+          width: 100%;
+          // height: 76%;
+          overflow: hidden;
         }
         .title {
+          // height: 160px;
           padding: 10px;
           .content {
-            flex-grow: 1;
+            // flex-grow: 1;
             color: #222222;
           }
           .originalTitle {
@@ -321,8 +397,14 @@ export default {
           color: #666666;
         }
       }
+      /deep/.van-list__loading {
+        width: 100%;
+      }
     }
-
+    .fileCell.normal {
+      width: 100%;
+      height: 3rem;
+    }
     .van-popup {
       max-height: 50%;
       min-height: 250px;

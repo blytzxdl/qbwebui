@@ -135,15 +135,6 @@ export const reqChangeFSSettings = (data) => requests({
     data
 })
 
-export const reqUpdateLibrary = (settings) => requests({
-    method: 'post',
-    url: `/localFile/updateLibrary`,
-    params:{
-        fullUpdate:settings.fullUpdate,
-        overwrite:settings.overwrite
-    }
-})
-
 export const reqToggleOriginUI = () => requests({
     method: 'get',
     url: `/v2/app/setPreferences?json={"alternative_webui_enabled":false}`,
@@ -161,6 +152,29 @@ export const reqStopTranscode = (data) => requests({
 })
 
 export const reqLibrary = (data) => requests({
-    method: 'post',
+    method: 'get',
     url: `/localFile/library`,
+})
+
+export const reqLibrarySettings = () => requests({
+    method: 'get',
+    url: `/localFile/librarySettings`,
+})
+
+export const reqUpdateLibrarySettings = (data) => requests({
+    method: 'post',
+    url: `/localFile/updateLibrarySettings`,
+    data
+})
+
+export const reqUpdateLibrary = (data) => requests({
+    method: 'post',
+    url: `/localFile/updateLibrary`,
+    data
+})
+
+export const reqUpdateDir = (data) => requests({
+    method: 'post',
+    url: `/localFile/updateDir`,
+    data
 })

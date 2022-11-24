@@ -15,10 +15,10 @@ requests.interceptors.request.use((config) => {
 })
 //响应拦截器
 requests.interceptors.response.use((res) => {
-    if (res.data == 'Fails.') {
+    if (res.data === 'Fails.') {
         return false
     }
-    if (res.data == 'Ok.') {
+    if (res.data === 'Ok.') {
         return true
     }
     return res.data

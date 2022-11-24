@@ -151,15 +151,15 @@ export default {
       Toast.loading({
         message: "生成中...",
         forbidClick: true,
-        duration: 0,
+        duration: 5000,
       });
       let res = await this.$store.dispatch("tryLocalFile", {
-        fileName: this.file,
+        fileInfo: this.file,
         met,
       });
       Toast.clear();
       if (met == "path") {
-        this.$copyText(res);
+        this.$copyText(`window.location.origin${res.src}`);
         Toast(`已复制到剪贴板`);
       }
     },
