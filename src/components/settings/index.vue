@@ -11,30 +11,6 @@
         执行
       </div>
     </div> -->
-    <div class="line row">
-      <div>刮削数据</div>
-      <van-checkbox
-        name="fullUpdate"
-        v-model="fullUpdate"
-        shape="square"
-        icon-size="1rem"
-        >完全</van-checkbox
-      >
-      <van-checkbox
-        name="overwrite"
-        v-model="overwrite"
-        shape="square"
-        icon-size="1rem"
-      >
-        <div style="color: red">覆盖</div>
-      </van-checkbox>
-      <div
-        :class="`btn ${warn}`"
-        @click="$store.dispatch('updateLibrary', { fullUpdate, overwrite })"
-      >
-        更新
-      </div>
-    </div>
     <!-- <div class="line" @click="$store.dispatch('stopTranscode')">停止转码</div> -->
     <div class="line row">
       <div>停止转码并清理缓存</div>

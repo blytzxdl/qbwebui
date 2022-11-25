@@ -6,7 +6,7 @@
     </template> -->
       <!-- 基础卡片 -->
       <div class="base row">
-        <div class="control row">
+        <div class="control row" v-if="!poster">
           <van-icon
             :class="`stateIcon ${allStatus[torrentInfo.state].statusIconColor}`"
             :name="allStatus[torrentInfo.state].icon"
@@ -14,7 +14,7 @@
               allStatus[torrentInfo.state].click.call(store, torrentInfo.hash)
             "
           />
-          <div class="split" v-if="!poster"></div>
+          <div class="split"></div>
         </div>
         <!-- 信息区域 -->
         <div class="info col">
@@ -35,7 +35,13 @@
                 v-if="swipe"
               >
               </van-notice-bar>
-              <div class="name" v-if="!swipe">{{ (torrentInfo.mediaInfo&&torrentInfo.mediaInfo.title)?torrentInfo.mediaInfo.title:null||torrentInfo.name }}</div>
+              <div class="name" v-if="!swipe">
+                {{
+                  torrentInfo.mediaInfo && torrentInfo.mediaInfo.title
+                    ? torrentInfo.mediaInfo.title
+                    : null || torrentInfo.name
+                }}
+              </div>
               <!-- 基本信息，状态与分类 -->
               <div class="baseInfo col">
                 <div class="row text">
@@ -130,6 +136,50 @@
             $bus.$emit('controlInfo', { to: true, root: torrentInfo.save_path })
           "
           ><van-icon name="more-o" color="#0dbc79"
+        /></van-cell>
+        <van-cell
+          class="infoCell"
+          title="继续"
+          @click="
+            $store.dispatch('controlTorrent', {
+              met: 'resume',
+              hash: torrentInfo.hash,
+            })
+          "
+          ><van-icon name="play-circle-o" color="#0dbc79"
+        /></van-cell>
+        <van-cell
+          class="infoCell"
+          title="暂停"
+          @click="
+            $store.dispatch('controlTorrent', {
+              met: 'pause',
+              hash: torrentInfo.hash,
+            })
+          "
+          ><van-icon name="pause-circle-o" color="#0dbc79"
+        /></van-cell>
+        <van-cell
+          class="infoCell"
+          title="校验"
+          @click="
+            $store.dispatch('controlTorrent', {
+              met: 'check',
+              hash: torrentInfo.hash,
+            })
+          "
+          ><van-icon name="warning-o" color="#0dbc79"
+        /></van-cell>
+        <van-cell
+          class="infoCell"
+          title="强制继续"
+          @click="
+            $store.dispatch('controlTorrent', {
+              met: 'forceResume',
+              hash: torrentInfo.hash,
+            })
+          "
+          ><van-icon name="play-circle-o" color="#0dbc79"
         /></van-cell>
         <!-- 将基本信息以单元格显示，hash与磁力链接以图标显示，点击复制 -->
         <van-cell
@@ -356,6 +406,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .poster {
+        margin: 0 0 0 4px;
         max-width: 156px;
         // padding-top: 20px;
         // margin: 12px 12px 0 12px;

@@ -17,7 +17,7 @@ module.exports = defineConfig({
         target: 'https://192.168.1.2:6438',
         // pathRewrite:{'^/api':''},
         secure: false,
-        // changeOrigin:true,
+        changeOrigin:true,
       },
       // '/socket': {// 设置websocket代理
         // target: 'https://localhost:7788',

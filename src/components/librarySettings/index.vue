@@ -4,77 +4,83 @@
     :onConfirm="confirmLibrarySettings"
     class="overlay"
   >
-    <div class="line addLibrary">
-      <van-button
-        type="primary"
-        plain
-        round
-        icon="plus"
-        size="large"
-        @click="addLibrary()"
-        >添加媒体库</van-button
-      >
-    </div>
-    <template v-for="(val, index) in librarySettings.library.cells">
-      <div class="line col libraries" :key="index">
-        <div class="row library">
-          <div class="libraryInfo col">
-            <van-field
-              class="libraryName"
-              v-model="val.name"
-              label="名称"
-              placeholder="留空则默认为路径文件夹名"
-            />
-            <van-field
-              class="libraryPath"
-              v-model="val.value"
-              label="路径"
-              placeholder="如D:/movie或D:\\movie"
-            />
-          </div>
-          <div class="libraryController col">
-            <van-button
-              plain
-              hairline
-              round
-              icon="replay"
-              type="primary"
-              @click="updateLibrary(val)"
-              >更新</van-button
-            >
-            <van-button
-              plain
-              hairline
-              round
-              icon="delete-o"
-              type="danger"
-              @click="deleteLibrary(index)"
-              >删除</van-button
-            >
+    <div class="base">
+      <div class="line addLibrary">
+        <van-button
+          type="primary"
+          plain
+          round
+          icon="plus"
+          size="large"
+          @click="addLibrary()"
+          >添加媒体库</van-button
+        >
+      </div>
+      <template v-for="(val, index) in librarySettings.library.cells">
+        <div class="line col libraries" :key="index">
+          <div class="row library">
+            <div class="libraryInfo col">
+              <van-field
+                class="libraryName"
+                v-model="val.name"
+                label="名称"
+                placeholder="留空则默认为路径文件夹名"
+              />
+              <van-field
+                class="libraryPath"
+                v-model="val.value"
+                label="路径"
+                placeholder="如D:/movie或D:\\movie"
+              />
+            </div>
+            <div class="libraryController col">
+              <van-button
+                plain
+                hairline
+                round
+                icon="replay"
+                type="primary"
+                @click="updateLibrary(val)"
+                >更新</van-button
+              >
+              <van-button
+                plain
+                hairline
+                round
+                icon="delete-o"
+                type="danger"
+                @click="deleteLibrary(index)"
+                >删除</van-button
+              >
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <van-cell-group :border="false">
-      <div class="line">数据来源,当前版本只可使用弹弹Play</div>
-      <template v-for="val in librarySettings.source.cells">
-        <van-radio-group
-          class="line row radio-group"
-          v-if="val.type == 'radios'"
-          :key="val.name"
-          v-model="val.value"
-          direction="horizontal"
-          icon-size="16px"
-        >
-          <div :class="val.name">{{ val.name }}</div>
-          <div class="radios row">
-            <van-radio v-for="v in val.radios" :key="v.name" :name="v.value" :disabled="v.name!='弹弹Play'">{{
-              v.name
-            }}</van-radio>
-          </div>
-        </van-radio-group>
       </template>
-    </van-cell-group>
+      <van-cell-group :border="false">
+        <div class="line">数据来源,当前版本只可使用弹弹Play</div>
+        <template v-for="val in librarySettings.source.cells">
+          <van-radio-group
+            class="line col radio-group"
+            v-if="val.type == 'radios'"
+            :key="val.name"
+            v-model="val.value"
+            direction="horizontal"
+            icon-size="16px"
+          >
+            <div :class="val.name">{{ val.name }}</div>
+            <div class="radios row">
+              <van-radio
+                v-for="v in val.radios"
+                :key="v.name"
+                :name="v.value"
+                :disabled="v.name == 'TMDB' || v.name == '本地'"
+                >{{ v.name }}</van-radio
+              >
+            </div>
+          </van-radio-group>
+        </template>
+      </van-cell-group>
+    </div>
   </Overlay>
 </template>
 
@@ -139,11 +145,11 @@ export default {
       let res = await this.$store.dispatch("updateLibrary", {
         libraryPath: val.value,
         libraryName: val.name,
-      })
-      if (res.success===false) {
-        Toast.fail(res.errorMessage)
-      }else if (res.success===true) {
-        Toast({message:'开始更新'})
+      });
+      if (res.success === false) {
+        Toast.fail(res.errorMessage);
+      } else if (res.success === true) {
+        Toast({ message: "开始更新" });
       }
     },
   },
@@ -152,6 +158,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.base {
+  overflow-y: scroll;
+}
 .line {
   //   border: 1px solid #d8d8d8;
   border: none;
@@ -168,6 +177,9 @@ export default {
 }
 .radio-group {
   display: flex;
+  .radios {
+    height: 1rem;
+  }
 }
 .libraries {
   margin: 10px 20px;
@@ -188,7 +200,8 @@ export default {
       }
     }
     .libraryController {
-      justify-content: space-evenly;
+      min-width: 3rem;
+      justify-content: space-around;
     }
   }
 }
@@ -196,4 +209,7 @@ export default {
   margin: 10px 20px;
   // width: 500px;
 }
+  .van-button__text{
+    font-size: 24px;
+  }
 </style>

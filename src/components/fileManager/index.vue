@@ -159,7 +159,7 @@ export default {
       });
       Toast.clear();
       if (met == "path") {
-        this.$copyText(`window.location.origin${res.src}`);
+        this.$copyText(`${window.location.origin}${res.src}`);
         Toast(`已复制到剪贴板`);
       }
     },

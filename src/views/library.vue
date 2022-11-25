@@ -113,7 +113,7 @@
     <van-overlay :show="showSettings">
       <Settings v-if="showSettings"></Settings>
     </van-overlay>
-    <van-overlay :show="showLibrarySettings">
+    <van-overlay :show="showLibrarySettings" :lock-scroll="false">
       <LibrarySettings v-if="showLibrarySettings"></LibrarySettings>
     </van-overlay>
   </div>
@@ -144,7 +144,15 @@ export default {
       finished: false,
       showNum: 10,
       workSpace: {
-        children: [{ label: "本功能需要先建立媒体库", children: {} }],
+        children: [
+          { label: "右上方配置服务器", children: {} },
+          { label: "左下方建立媒体库", children: {} },
+          { label: "媒体库建立时间与视频数量正相关", children: {} },
+          { label: "提取图片需要较多cpu资源", children: {} },
+          { label: "初次建立可能需要较长时间，中途暂时不会显示", children: {} },
+          { label: "一部13集左右的番需要约8秒", children: {} },
+          { label: "可预估需要时间，等待完成后请刷新", children: {} },
+        ],
       },
       backSpace: [],
       // backSpace: [],
@@ -230,7 +238,7 @@ export default {
       });
       Toast.clear();
       if (met == "path") {
-        this.$copyText(`window.location.origin${res.src}`);
+        this.$copyText(`${window.location.origin}${res.src}`);
         Toast(`已复制到剪贴板`);
       }
     },

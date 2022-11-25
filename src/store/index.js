@@ -92,7 +92,7 @@ export default new Vuex.Store({
             if (state.filter.mode == 'none') {
                 state.itemInfo = Object.values(itemInfo)
                 state.itemInfo.sort((aVal, bVal) => {
-                    let index = ['error', 'missingFiles', 'queuedUP', 'downloading', 'pausedDL', 'uploading']
+                    let index = ['error', 'missingFiles', 'downloading', 'pausedDL', 'uploading']
                     let a = index.indexOf(aVal.state)
                     a = a >= 0 ? a : 99
                     let b = index.indexOf(bVal.state)
@@ -212,7 +212,7 @@ export default new Vuex.Store({
         SONTROLSETTINGS(state, val) {
             state.showSettings = val
         },
-        CONTROLLIBRARYSETTINGS(state,val){
+        CONTROLLIBRARYSETTINGS(state, val) {
             state.showLibrarySettings = val
         }
     },
@@ -366,8 +366,28 @@ export default new Vuex.Store({
         async updateLibrary({ state }, data) {
             return await reqUpdateLibrary(data)
         },
-        async updateDir({state},data){
+        async updateDir({ state }, data) {
             return await reqUpdateDir(data)
+        },
+        async controlTorrent({ }, par) {
+            const {met, hash} = par
+            switch (met) {
+                case 'resume':
+                    await reqResume(hash)
+                    break;
+                case 'pause':
+                    await reqPause(hash)
+                    break;
+                case 'check':
+                    await reqCheck(hash)
+                    break;
+                case 'forceStart':
+                    await reqForceStart(hash)
+                    break;
+                // case value:
+
+                //     break;
+            }
         }
     },
     getters: {
