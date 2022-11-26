@@ -49,7 +49,7 @@
                 round
                 icon="delete-o"
                 type="danger"
-                @click="deleteLibrary(index)"
+                @click="queryDeleteLibrary(index)"
                 >删除</van-button
               >
             </div>
@@ -95,7 +95,9 @@ export default {
     Overlay,
   },
   data() {
-    return {};
+    return {
+      tempLibrary: {},
+    };
   },
   computed: {
     ...mapState(["librarySettings"]),
@@ -116,16 +118,26 @@ export default {
         "updateLibrarySettings",
         this.settings
       );
-      console.log(res);
+      // console.log(res);
       if (res.success === true) {
         let thank = false;
+        let change = false;
         for (const key in this.settings.source) {
           if (this.settings.source[key] == "dandan") {
             thank = true;
           }
         }
-        if (thank) {
-          Toast({ message: "感谢弹弹Play公开数据库" });
+        if (
+          JSON.stringify(this.tempLibrary) !=JSON.stringify(this.librarySettings.library)
+        ) {
+          change = true;
+        }
+        if (change) {
+          if (Math.random() < 0.2) {
+            Toast({ message: "感谢弹弹Play公开数据库" });//需要提示信息，还是做成彩蛋吧
+          } else {
+            Toast({ message: "请稍后刷新" });
+          }
         }
       } else if (!res.success) {
         Toast.fail(res.errorMessage);
@@ -136,6 +148,11 @@ export default {
     },
     addLibrary() {
       this.librarySettings.library.cells.push({ name: "", value: "" });
+    },
+    queryDeleteLibrary(index) {
+      let library = this.librarySettings.library.cells[index];
+      library.index = index;
+      this.$bus.$emit("queryDeleteLibrary", library);
     },
     deleteLibrary(index) {
       this.librarySettings.library.cells.splice(index, 1);
@@ -153,7 +170,13 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    this.tempLibrary = JSON.parse(JSON.stringify(this.librarySettings.library));
+    this.$bus.$on("confirmDeleteLibrary", (lib) => {
+      this.librarySettings.library.cells.splice(lib.index, 1);
+      Toast({ message: "此时刷新还能反悔哦" });
+    });
+  },
 };
 </script>
 
@@ -209,7 +232,7 @@ export default {
   margin: 10px 20px;
   // width: 500px;
 }
-  .van-button__text{
-    font-size: 24px;
-  }
+.van-button__text {
+  font-size: 24px;
+}
 </style>

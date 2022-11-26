@@ -55,7 +55,7 @@
                 {{ ite.title ? ite.title : ite.label }}
               </div>
               <div
-                class="content originalTitle van-ellipsis"
+                class="content originalTitle van-multi-ellipsis--l2"
                 v-if="
                   ite.result != 'episodedetails' &&
                   ite.title &&
@@ -116,6 +116,19 @@
     <van-overlay :show="showLibrarySettings" :lock-scroll="false">
       <LibrarySettings v-if="showLibrarySettings"></LibrarySettings>
     </van-overlay>
+    <van-overlay :show="showQueryDeleteLibrary">
+      <Overlay
+        :onCancel="cancelDeleteLibrary"
+        :onConfirm="confirmDeleteLibrary"
+        class="overlay"
+      >
+        <div class="col center queryDeleting">
+          <div>确认删除位于</div>
+          <div style="color:red">{{ queryDeleting.value }}</div>
+          <div>的媒体库？</div>
+        </div>
+      </Overlay>
+    </van-overlay>
   </div>
 </template>
 
@@ -127,6 +140,7 @@ import VideoPlayer from "../components/videoPlayer";
 import FileServerController from "@/components/fileServerController";
 import Settings from "@/components/settings";
 import LibrarySettings from "@/components/librarySettings";
+import Overlay from "@/components/overlay";
 // import path from 'path';
 export default {
   name: "library",
@@ -135,6 +149,7 @@ export default {
     FileServerController,
     Settings,
     LibrarySettings,
+    Overlay,
   },
   data() {
     return {
@@ -162,6 +177,8 @@ export default {
       file: { label: "" },
       search: "",
       // scoll:''
+      showQueryDeleteLibrary: false,
+      queryDeleting: {},
     };
   },
   computed: {
@@ -285,6 +302,15 @@ export default {
     updateDir() {
       this.$store.dispatch("updateDir", { dirPath: this.rootPath });
     },
+    confirmDeleteLibrary() {
+      this.$bus.$emit('confirmDeleteLibrary',this.queryDeleting)
+      this.showQueryDeleteLibrary = false;
+      this.queryDeleting = {}
+    },
+    cancelDeleteLibrary(){
+      this.showQueryDeleteLibrary = false;
+      this.queryDeleting = {}
+    }
   },
   mounted() {
     this.$store.dispatch("getLibrarySettings");
@@ -302,6 +328,11 @@ export default {
         }
       })
       .catch((err) => {});
+    this.$bus.$on("queryDeleteLibrary", (lib) => {
+      this.queryDeleting = lib;
+      this.showQueryDeleteLibrary = true;
+      // console.log(lib);
+    });
   },
 };
 </script>
@@ -366,8 +397,8 @@ export default {
         flex-grow: 1;
         margin: 5px;
         // padding: 10px 10px;
-        font-size: 30px;
-        line-height: 1.5;
+        font-size: 28px;
+        line-height: 1.4;
         justify-content: space-between;
         border: 1px solid #ebebeb;
         border-radius: 12px;
@@ -381,6 +412,7 @@ export default {
         .title {
           // height: 160px;
           padding: 10px;
+          text-align: center;
           .content {
             // flex-grow: 1;
             color: #222222;
@@ -467,5 +499,11 @@ export default {
       }
     }
   }
+    .queryDeleting {
+      width: 100%;
+      height: 100%;
+      word-break: break-all;
+      justify-content: space-around;
+    }
 }
 </style>
