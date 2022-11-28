@@ -11,12 +11,13 @@
           accept=".torrent"
           :on-change="handleChange"
           action=""
-          :auto-upload='false'
+          :auto-upload="false"
           class="fileList col"
-          :limit='5'
+          :limit="5"
         >
-          <van-button icon="plus" type="primary" class="fileBtn">上传种子</van-button>
-
+          <van-button icon="plus" type="primary" class="fileBtn" round
+            >上传种子</van-button
+          >
         </el-upload>
       </div>
     </div>
@@ -42,62 +43,138 @@
     <div class="cell row">
       <div class="option">分类</div>
       <div class="field">
-        <el-select
+        <van-field
           v-model="newTorrents.category"
-          filterable
-          allow-create
-          placeholder="输入以新建"
-        >
-          <el-option
-            v-for="cate in categories"
-            :key="cate.name"
-            :label="cate.name"
-            :value="cate.name"
-          ></el-option>
-        </el-select>
+          placeholder="输入以新建,点击右侧选择"
+          @click-right-icon="showCategories = true"
+          right-icon="arrow-down"
+        />
+        <van-popup v-model="showCategories" round position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="selectableCategories"
+            @cancel="showCategories = false"
+            @confirm="
+              (v) => {
+                newTorrents.category = v;
+                newTorrents.savepath = categories.find(
+                  (val) => val.name == v
+                ).savePath;
+                showCategories = false;
+              }
+            "
+          />
+        </van-popup>
       </div>
     </div>
     <div class="cell row">
       <div class="option">标签</div>
       <div class="field">
-        <el-select
+        <van-field
           v-model="newTorrents.tags"
-          filterable
-          allow-create
-          placeholder="输入以新建"
-        >
-          <el-option
-            v-for="tag in tags"
-            :key="tag.name"
-            :label="tag.name"
-            :value="tag.name"
-          ></el-option>
-        </el-select>
+          placeholder="输入以新建,点击右侧选择"
+          @click-right-icon="showTags = true"
+          right-icon="arrow-down"
+        />
+        <van-popup v-model="showTags" round position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="selectableCategories"
+            @cancel="showTags = false"
+            @confirm="
+              (v) => {
+                newTorrents.tags = v;
+                showTags = false;
+              }
+            "
+          />
+        </van-popup>
       </div>
     </div>
     <div class="cell row">
       <div class="option">保存路径</div>
       <div class="field">
-        <el-select
-          v-model="selectPath"
-          filterable
-          allow-create
+        <van-field
           :disabled="newTorrents.autoTMM"
-          placeholder="C:/xxx"
-        >
-          <el-option
-            v-for="cate in categories"
-            :key="cate.name"
-            :label="cate.name"
-            :value="cate.name"
-          ></el-option>
-        </el-select>
+          v-model="newTorrents.savepath"
+          placeholder="关闭自动管理以修改,点击右侧选择"
+          @click-right-icon="
+            () => {
+              if (!newTorrents.autoTMM) showSavepath = true;
+            }
+          "
+          right-icon="arrow-down"
+        />
+        <van-popup v-model="showSavepath" round position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="selectableSavepath"
+            @cancel="showSavepath = false"
+            @confirm="
+              (v) => {
+                newTorrents.savepath = v;
+                showSavepath = false;
+              }
+            "
+          />
+        </van-popup>
       </div>
     </div>
     <div class="cell row">
       <div class="option">延迟下载</div>
       <div class="field">
         <van-switch v-model="newTorrents.paused" size="20" />
+      </div>
+    </div>
+    <div class="cell row">
+      <div class="option">子文件夹</div>
+      <div class="field">
+        <!-- <van-field
+          readonly
+          v-model="rootFolder"
+          @click="showRootFolder = true"
+          right-icon="arrow-down"
+          placeholder="默认"
+        /> -->
+        <div @click="showRootFolder = true" class="rootFolder">
+          {{ rootFolder ? rootFolder : "默认" }}<van-icon name="arrow-down" />
+        </div>
+
+        <van-popup v-model="showRootFolder" round position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="selectableRootFolders"
+            @cancel="showRootFolder = false"
+            @confirm="
+              (v) => {
+                rootFolder = v;
+                newTorrents.root_folder = rootFolders.find(
+                  (val) => val.name == v
+                ).value;
+                showRootFolder = false;
+              }
+            "
+          />
+        </van-popup>
+        <!-- <van-switch v-model="newTorrents.root_folder" size="20" /> -->
+      </div>
+    </div>
+    <div class="cell row">
+      <div class="option">跳过校验</div>
+      <div class="field">
+        <van-switch v-model="newTorrents.skip_checking" size="20" />
+      </div>
+    </div>
+        <div class="cell row">
+      <div class="option">顺序下载</div>
+      <div class="field">
+        <van-switch v-model="newTorrents.sequential" size="20" />
+      </div>
+    </div>
+        <div class="cell row">
+      <div class="option">首尾下载</div>
+      <div class="field">
+        <van-switch v-model="newTorrents.firstLastPiecePrio" size="20" />
       </div>
     </div>
   </Overlay>
@@ -120,33 +197,42 @@ export default {
         category: null,
         tags: "",
         savepath: "",
-        paused: true,
+        paused: false,
         fileList: [],
+        root_folder: "",
+        skip_checking:false,
+        sequential:false,
+        firstLastPiecePrio:false
       },
+      rootFolders: [
+        { name: "默认", value: "" },
+        { name: "是", value: true },
+        { name: "否", value: false },
+      ],
+      rootFolder: "",
+      showCategories: false,
+      showTags: false,
+      showSavepath: false,
+      showRootFolder: false,
     };
   },
   computed: {
     ...mapState(["categories", "tags"]),
-    //添加种子保存路径
-    selectPath: {
-      get: function () {
-        if (
-          this.newTorrents.category && //已设置新建种子分类
-          this.categories.find((item) => {
-            return item.name == this.newTorrents.category;
-          }) && //该分类已存在
-          this.newTorrents.autoTMM //已开启自动管理
-        ) {
-          return this.categories.find((item) => {
-            return item.name == this.newTorrents.category;
-          }).savePath;
-        } else {
-          return "";
-        }
-      },
-      set: function (newVal) {
-        this.newTorrents.savepath = newVal;
-      },
+    selectableCategories() {
+      return this.categories
+        .filter((v) => v.name != "uncategorized")
+        .map((v) => v.name);
+    },
+    selectableTags() {
+      return this.tags.filter((v) => v.name != "untagged").map((v) => v.name);
+    },
+    selectableSavepath() {
+      return this.categories
+        .filter((v) => v.name != "uncategorized" && v.savePath)
+        .map((v) => v.savePath);
+    },
+    selectableRootFolders() {
+      return this.rootFolders.map((v) => v.name);
     },
   },
   methods: {
@@ -155,11 +241,16 @@ export default {
       let result = this.$store.dispatch("addTorrents", this.newTorrents);
       result.then((result) => {
         if (result) {
-          this.newTorrents.urls = "";
-          this.newTorrents.category = "";
-          this.newTorrents.savepath = "";
-          this.newTorrents.tags = "";
-          this.$store.commit("CONTROLADDTORRENTS", false);
+          (this.newTorrents = {
+            urls: "",
+            autoTMM: true,
+            category: null,
+            tags: "",
+            savepath: "",
+            paused: false,
+            fileList: [],
+          }),
+            this.$store.commit("CONTROLADDTORRENTS", false);
         } else {
           Toast.fail("添加失败");
         }
@@ -167,16 +258,22 @@ export default {
     },
     //取消添加
     cancelAdd() {
-      this.newTorrents.urls = "";
-      this.newTorrents.category = "";
-      this.newTorrents.tags = "";
-      this.newTorrents.savepath = "";
-      this.$store.commit("CONTROLADDTORRENTS", false);
+      (this.newTorrents = {
+        urls: "",
+        autoTMM: true,
+        category: null,
+        tags: "",
+        savepath: "",
+        paused: false,
+        fileList: [],
+      }),
+        this.$store.commit("CONTROLADDTORRENTS", false);
     },
     handleChange(file, fileList) {
       // console.log(fileList.indexOf(file));
-      this.newTorrents.fileList =fileList
+      this.newTorrents.fileList = fileList;
     },
+    onConfirm() {},
   },
 };
 </script>
@@ -191,17 +288,27 @@ export default {
     min-height: 60px;
     .option {
       font-size: 32px;
+      width: 4rem;
       display: flex;
       align-items: center;
     }
     .field {
       flex-grow: 1;
+      // width: 80%;
       text-align: right;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      /deep/.el-input__inner {
-        font-size: 28px;
+      .van-field,
+      .rootFolder {
+        flex-grow: 1;
+        font-size: 26px;
+        height: 1rem;
+      }
+      /deep/.van-picker {
+        .van-ellipsis {
+          font-size: 1rem;
+        }
       }
     }
     .linkField {
@@ -217,11 +324,11 @@ export default {
         font-size: 28px;
       }
     }
-    .fileField{
+    .fileField {
       overflow: hidden;
-      .fileList{
+      .fileList {
         width: 100%;
-        /deep/.el-upload{
+        /deep/.el-upload {
           display: flex;
           justify-content: flex-end;
         }

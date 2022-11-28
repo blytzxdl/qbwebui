@@ -121,7 +121,8 @@ import {
   CheckboxGroup,
   // Uploader,
   Lazyload,
-  Image as VanImage
+  Image as VanImage,
+  Picker
 } from 'vant';
 Vue.use(Button)
 Vue.use(Swipe);
@@ -152,6 +153,7 @@ Vue.use(CheckboxGroup);
 // Vue.use(Uploader);
 Vue.use(Lazyload);
 Vue.use(VanImage);
+Vue.use(Picker);
 
 
 
